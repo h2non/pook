@@ -20,13 +20,9 @@ setup_requires = []
 if 'test' in sys.argv:
     setup_requires.append('pytest')
 
-tests_require = [
-    'pytest',
-    'coverage >= 3.7.1, < 5.0.0',
-    'pytest-cov',
-    'flake8',
-]
-
+# Read dev requirements
+with open('requirements-dev.txt') as f:
+    tests_require = f.read().splitlines()
 
 class PyTest(TestCommand):
     def finalize_options(self):
