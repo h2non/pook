@@ -17,7 +17,7 @@ clean:
 	@for pattern in `cat .gitignore`; do find . -name "$$pattern" -delete; done
 	@echo "OK!"
 
-release: clean docs deploy-documentation publish
+release: clean publish
 	@printf "Exporting to $(filename)... "
 	@tar czf $(filename) pook setup.py README.md LICENSE
 	@echo "DONE!"
