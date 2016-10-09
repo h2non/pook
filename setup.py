@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-pock
+pook
 ====
 A utility library for mocking out HTTP traffic in Python.
 
@@ -42,16 +42,16 @@ class PyTest(TestCommand):
 
 
 setup(
-    name='pock',
-    version='0.1.0',
+    name='pook',
+    version='0.0.1',
     author='Tomas Aparicio',
     description=(
         'Expressive and simple library for mocking out HTTP traffic in Python.'
     ),
-    url='https://github.com/h2non/pock',
+    url='https://github.com/h2non/pook',
     license='MIT',
     long_description=open('README.md').read(),
-    py_modules=['pock'],
+    py_modules=['pook'],
     zip_safe=False,
     install_requires=[],
     extras_require=[],

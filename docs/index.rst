@@ -1,13 +1,13 @@
-.. pock documentation master file, created by
+.. pook documentation master file, created by
    sphinx-quickstart on Tue Oct  4 18:59:54 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Pock
+Pook
 ====
 
-**pock** is an *expressive* and *extensible* HTTP mocking library for Python.
-pock can be *extended* by defining `new matchers <custom-matchers.html>`_.
+**pook** is an *expressive* and *extensible* HTTP mocking library for Python.
+pook can be *extended* by defining `new matchers <custom-matchers.html>`_.
 
 Usage
 -----
@@ -16,9 +16,9 @@ Just import the ``expect`` callable and the `built-in matchers <matchers.html>`_
 
 .. code-block:: python
 
-    import pock
+    import pook
 
-    pock('api.server.com').get('/foo').reply(200).json({'foo': 'bar'})
+    pook('api.server.com').get('/foo').reply(200).json({'foo': 'bar'})
 
 
 Contents

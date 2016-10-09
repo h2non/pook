@@ -1,8 +1,8 @@
 all: lint unit
 
 export PYTHONPATH:=${PWD}
-version=`python -c 'import pock;print pock.version'`
-filename=pock-`python -c 'import pock;print pock.version'`.tar.gz
+version=`python -c 'import pook;print pook.version'`
+filename=pook-`python -c 'import pook;print pook.version'`.tar.gz
 
 lint:
 	@flake8 .
@@ -19,7 +19,7 @@ clean:
 
 release: clean docs deploy-documentation publish
 	@printf "Exporting to $(filename)... "
-	@tar czf $(filename) pock setup.py README.md LICENSE
+	@tar czf $(filename) pook setup.py README.md LICENSE
 	@echo "DONE!"
 
 publish:

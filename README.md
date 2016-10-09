@@ -1,10 +1,10 @@
-# pock [![Build Status](https://travis-ci.org/h2non/pock.svg?branch=master)](https://travis-ci.org/h2non/pock) [![PyPI](https://img.shields.io/pypi/v/pock.svg?maxAge=2592000?style=flat-square)](https://pypi.python.org/pypi/pock) [![API](https://img.shields.io/badge/api-docs-green.svg)](https://h2non.github.io/pock) [![Documentation Status](https://readthedocs.org/projects/pock/badge/?version=latest)](http://pock.readthedocs.io/en/latest/?badge=latest)
+# pook [![Build Status](https://travis-ci.org/h2non/pook.svg?branch=master)](https://travis-ci.org/h2non/pook) [![PyPI](https://img.shields.io/pypi/v/pook.svg?maxAge=2592000?style=flat-square)](https://pypi.python.org/pypi/pook) [![API](https://img.shields.io/badge/api-docs-green.svg)](https://h2non.github.io/pook) [![Documentation Status](https://readthedocs.org/projects/pook/badge/?version=latest)](http://pook.readthedocs.io/en/latest/?badge=latest)
 
 Simply and expressive utility library for mocking and expectations for HTTP traffic in [Python](http://python.org).
 
 Small and dependency-free package to infer file type and MIME type checking the [magic numbers](https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files) signature of a file or buffer.
 
-pock is heavily inspired by [gock](https://github.com/h2non/gock).
+pook is heavily inspired by [gock](https://github.com/h2non/gock).
 
 **Note**: this is a work in progress.
 
@@ -30,29 +30,29 @@ pock is heavily inspired by [gock](https://github.com/h2non/gock).
 
 Using `pip` package manager:
 ```bash
-pip install pock
+pip install pook
 ```
 
 Or install the latest sources from Github::
 ```bash
-pip install -e git+git://github.com/h2non/pock.git#egg=pock
+pip install -e git+git://github.com/h2non/pook.git#egg=pook
 ```
 
 ## API
 
-See [annotated API reference](https://h2non.github.io/pock).
+See [annotated API reference](https://h2non.github.io/pook).
 
 ## Examples
 
 #### Basic mocking
 
 ```python
-import pock
+import pook
 import requests
 
-@pock.activate
+@pook.activate
 def test_my_api():
-    mock = pock.get('http://twitter.com/api/1/foobar',
+    mock = httpok.get('http://twitter.com/api/1/foobar',
                     type='application/json',
                     json={'error': 'not found'})
     mock.reply(404, json={'error': 'foo'})
@@ -67,12 +67,12 @@ def test_my_api():
 #### Using the fluent API
 
 ```python
-import pock
+import pook
 import requests
 
-@pock.activate
+@pook.activate
 def test_my_api():
-    mock = pock.get('http://twitter.com/api/1/foobar'). \
+    mock = pook.get('http://twitter.com/api/1/foobar'). \
            status(404). \
            json({'error': 'not found'})
 
@@ -82,7 +82,6 @@ def test_my_api():
     assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
     assert mock.calls[0].response.text == '{"error": "not found"}'
 ```
-
 
 ## License
 
