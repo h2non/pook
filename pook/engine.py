@@ -1,4 +1,4 @@
-from .exceptions import PockNoMatches, PockExpiredMock
+from .exceptions import PookNoMatches, PookExpiredMock
 from .interceptors import store
 
 

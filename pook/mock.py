@@ -4,7 +4,7 @@ from .decorators import fluent
 from .response import Response
 from .request import Request
 from .matcher import MatcherEngine
-from .exceptions import PockExpiredMock
+from .exceptions import PookExpiredMock
 
 
 # class CallList(Sequence, Sized):
