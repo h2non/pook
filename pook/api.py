@@ -14,7 +14,7 @@ def activate(fn=None):
     engine.activate()
 
     if not isfunction(fn):
-        return None
+        return fn
 
     def wrapper(*args, **kwargs):
         try:
@@ -76,9 +76,19 @@ def use():
 
 
 # Public API
-def mock(url, method='GET', **kwargs):
+def mock(url=None, **kwargs):
     """
     Registers a new mock for GET method.
+    """
+    mock = Mock(url, **kwargs)
+    engine.add_mock(mock)
+    return mock
+
+
+def patch(url=None, method='GET', **kwargs):
+    """
+    Registers a new mock.
+    Alias to mock()
     """
     mock = Mock(url, method, **kwargs)
     engine.add_mock(mock)

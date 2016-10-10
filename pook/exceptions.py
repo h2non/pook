@@ -8,3 +8,7 @@ class PookNoMatches(Exception):
 
 class PookExpiredMock(Exception):
     pass
+
+
+class PookInvalidArgument(Exception):
+    pass

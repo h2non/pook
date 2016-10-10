@@ -1,6 +1,7 @@
 import io
 import sys
 from ..request import Request
+from .base import BaseInterceptor
 
 # Support Python 2/3
 try:
@@ -61,14 +62,10 @@ class Urllib3Adapter(object):
         req.url = self.req.url
 
 
-class Urllib3Interceptor(object):
+class Urllib3Interceptor(BaseInterceptor):
     """
     urllib3 HTTP traffic interceptor.
     """
-    def __init__(self, engine):
-        self.patchers = []
-        self.engine = engine
-
     def _on_request(self, pool, method, url,
                     body=None, headers=None, **kwargs):
         req = Request(method)

@@ -4,6 +4,7 @@ from .decorators import fluent
 from .response import Response
 from .request import Request
 from .matcher import MatcherEngine
+from .utils import trigger_methods
 from .exceptions import PookExpiredMock
 
 
@@ -37,18 +38,18 @@ class Mock(object):
                  method='GET',
                  params=None,
                  headers=None,
-                 body=None):
+                 body=None,
+                 **args):
         self._calls = 0
         self._times = 1
         self._persist = False
         self.request = Request()
-        self.response = Response()
+        self.response = None
         self.matchers = MatcherEngine()
         self.method(method)
         self.url(url)
         self.params = {}
-        self.body = body
-        # self.args = kwargs
+        trigger_methods(self, args)
 
     @fluent
     def protocol(self, value):
@@ -117,8 +118,8 @@ class Mock(object):
     def persist(self):
         self._persist = True
 
-    def reply(self, status=200):
-        self.response._status = status
+    def reply(self, status=200, **args):
+        self.response = Response(status=status, **args)
         return self.response
 
     def match(self, req):

@@ -84,10 +84,10 @@ class HTTPHeaderDict(MutableMapping):
             yield vals[0]
 
     def pop(self, key, default=__marker):
-        '''
+        """
         D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
         If key is not found, d is returned if given, otherwise KeyError is raised.
-        '''
+        """
         # Using the MutableMapping function directly fails due to the private marker.
         # Using ordinary dict.pop would expose the internal structures.
         # So let's reinvent the wheel.
@@ -210,14 +210,18 @@ class HTTPHeaderDict(MutableMapping):
         return clone
 
     def iteritems(self):
-        """Iterate over all header lines, including duplicate ones."""
+        """
+        Iterate over all header lines, including duplicate ones.
+        """
         for key in self:
             vals = self._container[key.lower()]
             for val in vals[1:]:
                 yield vals[0], val
 
     def itermerged(self):
-        """Iterate over all headers, merging duplicate ones together."""
+        """
+        Iterate over all headers, merging duplicate ones together.
+        """
         for key in self:
             val = self._container[key.lower()]
             yield val[0], ', '.join(val[1:])
@@ -227,7 +231,9 @@ class HTTPHeaderDict(MutableMapping):
 
     @classmethod
     def from_httplib(cls, message): # Python 2
-        """Read headers from a Python 2 httplib message object."""
+        """
+        Read headers from a Python 2 httplib message object.
+        """
         # python2.7 does not expose a proper API for exporting multiheaders
         # efficiently. This function re-reads raw lines from the message
         # object and extracts the multiheaders properly.
