@@ -1,4 +1,4 @@
-# pook [![Build Status](https://travis-ci.org/h2non/pook.svg?branch=master)](https://travis-ci.org/h2non/pook) [![PyPI](https://img.shields.io/pypi/v/pook.svg?maxAge=2592000?style=flat-square)](https://pypi.python.org/pypi/pook) [![API](https://img.shields.io/badge/api-docs-green.svg)](https://h2non.github.io/pook) [![Documentation Status](https://readthedocs.org/projects/pook/badge/?version=latest)](http://pook.readthedocs.io/en/latest/?badge=latest)
+# pook [![Build Status](https://travis-ci.org/h2non/pook.svg?branch=master)](https://travis-ci.org/h2non/pook) [![PyPI](https://img.shields.io/pypi/v/pook.svg?maxAge=2592000?style=flat-square)](https://pypi.python.org/pypi/pook) [![Coverage Status](https://coveralls.io/repos/github/h2non/pook/badge.svg?branch=master)](https://coveralls.io/github/h2non/pook?branch=master) [![Documentation Status](https://readthedocs.org/projects/pook/badge/?version=latest)](http://pook.readthedocs.io/en/latest/?badge=latest)
 
 Simply and expressive utility library for mocking and expectations for HTTP traffic in [Python](http://python.org).
 

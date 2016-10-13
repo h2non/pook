@@ -80,7 +80,7 @@ def mock(url=None, **kwargs):
     """
     Registers a new mock for GET method.
     """
-    mock = Mock(url, **kwargs)
+    mock = Mock(url=url, **kwargs)
     engine.add_mock(mock)
     return mock
 

@@ -175,8 +175,8 @@ class HTTPHeaderDict(MutableMapping):
 
     def getlist(self, key):
         """
-        Returns a list of all the values for the named field. Returns an
-        empty list if the key doesn't exist.
+        Returns a list of all the values for the named field.
+        Returns an empty list if the key doesn't exist.
         """
         try:
             vals = self._container[key.lower()]

@@ -12,11 +12,11 @@ except:
 if sys.version_info < (3,):     # Python 2
     from httplib import responses as http_reasons
     from cStringIO import StringIO as BytesIO
-    from urlparse import urlparse, parse_qsl
+    from urlparse import urlparse
 else:                           # Python 3
     from http.client import responses as http_reasons
     from io import BytesIO
-    from urllib.parse import urlparse, parse_qsl
+    from urllib.parse import urlparse
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
@@ -69,18 +69,18 @@ class Urllib3Interceptor(BaseInterceptor):
     def _on_request(self, pool, method, url,
                     body=None, headers=None, **kwargs):
         req = Request(method)
-        req.url = urlparse(pool.scheme + '://' + pool.host + ':' +
-                           str(pool.port) + url)
+        req.url = (pool.scheme + '://' + pool.host + ':' +
+                   str(pool.port) + url)
         req.headers = headers
         req.body = body
 
-        print('REQ:', pool, method, url)
-        print('URL:', req.url)
-        print('HEADERS:', req.headers)
-        print('BODY:', body)
+        # print('REQ:', pool, method, url)
+        # print('URL:', req.url)
+        # print('HEADERS:', req.headers)
+        # print('BODY:', body)
 
         mock = self.engine.on_request(req)
-        print('MOCK BODY:', body_io(mock._body).getvalue())
+        # print('MOCK BODY:', body_io(mock._body).getvalue())
 
         headers = []
         for key in mock._headers:

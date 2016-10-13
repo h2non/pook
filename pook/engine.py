@@ -45,8 +45,8 @@ class Engine(object):
                 # If mock matches, return the response object
                 if mock.match(request):
                     return mock.response
-            except PockExpiredMock:
+            except PookExpiredMock:
                 self.mocks.remove(mock)
 
         if not self.networking:
-            raise PockNoMatches('Cannot match any mock for request:', request)
+            raise PookNoMatches('Cannot match any mock for request:', request)
