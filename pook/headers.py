@@ -85,12 +85,14 @@ class HTTPHeaderDict(MutableMapping):
 
     def pop(self, key, default=__marker):
         """
-        D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
-        If key is not found, d is returned if given, otherwise KeyError is raised.
+        D.pop(k[,d]) -> v, remove specified key and return the
+        corresponding value.
+        If key is not found, d is returned if given, otherwise KeyError
+        is raised.
         """
-        # Using the MutableMapping function directly fails due to the private marker.
-        # Using ordinary dict.pop would expose the internal structures.
-        # So let's reinvent the wheel.
+        # Using the MutableMapping function directly fails due to the
+        # private marker. Using ordinary dict.pop would expose the
+        # internal structures. So let's reinvent the wheel.
         try:
             value = self[key]
         except KeyError:
@@ -230,7 +232,7 @@ class HTTPHeaderDict(MutableMapping):
         return list(self.iteritems())
 
     @classmethod
-    def from_httplib(cls, message): # Python 2
+    def from_httplib(cls, message):  # Python 2
         """
         Read headers from a Python 2 httplib message object.
         """

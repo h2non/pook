@@ -10,6 +10,8 @@ engine = Engine()
 def activate(fn=None):
     """
     Enables the HTTP traffic interceptors.
+
+    This function can be used as decorator.
     """
     engine.activate()
 
@@ -30,9 +32,24 @@ def activate(fn=None):
 def on(fn=None):
     """
     Enables the HTTP traffic interceptors.
-    Alias to pock.activate().
+    Alias to pook.activate().
     """
     return activate(fn)
+
+
+def disable():
+    """
+    Disables HTTP traffic interceptors.
+    """
+    engine.disable()
+
+
+def off():
+    """
+    Disables HTTP traffic interceptors.
+    Alias to pook.disable().
+    """
+    disable()
 
 
 def use_network():
@@ -49,27 +66,16 @@ def disable_network():
     engine.networking = False
 
 
-def disable():
-    """
-    Disables HTTP traffic interceptors.
-    """
-    engine.disable()
-
-
-def off():
-    """
-    Disables HTTP traffic interceptors.
-    Alias to pock.disable().
-    """
-    disable()
-
-
 @contextmanager
 def use():
     """
-    Enables the HTTP interceptor for context usage.
-    Example: with pock.use() as engine:
+    Create a new isolated mock engine to be used via context manager.
+
+    Example:
+        >>> with pook.use() as engine:
+        >>>     engine.mock('server.com/foo')
     """
+    engine = Engine()
     engine.activate()
     yield engine
     engine.disable()
@@ -79,25 +85,35 @@ def use():
 def mock(url=None, **kwargs):
     """
     Registers a new mock for GET method.
+
+    Arguments:
+        url (str): request URL to mock.
+
+    Returns:
+        pook.Mock: mock instance
     """
     mock = Mock(url=url, **kwargs)
     engine.add_mock(mock)
     return mock
 
 
-def patch(url=None, method='GET', **kwargs):
+def patch(url=None, **kwargs):
     """
     Registers a new mock.
     Alias to mock()
+
+    Returns:
+        pook.Mock: mock instance
     """
-    mock = Mock(url, method, **kwargs)
-    engine.add_mock(mock)
-    return mock
+    return mock(url, method='PATCH', **kwargs)
 
 
 def get(url):
     """
     Registers a new mock for GET method.
+
+    Returns:
+        pook.Mock: mock instance
     """
     return mock(url)
 
@@ -105,6 +121,9 @@ def get(url):
 def post(url, **kwargs):
     """
     Registers a new mock for POST method.
+
+    Returns:
+        pook.Mock: mock instance
     """
     return mock(url, method='POST', **kwargs)
 
@@ -112,20 +131,19 @@ def post(url, **kwargs):
 def put(url, **kwargs):
     """
     Registers a new mock for PUT method.
+
+    Returns:
+        pook.Mock: mock instance
     """
     return mock(url, method='PUT', **kwargs)
-
-
-def patch(url, **kwargs):
-    """
-    Registers a new mock for PATCH method.
-    """
-    return mock(url, method='PATCH', **kwargs)
 
 
 def delete(url, **kwargs):
     """
     Registers a new mock for DELETE method.
+
+    Returns:
+        pook.Mock: mock instance
     """
     return mock(url, method='DELETE', **kwargs)
 
@@ -133,6 +151,9 @@ def delete(url, **kwargs):
 def head(url, **kwargs):
     """
     Registers a new mock for HEAD method.
+
+    Returns:
+        pook.Mock: mock instance
     """
     return mock(url, method='HEAD', **kwargs)
 
@@ -141,6 +162,9 @@ def pending():
     """
     Returns the numbers of pending mocks
     to be matched.
+
+    Returns:
+        int: number of pending mocks to reach.
     """
     return 0
 
@@ -148,5 +172,8 @@ def pending():
 def is_done():
     """
     Returns True if all the registered mocks has been triggered.
+
+    Returns:
+        bool: True is all the registered mocks are gone, otherwise False.
     """
     return True
