@@ -11,12 +11,12 @@ except:
 
 if sys.version_info < (3,):     # Python 2
     from httplib import responses as http_reasons
-    from cStringIO import StringIO as BytesIO
-    from urlparse import urlparse
+    # from cStringIO import StringIO as BytesIO
+    # from urlparse import urlparse
 else:                           # Python 3
     from http.client import responses as http_reasons
-    from io import BytesIO
-    from urllib.parse import urlparse
+    # from io import BytesIO
+    # from urllib.parse import urlparse
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',

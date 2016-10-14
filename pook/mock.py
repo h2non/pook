@@ -1,6 +1,6 @@
 import re
-from .matchers import *  # noqa
-from .decorators import fluent, expectation
+from .matchers import matchers  # noqa
+from .decorators import fluent
 from .response import Response
 # from .request import Request
 from .matcher import MatcherEngine
@@ -31,84 +31,70 @@ class Mock(object):
         trigger_methods(self, args)
 
     @fluent
-    @expectation
     def protocol(self, value):
-        self.add_matcher(URLProtocolMatcher(value))
+        self.add_matcher(matchers.URLProtocolMatcher(value))
 
     @fluent
-    @expectation
     def url(self, url):
         if not url:
             raise Exception('url argument cannot be empty')
 
-        self.add_matcher(URLMatcher(url))
+        self.add_matcher(matchers.URLMatcher(url))
 
     @fluent
-    @expectation
     def method(self, method):
-        self.add_matcher(MethodMatcher(method))
+        self.add_matcher(matchers.MethodMatcher(method))
 
     @fluent
-    @expectation
     def path(self, path):
-        self.add_matcher(PathMatcher(path))
+        self.add_matcher(matchers.PathMatcher(path))
 
     @fluent
-    @expectation
     def header(self, name, value):
         headers = (name, value)
-        self.add_matcher(HeadersMatcher(*headers))
+        self.add_matcher(matchers.HeadersMatcher(*headers))
 
     @fluent
-    @expectation
     def headers(self, *args):
-        self.add_matcher(HeadersMatcher(*args))
+        self.add_matcher(matchers.HeadersMatcher(*args))
 
     @fluent
-    @expectation
     def header_present(self, name):
         headers = {name: re.compile('(.*)')}
-        self.add_matcher(HeadersMatcher(headers))
+        self.add_matcher(matchers.HeadersMatcher(headers))
 
     @fluent
-    @expectation
     def headers_present(self, headers):
         headers = {name: re.compile('(.*)') for name in headers}
-        self.add_matcher(HeadersMatcher(headers))
+        self.add_matcher(matchers.HeadersMatcher(headers))
 
     @fluent
-    @expectation
     def type(self, value):
-        self.add_matcher(HeadersMatcher({'Content-Type': value}))
+        self.add_matcher(matchers.HeadersMatcher({'Content-Type': value}))
 
     @fluent
-    @expectation
     def param(self, name, value):
         self.params({name: value})
 
     @fluent
-    @expectation
     def param_exists(self, name):
         self.params({name: '(.*)'})
 
     @fluent
-    @expectation
     def params(self, params):
-        self.add_matcher(QueryMatcher(params))
+        self.add_matcher(matchers.QueryMatcher(params))
 
     @fluent
-    @expectation
     def json(self, body):
-        self.add_matcher(JSONMatcher(data))
+        self.add_matcher(matchers.JSONMatcher(body))
 
     @fluent
-    @expectation
     def json_schema(self, schema):
-        self.add_matcher(JSONSchemaMatcher(schema))
+        self.add_matcher(matchers.JSONSchemaMatcher(schema))
 
     @fluent
     def xml(self, body):
-        self.add_matcher(XMLMatcher(data))
+        self.add_matcher(matchers.XMLMatcher(body))
 
     @fluent
     def add_matcher(self, matcher):
@@ -116,7 +102,7 @@ class Mock(object):
 
     @fluent
     def use(self, matcher):
-        self.add_matcher(matcher)
+        self.add_matcher(matchers.matcher)
 
     @fluent
     def times(self, num=1):

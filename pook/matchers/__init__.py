@@ -4,8 +4,17 @@ from .headers import HeadersMatcher
 from .query import QueryMatcher
 from .body import BodyMatcher
 
+__all__ = [
+    'matchers',
+    'MethodMatcher',
+    'URLMatcher',
+    'HeadersMatcher',
+    'QueryMatcher',
+    'BodyMatcher'
+]
+
 # Expose built-in matchers
-store = [
+matchers = [
     MethodMatcher,
     URLMatcher,
     HeadersMatcher,
