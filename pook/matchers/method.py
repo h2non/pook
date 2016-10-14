@@ -1,6 +1,9 @@
-class MethodMatcher(object):
+from .base import BaseMatcher
+
+
+class MethodMatcher(BaseMatcher):
     def __init__(self, method):
-        self.method = method
+        self.expectation = method
 
     def match(self, req):
-        return self.method == '*' or req.method == self.method
+        return self.expectation == '*' or req.expectation == self.method

@@ -2,7 +2,7 @@ import re
 from .matchers import *  # noqa
 from .decorators import fluent, expectation
 from .response import Response
-from .request import Request
+# from .request import Request
 from .matcher import MatcherEngine
 from .utils import trigger_methods
 from .exceptions import PookExpiredMock
@@ -26,7 +26,7 @@ class Mock(object):
         self.response = response or Response()
         self.matchers = MatcherEngine()
         self.expectations = {}
-        
+
         # Triggers instance methods based on argument names
         trigger_methods(self, args)
 
@@ -97,10 +97,12 @@ class Mock(object):
         self.add_matcher(QueryMatcher(params))
 
     @fluent
+    @expectation
     def json(self, body):
         self.add_matcher(JSONMatcher(data))
 
     @fluent
+    @expectation
     def json_schema(self, schema):
         self.add_matcher(JSONSchemaMatcher(schema))
 
@@ -130,7 +132,7 @@ class Mock(object):
 
     def match(self, req):
         if self._times <= 0:
-            raise PockExpiredMock('Mock has expired')
+            raise PookExpiredMock('Mock has expired')
 
         # Match incoming request against registered mock matchers
         matches = self.matchers.match(req)
@@ -147,4 +149,4 @@ class Mock(object):
         return True
 
     def __repr__(self):
-        return 'Mock({})'.format(self.expectations)
+        return 'Mock({})'.format(self.matchers)

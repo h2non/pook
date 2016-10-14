@@ -13,3 +13,7 @@ class MatcherEngine(list):
             if not matcher.match(req):
                 return False
         return True
+
+    def __repr__(self):
+        matchers = [matcher.__repr__() for matcher in self]
+        return '[{}]'.format(', '.join(matchers))
