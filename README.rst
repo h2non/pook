@@ -22,11 +22,11 @@ Features
 Supported HTTP clients
 ----------------------
 
--  [x] urllib3
--  [x] requests
--  [ ] urllib
--  [ ] aiohttp
--  [ ] pycurl
+- [X] urllib3
+- [X] requests
+- [ ] urllib
+- [ ] aiohttp
+- [ ] pycurl
 
 Installation
 ------------
