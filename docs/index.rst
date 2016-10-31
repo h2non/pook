@@ -29,6 +29,7 @@ Contents
 
    install
    matchers
+   api
    history
 
 

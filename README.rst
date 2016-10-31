@@ -1,15 +1,11 @@
-pook |Build Status| |PyPI| |Coverage Status| |Documentation Status|
-===================================================================
+pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
+====================================================================================================
 
-Simply and expressive utility library for mocking and expectations for
-HTTP traffic in `Python`_.
-
-Small and dependency-free package to infer file type and MIME type
-checking the `magic numbers`_ signature of a file or buffer.
+Expressive utility library for HTTP traffic mocking and expectations made simply in `Python`_.
 
 pook is heavily inspired by `gock`_.
 
-**Note**: this is a work in progress.
+**Note**: work in progress.
 
 Features
 --------
@@ -17,10 +13,11 @@ Features
 -  Simple, expressive and fluent API
 -  Full-featured, idiomatic HTTP expectations.
 -  JSON schema based body matching.
--  Extensible: write your own HTTP expections.
 -  HTTP client agnostic (works with most popular HTTP libraries).
+-  Extensible design: write your own HTTP matchers and adapters.
 -  Pluggable hackable API.
 -  Compatible with Python 2 and 3.
+-  Dependency free.
 
 Supported HTTP clients
 ----------------------
@@ -105,6 +102,7 @@ MIT - Tomas Aparicio
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: https://h2non.github.io/pook
 
+
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook
 .. |PyPI| image:: https://img.shields.io/pypi/v/pook.svg?maxAge=2592000?style=flat-square
@@ -113,3 +111,12 @@ MIT - Tomas Aparicio
    :target: https://coveralls.io/github/h2non/pook?branch=master
 .. |Documentation Status| image:: https://readthedocs.org/projects/pook/badge/?version=latest
    :target: http://pook.readthedocs.io/en/latest/?badge=latest
+.. |Quality| image:: https://codeclimate.com/github/h2non/pook/badges/gpa.svg
+   :target: https://codeclimate.com/github/h2non/pook
+   :alt: Code Climate
+.. |Stability| image:: https://img.shields.io/pypi/status/pook.svg
+   :target: https://pypi.python.org/pypi/pook
+   :alt: Stability
+.. |Versions| image:: https://img.shields.io/pypi/pyversions/pook.svg
+   :target: https://pypi.python.org/pypi/pook
+   :alt: Python Versions
