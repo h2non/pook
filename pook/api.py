@@ -18,9 +18,9 @@ def activate(fn=None):
     if not isfunction(fn):
         return fn
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kw):
         try:
-            fn(*args, **kwargs)
+            fn(*args, **kw)
         except Exception as err:
             raise err
         finally:
@@ -71,9 +71,10 @@ def use():
     """
     Create a new isolated mock engine to be used via context manager.
 
-    Example:
-        >>> with pook.use() as engine:
-        >>>     engine.mock('server.com/foo')
+    Usage::
+
+        with pook.use() as engine:
+            engine.mock('server.com/foo')
     """
     engine = Engine()
     engine.activate()
@@ -82,7 +83,7 @@ def use():
 
 
 # Public API
-def mock(url=None, **kwargs):
+def mock(url=None, **kw):
     """
     Registers a new mock for GET method.
 
@@ -92,12 +93,12 @@ def mock(url=None, **kwargs):
     Returns:
         pook.Mock: mock instance
     """
-    mock = Mock(url=url, **kwargs)
+    mock = Mock(url=url, **kw)
     engine.add_mock(mock)
     return mock
 
 
-def patch(url=None, **kwargs):
+def patch(url=None, **kw):
     """
     Registers a new mock.
     Alias to mock()
@@ -105,57 +106,57 @@ def patch(url=None, **kwargs):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='PATCH', **kwargs)
+    return mock(url, method='PATCH', **kw)
 
 
-def get(url):
+def get(url, **kw):
     """
     Registers a new mock for GET method.
 
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url)
+    return mock(url, method='GET', **kw)
 
 
-def post(url, **kwargs):
+def post(url, **kw):
     """
     Registers a new mock for POST method.
 
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='POST', **kwargs)
+    return mock(url, method='POST', **kw)
 
 
-def put(url, **kwargs):
+def put(url, **kw):
     """
     Registers a new mock for PUT method.
 
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='PUT', **kwargs)
+    return mock(url, method='PUT', **kw)
 
 
-def delete(url, **kwargs):
+def delete(url, **kw):
     """
     Registers a new mock for DELETE method.
 
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='DELETE', **kwargs)
+    return mock(url, method='DELETE', **kw)
 
 
-def head(url, **kwargs):
+def head(url, **kw):
     """
     Registers a new mock for HEAD method.
 
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='HEAD', **kwargs)
+    return mock(url, method='HEAD', **kw)
 
 
 def pending():

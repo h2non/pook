@@ -7,10 +7,13 @@ import pook
 
 
 if __name__ == '__main__':
-    m = pook.get('http://httpbin.org/ip?foo=bar')
-    m.type('application/json')
-    m.type('application/xml')
-    m.reply(404).json({'error': 'not found'})
+    # m = pook.get('http://httpbin.org/ip?foo=bar', reply=204)
+    # m.reply(404).type('application/json').json({'error': 'not found'})
+
+    m = pook.get('http://httpbin.org/ip?foo=bar',
+                 reply=404, response_type='json',
+                 response_json={'error': 'not found'})
+    # m.reply(404).type('application/json').json({'error': 'not found'})
 
     # Testing
     pook.activate()

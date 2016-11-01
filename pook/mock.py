@@ -1,10 +1,10 @@
 import re
-from .matchers import matchers  # noqa
+from .matchers import *  # noqa
 from .decorators import fluent
 from .response import Response
 # from .request import Request
 from .matcher import MatcherEngine
-from .utils import trigger_methods
+from .helpers import trigger_methods
 from .exceptions import PookExpiredMock
 
 
@@ -14,11 +14,8 @@ class Mock(object):
     and expectation DSL.
     """
     def __init__(self,
-                 # url='', path='',
-                 # method='GET', params=None,
-                 # headers=None, body=None,
                  request=None, response=None,
-                 **args):
+                 **kw):
         self._calls = 0
         self._times = 1
         self._persist = False
@@ -28,49 +25,48 @@ class Mock(object):
         self.expectations = {}
 
         # Triggers instance methods based on argument names
-        trigger_methods(self, args)
+        trigger_methods(self, kw)
 
     @fluent
     def protocol(self, value):
-        self.add_matcher(matchers.URLProtocolMatcher(value))
+        self.add_matcher(URLProtocolMatcher(value))
 
     @fluent
     def url(self, url):
         if not url:
             raise Exception('url argument cannot be empty')
-
-        self.add_matcher(matchers.URLMatcher(url))
+        self.add_matcher(URLMatcher(url))
 
     @fluent
     def method(self, method):
-        self.add_matcher(matchers.MethodMatcher(method))
+        self.add_matcher(MethodMatcher(method))
 
     @fluent
     def path(self, path):
-        self.add_matcher(matchers.PathMatcher(path))
+        self.add_matcher(PathMatcher(path))
 
     @fluent
     def header(self, name, value):
         headers = (name, value)
-        self.add_matcher(matchers.HeadersMatcher(*headers))
+        self.add_matcher(HeadersMatcher(*headers))
 
     @fluent
     def headers(self, *args):
-        self.add_matcher(matchers.HeadersMatcher(*args))
+        self.add_matcher(HeadersMatcher(*args))
 
     @fluent
     def header_present(self, name):
         headers = {name: re.compile('(.*)')}
-        self.add_matcher(matchers.HeadersMatcher(headers))
+        self.add_matcher(HeadersMatcher(headers))
 
     @fluent
     def headers_present(self, headers):
         headers = {name: re.compile('(.*)') for name in headers}
-        self.add_matcher(matchers.HeadersMatcher(headers))
+        self.add_matcher(HeadersMatcher(headers))
 
     @fluent
     def type(self, value):
-        self.add_matcher(matchers.HeadersMatcher({'Content-Type': value}))
+        self.add_matcher(HeadersMatcher({'Content-Type': value}))
 
     @fluent
     def param(self, name, value):
@@ -82,19 +78,19 @@ class Mock(object):
 
     @fluent
     def params(self, params):
-        self.add_matcher(matchers.QueryMatcher(params))
+        self.add_matcher(QueryMatcher(params))
 
     @fluent
     def json(self, body):
-        self.add_matcher(matchers.JSONMatcher(body))
+        self.add_matcher(JSONMatcher(body))
 
     @fluent
     def json_schema(self, schema):
-        self.add_matcher(matchers.JSONSchemaMatcher(schema))
+        self.add_matcher(JSONSchemaMatcher(schema))
 
     @fluent
     def xml(self, body):
-        self.add_matcher(matchers.XMLMatcher(body))
+        self.add_matcher(XMLMatcher(body))
 
     @fluent
     def add_matcher(self, matcher):
@@ -102,7 +98,7 @@ class Mock(object):
 
     @fluent
     def use(self, matcher):
-        self.add_matcher(matchers.matcher)
+        self.add_matcher(matcher)
 
     @fluent
     def times(self, num=1):
@@ -127,7 +123,7 @@ class Mock(object):
         if not matches:
             return False
 
-        # Increase mock counters
+        # Increase mock call counter
         self._calls += 1
         if not self._persist:
             self._times -= 1

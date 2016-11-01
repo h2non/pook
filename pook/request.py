@@ -1,6 +1,6 @@
 import sys
 from .headers import HTTPHeaderDict
-from .utils import trigger_methods
+from .helpers import trigger_methods
 
 if sys.version_info < (3,):     # Python 2
     from urlparse import urlparse
@@ -17,7 +17,6 @@ class Request(object):
         self._headers = HTTPHeaderDict()
         self._url = None
         self._body = None
-        # Call methods
         trigger_methods(self, args)
 
     @property
@@ -39,7 +38,6 @@ class Request(object):
     @url.setter
     def url(self, url):
         self._url = urlparse(url)
-        print('Parsed:', self._url)
 
     @property
     def body(self, data):

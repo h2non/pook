@@ -23,6 +23,7 @@ class HTTPHeaderDict(MutableMapping):
     If multiple fields that are equal case-insensitively are passed to the
     constructor or ``.update``, the behavior is undefined and some will be
     lost.
+
     >>> headers = HTTPHeaderDict()
     >>> headers.add('Set-Cookie', 'foo=bar')
     >>> headers.add('set-cookie', 'baz=quxx')

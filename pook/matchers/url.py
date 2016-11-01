@@ -2,8 +2,8 @@ from .base import BaseMatcher
 
 
 class URLMatcher(BaseMatcher):
-    def __init__(self, expression):
-        self.expectation = expression
+    def __init__(self, url):
+        self.url = url
 
     def match(self, req):
         return True

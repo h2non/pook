@@ -7,14 +7,24 @@ export PYTHONPATH:=${PWD}
 version=`python -c 'import pook; print(pook.version)'`
 filename=pook-`python -c 'import pook; print(pook.version)'`.tar.gz
 
+apidocs:
+	@sphinx-apidoc -f --follow-links -H "API documentation" -o docs/source paco
+
+htmldocs:
+	@rm -rf docs/_build
+	$(MAKE) -C docs html
+
 lint:
 	@echo "$(OK_COLOR)==> Linting code $(version)$(NO_COLOR)"
 	@flake8 .
 
 test: clean
 	@echo "$(OK_COLOR)==> Runnings tests...$(NO_COLOR)"
-	# @python -m unittest discover
 	@py.test
+
+coverage:
+	@coverage run --source paco -m py.test
+	@coverage report
 
 tag:
 	@echo "$(OK_COLOR)==> Creating tag $(version)...$(NO_COLOR)"

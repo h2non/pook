@@ -3,6 +3,8 @@ from copy import deepcopy
 
 class BaseMatcher(object):
     def __init__(self, expectation):
+        if not expectation:
+            raise ValueError('expectation argument cannot be empty')
         self.expectation = expectation
 
     def match(self):
@@ -19,6 +21,12 @@ class BaseMatcher(object):
     @expectation.setter
     def expectation(self, value):
         self._expectation = value
+
+    def match_regexp(self, re, value):
+        try:
+            return bool(re.compile(re).match(value))
+        except re.error:
+            return False
 
     def to_dict(self):
         return {self.name: deepcopy(self.expectation)}
