@@ -3,7 +3,7 @@ from .decorators import fluent
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 
-TYPE_ALIASES = {
+TYPES = {
   'html': 'text/html',
   'json': 'application/json',
   'xml': 'application/xml',
@@ -19,6 +19,14 @@ class Response(object):
         self._body = None
         self._headers = HTTPHeaderDict()
         trigger_methods(self, args)
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, status=200):
+        self._status = status
 
     @fluent
     def status(self, status=200):
@@ -38,7 +46,7 @@ class Response(object):
 
     @fluent
     def type(self, name):
-        value = TYPE_ALIASES.get(name, name)
+        value = TYPES.get(name, name)
         self._headers['Content-Type'] = [value]
 
     @fluent
@@ -46,7 +54,11 @@ class Response(object):
         self._headers['Content-Type'] = 'application/json'
         self._body = json.dumps(data, indent=4)
 
-    @fluent
+    @property
+    def body(self):
+        return self._body
+
+    @body.setter
     def body(self, body):
         self._body = body
 

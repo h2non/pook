@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # Testing
     pook.activate()
 
-    res = requests.get('http://httpbin.org/ip?foo=bar&baz=foo')
+    res = requests.get('http://httpbin.org:9200/ip?foo=bar&baz=foo')
     print('Status:', res.status_code)
     print('Headers:', res.headers)
     print('Body:', res.text)

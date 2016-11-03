@@ -39,7 +39,22 @@ class Engine(object):
         for interceptor in self.interceptors:
             interceptor.disable()
 
-    def on_request(self, request):
+    def match(self, request):
+        """
+        Matches a given Request instance contract against the registered mocks.
+
+        If a mock passes all the matchers, its response will be returned.
+
+        Arguments:
+            request (pook.Request): Request contract to match.
+
+        Raises:
+            pook.PookNoMatches: if networking is disabled and no mock matches
+                with the given request contract.
+
+        Returns:
+            pook.Response: the mock response to be used by the interceptor.
+        """
         for mock in self.mocks:
             try:
                 # If mock matches, return the response object

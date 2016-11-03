@@ -33,8 +33,6 @@ class Mock(object):
 
     @fluent
     def url(self, url):
-        if not url:
-            raise Exception('url argument cannot be empty')
         self.add_matcher(URLMatcher(url))
 
     @fluent

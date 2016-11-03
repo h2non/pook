@@ -64,34 +64,32 @@ class Urllib3Adapter(object):
 
 class Urllib3Interceptor(BaseInterceptor):
     """
-    urllib3 HTTP traffic interceptor.
+    Urllib3 HTTP traffic interceptor.
     """
     def _on_request(self, pool, method, url,
                     body=None, headers=None, **kwargs):
+        # Create request contract based on incoming params
         req = Request(method)
-        req.url = (pool.scheme + '://' + pool.host + ':' +
-                   str(pool.port) + url)
+        req.url = '{}://{}:{}{}'.format(
+            pool.scheme, pool.host, str(pool.port), url)
         req.headers = headers
         req.body = body
 
-        # print('REQ:', pool, method, url)
-        # print('URL:', req.url)
-        # print('HEADERS:', req.headers)
-        # print('BODY:', body)
+        # Match the request against the registered mocks in pook
+        res = self.engine.match(req)
 
-        mock = self.engine.on_request(req)
-        # print('MOCK BODY:', body_io(mock._body).getvalue())
-
+        # Aggregate headers as list of tuples for interface compatibility
         headers = []
-        for key in mock._headers:
-            headers.append((key, mock._headers[key]))
+        for key in res._headers:
+            headers.append((key, res._headers[key]))
 
+        # Return mocked HTTP response
         return HTTPResponse(
-            body=body_io(mock._body),
-            status=mock._status,
+            body=body_io(res.body),
+            status=res.status,
             headers=headers,
             preload_content=False,
-            reason=http_reasons.get(mock._status),
+            reason=http_reasons.get(res.status),
             original_response=FakeResponse(headers),
         )
 

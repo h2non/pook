@@ -12,11 +12,11 @@ class BaseInterceptor(object):
         Activates the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        raise NotImplemented('not implemented yet')
+        raise NotImplemented('not implemented')
 
     def disable(self):
         """
         Disables the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        raise NotImplemented('not implemented yet')
+        raise NotImplemented('not implemented')
