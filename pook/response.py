@@ -14,10 +14,18 @@ TYPES = {
 
 
 class Response(object):
+    """
+    Response is used to declare and compose an HTTP mock response.
+    Provides a chainable DSL.
+    """
+
     def __init__(self, **args):
+        self._status = 200
         self._mock = None
         self._body = None
         self._headers = HTTPHeaderDict()
+
+        # Trigger response method based on input arguments
         trigger_methods(self, args)
 
     @property
@@ -25,12 +33,8 @@ class Response(object):
         return self._status
 
     @status.setter
-    def status(self, status=200):
-        self._status = status
-
-    @fluent
-    def status(self, status=200):
-        self._status = status
+    def status(self, status):
+        self._status = int(status)
 
     @fluent
     def header(self, key, value):
@@ -45,13 +49,21 @@ class Response(object):
         self._headers.extend(headers)
 
     @fluent
+    def set(self, header, value):
+        self._headers[header] = value
+
+    @fluent
     def type(self, name):
-        value = TYPES.get(name, name)
-        self._headers['Content-Type'] = [value]
+        self.content(name)
+
+    @fluent
+    def content(self, name):
+        self._headers['Content-Type'] = TYPES.get(name, name)
 
     @fluent
     def json(self, data):
         self._headers['Content-Type'] = 'application/json'
+        print('>>> data:', data)
         self._body = json.dumps(data, indent=4)
 
     @property
@@ -69,3 +81,10 @@ class Response(object):
     @mock.setter
     def mock(self, mock):
         self._mock = mock
+
+    def __repr__(self):
+        args = []
+        for key in ('headers', 'status', 'body'):
+            value = getattr(self, '_{}'.format(key))
+            args.append('{}={}'.format(key, value))
+        return 'Response(\n    {}\n)'.format(',\n    '.join(args))

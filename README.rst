@@ -3,7 +3,7 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Expressive utility library for HTTP traffic mocking and expectations made simply in `Python`_.
 
-pook is heavily inspired by `gock`_.
+pook was heavily inspired by `gock`_ Go package.
 
 **Note**: work in progress.
 
@@ -22,11 +22,10 @@ Features
 Supported HTTP clients
 ----------------------
 
-- [X] urllib3
-- [X] requests
-- [ ] urllib
-- [ ] aiohttp
-- [ ] pycurl
+- [✔] urllib3 / requests
+- [✔] aiohttp
+- [✔] urllib / http.client (experimental)
+- [x] pycurl (pending)
 
 Installation
 ------------
@@ -61,8 +60,8 @@ Basic mocking
 
     @pook.activate
     def test_my_api():
-        mock = httpok.get('http://twitter.com/api/1/foobar',
-                        type='application/json',
+        mock = pook.get('http://twitter.com/api/1/foobar',
+                        type='json',
                         json={'error': 'not found'})
         mock.reply(404, json={'error': 'foo'})
 
@@ -72,19 +71,19 @@ Basic mocking
         assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
-Using the fluent API
-^^^^^^^^^^^^^^^^^^^^
+Using the chainable API
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
     import pook
     import requests
 
-    @pook.activate
+    @pook.on
     def test_my_api():
-        mock = pook.get('http://twitter.com/api/1/foobar'). \
-               status(404). \
-               json({'error': 'not found'})
+        mock = (pook.get('http://twitter.com/api/1/foobar').
+               status(404).
+               json({'error': 'not found'}))
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
@@ -98,9 +97,8 @@ License
 MIT - Tomas Aparicio
 
 .. _Python: http://python.org
-.. _magic numbers: https://en.wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files
 .. _gock: https://github.com/h2non/gock
-.. _annotated API reference: https://h2non.github.io/pook
+.. _annotated API reference: https://pook.rtfd.io
 
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master

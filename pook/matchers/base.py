@@ -1,18 +1,35 @@
+import abc
+import functools
 from copy import deepcopy
 
 
-class BaseMatcher(object):
-    def __init__(self, expectation):
+class BaseMatcher(metaclass=abc.ABCMeta):
+    """
+    BaseMatcher implements the basic HTTP request matching interface.
+    """
+
+    # Negate matching if necessary
+    negate = False
+    # Defines if the matching supports regular expression matching
+    regexp = False
+
+    def __init__(self, expectation, negate=False):
         if not expectation:
             raise ValueError('expectation argument cannot be empty')
-        self.expectation = expectation
-
-    def match(self):
-        raise NotImplemented('not implemented yet')
+        self.negate = negate
+        self._expectation = expectation
 
     @property
     def name(self):
-        return self.__class__.__name__
+        return type(self).__name__
+
+    @abc.abstractmethod
+    def match(self, request):
+        """
+        Match performs the value matching.
+        This method must be implemented by child classes.
+        """
+        pass
 
     @property
     def expectation(self):
@@ -33,3 +50,11 @@ class BaseMatcher(object):
 
     def __repr__(self):
         return '{}({})'.format(self.name, self.expectation)
+
+    @staticmethod
+    def matcher(fn):
+        @functools.wraps(fn)
+        def wrapper(self, *args):
+            result = fn(self, *args)
+            return not result if self.negate else result
+        return wrapper

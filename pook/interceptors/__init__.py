@@ -1,30 +1,38 @@
 from .urllib3 import Urllib3Interceptor
+from .aiohttp import AIOHTTPInterceptor
+from .http import HTTPClientInterceptor
 from .base import BaseInterceptor  # noqa
 
-# Explicit module exports
-__all__ = [
-    'store',
-    'add',
-    'BaseInterceptor'
-]
 
 # Store built-in interceptors in pook.
 # Note: order is intentional.
-store = [
-    # UrllibInterceptor,
+interceptors = [
     Urllib3Interceptor,
-    # AIOHTTPInterceptor,
+    AIOHTTPInterceptor,
+    HTTPClientInterceptor
 ]
 
 
-def add(interceptor):
+def add(*interceptors):
     """
     Registers a new HTTP client interceptor.
 
     Arguments:
-        interceptor (interceptor): interceptor class to be added.
+        *interceptors (interceptor): interceptor(s) to be added.
+    """
+    interceptors.append(*interceptors)
+
+
+def get(name):
+    """
+    Returns an interceptor by class name.
+
+    Arguments:
+        name (str): interceptor class name or alias.
 
     Returns:
-        None
+        interceptor: found interceptor instance, otherwise ``None``.
     """
-    store.append(interceptor)
+    for interceptor in interceptors:
+        if interceptor.__name__ == name:
+            return interceptor

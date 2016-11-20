@@ -11,25 +11,34 @@ except:
 
 if sys.version_info < (3,):     # Python 2
     from httplib import responses as http_reasons
-    # from cStringIO import StringIO as BytesIO
-    # from urlparse import urlparse
 else:                           # Python 3
     from http.client import responses as http_reasons
-    # from io import BytesIO
-    # from urllib.parse import urlparse
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
     'urllib3.connectionpool.HTTPConnectionPool.urlopen'
 )
 
+RESPONSE_CLASS = 'HTTPResponse'
 
-def HTTPResponse(*args, **kwargs):
-    try:
-        from requests.packages.urllib3.response import HTTPResponse
-    except:
-        from urllib3.response import HTTPResponse
-    return HTTPResponse(*args, **kwargs)
+RESPONSE_PATH = {
+    'requests': 'requests.packages.urllib3.response',
+    'urllib3': 'urllib3.response'
+}
+
+
+def HTTPResponse(path, *args, **kw):
+    # Infer package
+    package = path.split('.').pop(0)
+    # Get import path
+    import_path = RESPONSE_PATH.get(package)
+
+    # Dynamically load package
+    module = __import__(import_path, fromlist=(RESPONSE_CLASS,))
+    HTTPResponse = getattr(module, RESPONSE_CLASS)
+
+    # Return response instance
+    return HTTPResponse(*args, **kw)
 
 
 def body_io(string, encoding='utf-8'):
@@ -53,30 +62,37 @@ class FakeResponse(object):
         return False
 
 
-class Urllib3Adapter(object):
-    def __init__(self, req):
-        self.req = req
-
-    def map(self, req):
-        req = Request()
-        req.url = self.req.url
-
-
 class Urllib3Interceptor(BaseInterceptor):
     """
     Urllib3 HTTP traffic interceptor.
     """
-    def _on_request(self, pool, method, url,
-                    body=None, headers=None, **kwargs):
+
+    def _on_request(self, urlopen, path, pool, method, url,
+                    body=None, headers=None, **kw):
         # Create request contract based on incoming params
         req = Request(method)
-        req.url = '{}://{}:{}{}'.format(
-            pool.scheme, pool.host, str(pool.port), url)
-        req.headers = headers
+        req.headers = headers or {}
         req.body = body
 
+        # Compose URL
+        req.url = '{}://{}:{:d}{}'.format(
+            pool.scheme,
+            pool.host,
+            pool.port or 80,
+            url
+        )
+
         # Match the request against the registered mocks in pook
-        res = self.engine.match(req)
+        mock = self.engine.match(req)
+
+        # If cannot match any mock, run real HTTP request since networking
+        # or silent model will be enabled, otherwise this statement won't
+        # be reached (an exception will be raised before).
+        if not mock:
+            return urlopen(pool, method, url, body=body, headers=headers, **kw)
+
+        # Shortcut to mock response
+        res = mock._response
 
         # Aggregate headers as list of tuples for interface compatibility
         headers = []
@@ -85,6 +101,7 @@ class Urllib3Interceptor(BaseInterceptor):
 
         # Return mocked HTTP response
         return HTTPResponse(
+            path,
             body=body_io(res.body),
             status=res.status,
             headers=headers,
@@ -94,12 +111,18 @@ class Urllib3Interceptor(BaseInterceptor):
         )
 
     def _patch(self, path):
-        def handler(pool, method, url, body=None, headers=None, **kwargs):
-            return self._on_request(pool, method, url,
-                                    body=body, headers=headers, **kwargs)
+        def handler(pool, method, url, body=None, headers=None, **kw):
+            return self._on_request(urlopen, path, pool, method, url,
+                                    body=body, headers=headers, **kw)
 
         try:
+            # Create a new patcher for Urllib3 urlopen function
+            # used as entry point for all the HTTP communications
             patcher = mock.patch(path, handler)
+            # Retrieve original patched function that we might need for real
+            # networking
+            urlopen = patcher.get_original()[0]
+            # Start patching function calls
             patcher.start()
         except:
             # Exceptions may accur due to missing package

@@ -1,3 +1,5 @@
+import re
+import functools
 from inspect import isfunction
 from contextlib import contextmanager
 from .mock import Mock
@@ -16,8 +18,9 @@ def activate(fn=None):
     engine.activate()
 
     if not isfunction(fn):
-        return fn
+        return None
 
+    @functools.wraps(fn)
     def wrapper(*args, **kw):
         try:
             fn(*args, **kw)
@@ -52,37 +55,73 @@ def off():
     disable()
 
 
+@contextmanager
 def use_network():
+    """
+    Creates a new mock engine to be used as context manager
+
+    Usage::
+
+        with pook.use_network() as engine:
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
+    """
+    with use(network=True) as engine:
+        yield engine
+
+
+def enable_network(*hostnames):
     """
     Enables real networking if no mock can be matched.
     """
-    engine.networking = True
+    engine.enable_network(*hostnames)
 
 
 def disable_network():
     """
-    Disable real networking.
+    Disable real traffic networking.
     """
-    engine.networking = False
+    engine.disable_network()
 
 
 @contextmanager
-def use():
+def use(network=False):
     """
     Create a new isolated mock engine to be used via context manager.
 
     Usage::
 
         with pook.use() as engine:
-            engine.mock('server.com/foo')
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
     """
-    engine = Engine()
+    global engine
+    # Create temporal engine
+    _engine = engine
+    activated = _engine.active
+    if activated:
+        engine.disable()
+
+    engine = Engine(network=network)
     engine.activate()
+
+    # Yield enfine to be used by the context manager
     yield engine
+
+    # Restore global engine
     engine.disable()
+    if network:
+        engine.disable_network()
+
+    engine = _engine
+    if activated:
+        engine.activate()
 
 
-# Public API
 def mock(url=None, **kw):
     """
     Registers a new mock for GET method.
@@ -95,6 +134,7 @@ def mock(url=None, **kw):
     """
     mock = Mock(url=url, **kw)
     engine.add_mock(mock)
+    engine.activate()
     return mock
 
 
@@ -161,20 +201,107 @@ def head(url, **kw):
 
 def pending():
     """
-    Returns the numbers of pending mocks
-    to be matched.
+    Returns the numbers of pending mocks to be matched.
 
     Returns:
-        int: number of pending mocks to reach.
+        int: number of pending mocks to match.
     """
-    return 0
+    return engine.pending()
 
 
-def is_done():
+def ispending():
+    """
+    Returns the numbers of pending mocks to be matched.
+
+    Returns:
+        int: number of pending mocks to match.
+    """
+    return engine.ispending()
+
+
+def pending_mocks():
+    """
+    Returns pending mocks to be matched.
+
+    Returns:
+        list: pending mock instances.
+    """
+    return engine.pending_mocks()
+
+
+def unmatched_requests():
+    """
+    Returns a ``tuple`` of unmatched requests.
+
+    Unmatched requests will be registered only if ``networking``
+    mode has been enabled.
+
+    Returns:
+        tuple: unmatched intercepted requests.
+    """
+    return engine.unmatched_requests()
+
+
+def unmatched():
+    """
+    Returns the total number of unmatched requests intercepted by pook.
+
+    Unmatched requests will be registered only if ``networking``
+    mode has been enabled.
+
+    Returns:
+        int: total number of unmatched requests.
+    """
+    return engine.unmatched()
+
+
+def isunmatched():
+    """
+    Returns ``True`` if there are unmatched requests. Otherwise ``False``.
+
+    Unmatched requests will be registered only if ``networking``
+    mode has been enabled.
+
+    Returns:
+        bool
+    """
+    return engine.isunmatched()
+
+
+def isactive():
+    """
+    Returns ``True`` if pook is active and intercepting traffic.
+    Otherwise ``False``.
+
+    Returns:
+        bool: True is all the registered mocks are gone, otherwise False.
+    """
+    return engine.isactive()
+
+
+def isdone():
     """
     Returns True if all the registered mocks has been triggered.
 
     Returns:
         bool: True is all the registered mocks are gone, otherwise False.
     """
-    return True
+    return engine.isdone()
+
+
+def regex(expression, flags=re.IGNORECASE):
+    """
+    Convenient shortcut to ``re.compile()`` for fast, easy to use
+    regular expression compilation.
+
+    Returns:
+        expression (str): string regular expression.
+
+    Raises:
+        Exception: in case of regular expression compilation error
+
+    Usage::
+
+        pook.get('api.com/foo').header('Content-Type', pook.regex('[a-z]{1,4}'))
+    """
+    return re.compile(expression, flags=flags)

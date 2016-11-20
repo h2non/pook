@@ -6,6 +6,10 @@ class PookNoMatches(Exception):
     pass
 
 
+class PookNetworkFilterError(Exception):
+    pass
+
+
 class PookExpiredMock(Exception):
     pass
 
