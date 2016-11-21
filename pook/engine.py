@@ -52,7 +52,11 @@ class Engine(object):
         """
         self.networking = False
 
-    def use_network_filter(*fn):
+    def use_network_filter(self, *fn):
+        """
+        Adds network filters to determine if outgoing unmatched HTTP traffic
+        can stablish real network connections.
+        """
         self.network_filters = self.network_filters + fn
 
     def add_mock(self, mock):
@@ -192,15 +196,6 @@ class Engine(object):
             tuple: pending mock instances.
         """
         return (mock for mock in self.mocks if mock.isdone())
-
-    def pending(self):
-        """
-        Returns the number of pending mocks to be matched.
-
-        Returns:
-            int: number of pending mocks.
-        """
-        return len(self.pending_mocks())
 
     def ispending(self):
         """

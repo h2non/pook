@@ -63,7 +63,6 @@ class Response(object):
     @fluent
     def json(self, data):
         self._headers['Content-Type'] = 'application/json'
-        print('>>> data:', data)
         self._body = json.dumps(data, indent=4)
 
     @property

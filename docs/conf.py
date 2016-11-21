@@ -20,6 +20,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -126,7 +127,6 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-import sphinx_rtd_theme
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
@@ -154,8 +154,8 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # html_logo = None
 
 # The name of an image file (relative to this directory) to use as a favicon of
-# the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
+# the docs.  This file should be a Windows icon file (.ico) being 16x16 or
+# 32x32 pixels large.
 #
 # html_favicon = None
 

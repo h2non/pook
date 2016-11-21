@@ -9,7 +9,7 @@ from .exceptions import PookExpiredMock
 from .matchers import init as matcher  # noqa
 
 
-def append_fns(target, items):
+def append_funcs(target, items):
     """
     Helper function to append functions into a given list.
 
@@ -17,7 +17,8 @@ def append_fns(target, items):
         target (list): receptor list to append functions.
         items (iterable): iterable that yields elements to append.
     """
-    [target.append(item) for item in items if isfunction(item) or ismethod(item)]
+    [target.append(item) for item in items
+     if isfunction(item) or ismethod(item)]
 
 
 class Mock(object):
@@ -29,6 +30,7 @@ class Mock(object):
     def __init__(self, request=None, response=None, **kw):
         self._calls = 0
         self._times = 1
+        self._error = None
         self._persist = False
         self._request = request
         self._response = response or Response()
@@ -139,15 +141,22 @@ class Mock(object):
 
     @fluent
     def filter(self, *filters):
-        append_fns(self.filters, filters)
+        append_funcs(self.filters, filters)
 
     @fluent
     def map(self, *mappers):
-        append_fns(self.mappers, mappers)
+        append_funcs(self.mappers, mappers)
 
     @fluent
     def callback(self, *callbacks):
-        append_fns(self.callbacks, callbacks)
+        append_funcs(self.callbacks, callbacks)
+
+    @fluent
+    def error(self, error):
+        """
+        Defines a simulated exception error that will be raised.
+        """
+        self._error = RuntimeError(error) if isinstance(error, str) else error
 
     def reply(self, status=200, **kw):
         """
@@ -163,6 +172,12 @@ class Mock(object):
         return res
 
     def response(self, status=200, **kw):
+        """
+        Defines the mock response. Alias to ``.reply()``
+
+        Returns:
+            gook.Response: mock response definition instance.
+        """
         return self.reply(status=status, **kw)
 
     def isdone(self):
@@ -186,7 +201,7 @@ class Mock(object):
         # Trigger mock mappers
         for mapper in self.mappers:
             request = mapper(request, self)
-            if not req:
+            if not request:
                 raise ValueError('map function must return a request object')
 
         # Match incoming request against registered mock matchers
@@ -200,6 +215,9 @@ class Mock(object):
         self._calls += 1
         if not self._persist:
             self._times -= 1
+
+        if self._error:
+            raise self._error
 
         # Trigger callback when matched
         for callback in self.callbacks:

@@ -34,7 +34,7 @@ tag:
 
 clean:
 	@echo "$(OK_COLOR)==> Cleaning up files that are already in .gitignore...$(NO_COLOR)"
-	@for pattern in `cat .gitignore`; do find . -name "$$pattern" -delete; done
+	@for pattern in `cat .gitignore`; do find . -name "*/$$pattern" -delete; done
 
 release: clean publish
 	@echo "$(OK_COLOR)==> Exporting to $(filename) ...$(NO_COLOR)"

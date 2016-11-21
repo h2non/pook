@@ -1,4 +1,3 @@
-import io
 import sys
 from ..request import Request
 from .base import BaseInterceptor
@@ -10,13 +9,13 @@ except:
     from unittest import mock
 
 if sys.version_info < (3,):     # Python 2
-    from urlparse import urlparse, urlunparse
+    from urlparse import urlunparse
     from httplib import responses as http_reasons
 else:                           # Python 3
-    from urllib.parse import urlparse, urlunparse
+    from urllib.parse import urlunparse
     from http.client import responses as http_reasons
 
-if sys.version_info >= (3,4):  # Python 3.4+
+if sys.version_info >= (3, 4):  # Python 3.4+
     import asyncio
 else:
     asyncio = None
@@ -24,8 +23,9 @@ else:
 # Try to load yarl URL parser package used by aiohttp
 try:
     import yarl
+    import multidict
 except:
-    yarl = None
+    yarl, multidict = None, None
 
 PATCHES = (
     'aiohttp.client.ClientSession._request',
@@ -93,8 +93,10 @@ class AIOHTTPInterceptor(BaseInterceptor):
         _res._should_close = False
 
         # Add response headers
-        _res.headers = CIMultiDictProxy(CIMultiDict(headers))
         _res.raw_headers = tuple(headers)
+        _res.headers = multidict.CIMultiDictProxy(
+            multidict.CIMultiDict(headers)
+        )
 
         # Define `_content` attribute with an empty string to
         # force do not read from stream (which won't exists)

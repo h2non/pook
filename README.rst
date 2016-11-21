@@ -1,7 +1,10 @@
 pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
 ====================================================================================================
 
-Expressive utility library for HTTP traffic mocking and expectations made simply in `Python`_.
+Versatile and expressive utility library for simple HTTP traffic mocking and expectations in `Python`_.
+
+`pook` is HTTP client agnostic and works with most popular HTTP packages via adapters.
+If someone is not supported yet, it can be in a future via interceptor adapter.
 
 pook was heavily inspired by `gock`_ Go package.
 
@@ -10,14 +13,17 @@ pook was heavily inspired by `gock`_ Go package.
 Features
 --------
 
--  Simple, expressive and fluent API
--  Full-featured, idiomatic HTTP expectations.
--  JSON schema based body matching.
--  HTTP client agnostic (works with most popular HTTP libraries).
+-  Simple, expressive and fluent API.
+-  Pythonic DSL for easy mocks and responses definition.
+-  Full-featured, idiomatic HTTP response expectations.
+-  Match any HTTP protocol primitive (URL, method, query params, headers, body...)
+-  Full RegExp capable HTTP traffic matching.
+-  JSON Schema based body matching.
+-  HTTP client agnostic via adapters (works with most popular HTTP packages).
 -  Extensible design: write your own HTTP matchers and adapters.
--  Pluggable hackable API.
--  Compatible with Python 2 and 3.
--  Dependency free.
+-  Extensible, pluggable and hackable API.
+-  Work with Python +2.7 and 3.
+-  Just one dependency = JSONSchema validator.
 
 Supported HTTP clients
 ----------------------
@@ -45,7 +51,7 @@ Or install the latest sources from Github::
 API
 ---
 
-See `annotated API reference`_.
+See `API reference`_ documention.
 
 Examples
 --------
@@ -81,9 +87,9 @@ Using the chainable API
 
     @pook.on
     def test_my_api():
-        mock = (pook.get('http://twitter.com/api/1/foobar').
-               status(404).
-               json({'error': 'not found'}))
+        mock = (pook.get('http://twitter.com/api/1/foobar')
+               .reply(404)
+               .json({'error': 'not found'}))
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
@@ -98,7 +104,7 @@ MIT - Tomas Aparicio
 
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
-.. _annotated API reference: https://pook.rtfd.io
+.. _annotated API reference: http://pook.rtfd.io
 
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master

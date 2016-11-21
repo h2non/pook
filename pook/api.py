@@ -302,6 +302,8 @@ def regex(expression, flags=re.IGNORECASE):
 
     Usage::
 
-        pook.get('api.com/foo').header('Content-Type', pook.regex('[a-z]{1,4}'))
+        (pook
+            .get('api.com/foo')
+            .header('Content-Type', pook.regex('[a-z]{1,4}')))
     """
     return re.compile(expression, flags=flags)

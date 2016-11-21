@@ -36,7 +36,7 @@ def test_requests_get2(mock):
 
 def test_requests_match_url(mock):
     body = {'foo': 'bar'}
-    m = mock.get('http://foo.com').reply(200).json(body)
+    mock.get('http://foo.com').reply(200).json(body)
 
     res = requests.get('http://foo.com')
     assert res.status_code == 200
