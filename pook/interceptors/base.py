@@ -1,11 +1,13 @@
 from abc import abstractmethod, ABCMeta
 
 
-class BaseInterceptor(metaclass=ABCMeta):
+class BaseInterceptor(object):
     """
     BaseInterceptor provides a base class for HTTP traffic
     interceptors implementations.
     """
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, engine):
         self.patchers = []

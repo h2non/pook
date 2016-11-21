@@ -15,7 +15,7 @@ else:                           # Python 3
     from urllib.parse import urlunparse
     from http.client import responses as http_reasons
 
-if sys.version_info >= (3, 4):  # Python 3.4+
+if sys.version_info >= (3, 4, 2):  # Python 3.4.2+
     import asyncio
 else:
     asyncio = None
@@ -52,60 +52,66 @@ class AIOHTTPInterceptor(BaseInterceptor):
     def _url(self, url):
         return yarl.URL(url) if yarl else None
 
-    def _on_request(self, _request, session, method, url,
-                    data=None, headers=None, **kw):
-        # Create request contract based on incoming params
-        req = Request(method)
-        req.headers = headers or {}
-        req.body = data
+    if asyncio:
+        @asyncio.coroutine
+        def _on_request(self, _request, session, method, url,
+                        data=None, headers=None, **kw):
+            # Create request contract based on incoming params
+            req = Request(method)
+            req.headers = headers or {}
+            req.body = data
 
-        # Expose extra variadic arguments
-        req.extra = kw
+            # Expose extra variadic arguments
+            req.extra = kw
 
-        # Compose URL
-        req.url = str(url)
+            # Compose URL
+            req.url = str(url)
 
-        # Match the request against the registered mocks in pook
-        mock = self.engine.match(req)
+            # Match the request against the registered mocks in pook
+            mock = self.engine.match(req)
 
-        # If cannot match any mock, run real HTTP request if networking
-        # or silent model are enabled, otherwise this statement won't
-        # be reached (an exception will be raised before).
-        if not mock:
-            return _request(session, method, url,
-                            data=data, headers=headers, **kw)
+            # If cannot match any mock, run real HTTP request if networking
+            # or silent model are enabled, otherwise this statement won't
+            # be reached (an exception will be raised before).
+            if not mock:
+                return _request(session, method, url,
+                                data=data, headers=headers, **kw)
 
-        # Shortcut to mock response
-        res = mock._response
+            # Simulate network delay
+            if mock._delay:
+                yield from asyncio.sleep(mock._delay / 1000)
 
-        # Aggregate headers as list of tuples for interface compatibility
-        headers = []
-        for key in res._headers:
-            headers.append((key, res._headers[key]))
+            # Shortcut to mock response
+            res = mock._response
 
-        # Create mock equivalent HTTP response
-        _res = HTTPResponse(req.method, self._url(urlunparse(req.url)))
+            # Aggregate headers as list of tuples for interface compatibility
+            headers = []
+            for key in res._headers:
+                headers.append((key, res._headers[key]))
 
-        # response status
-        _res.version = (1, 1)
-        _res.status = res.status
-        _res.reason = http_reasons.get(res.status)
-        _res._should_close = False
+            # Create mock equivalent HTTP response
+            _res = HTTPResponse(req.method, self._url(urlunparse(req.url)))
 
-        # Add response headers
-        _res.raw_headers = tuple(headers)
-        _res.headers = multidict.CIMultiDictProxy(
-            multidict.CIMultiDict(headers)
-        )
+            # response status
+            _res.version = (1, 1)
+            _res.status = res.status
+            _res.reason = http_reasons.get(res.status)
+            _res._should_close = False
 
-        # Define `_content` attribute with an empty string to
-        # force do not read from stream (which won't exists)
-        _res._content = ''
-        if res.body:
-            _res._content = res.body.encode('utf-8', errors='replace')
+            # Add response headers
+            _res.raw_headers = tuple(headers)
+            _res.headers = multidict.CIMultiDictProxy(
+                multidict.CIMultiDict(headers)
+            )
 
-        # Return response based on mock definition
-        return _res
+            # Define `_content` attribute with an empty string to
+            # force do not read from stream (which won't exists)
+            _res._content = ''
+            if res.body:
+                _res._content = res.body.encode('utf-8', errors='replace')
+
+            # Return response based on mock definition
+            return _res
 
     def _patch(self, path):
         # If not modern Python, just ignore patch
@@ -114,8 +120,10 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
         @asyncio.coroutine
         def handler(session, method, url, data=None, headers=None, **kw):
-            return self._on_request(_request, session, method, url,
-                                    data=data, headers=headers, **kw)
+            return (yield from self._on_request(
+                _request, session, method, url,
+                data=data, headers=headers, **kw)
+            )
 
         try:
             # Create a new patcher for Urllib3 urlopen function

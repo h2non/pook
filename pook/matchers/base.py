@@ -1,12 +1,14 @@
-import abc
 import functools
 from copy import deepcopy
+from abc import abstractmethod, ABCMeta
 
 
-class BaseMatcher(metaclass=abc.ABCMeta):
+class BaseMatcher(object):
     """
     BaseMatcher implements the basic HTTP request matching interface.
     """
+
+    __metaclass__ = ABCMeta
 
     # Negate matching if necessary
     negate = False
@@ -23,17 +25,17 @@ class BaseMatcher(metaclass=abc.ABCMeta):
     def name(self):
         return type(self).__name__
 
-    @abc.abstractmethod
+    @property
+    def expectation(self):
+        return self._expectation if hasattr(self, '_expectation') else None
+
+    @abstractmethod
     def match(self, request):
         """
         Match performs the value matching.
         This method must be implemented by child classes.
         """
         pass
-
-    @property
-    def expectation(self):
-        return self._expectation if hasattr(self, '_expectation') else None
 
     @expectation.setter
     def expectation(self, value):

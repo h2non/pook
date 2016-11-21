@@ -31,6 +31,7 @@ class Mock(object):
         self._calls = 0
         self._times = 1
         self._error = None
+        self._delay = 0
         self._persist = False
         self._request = request
         self._response = response or Response()
@@ -150,6 +151,17 @@ class Mock(object):
     @fluent
     def callback(self, *callbacks):
         append_funcs(self.callbacks, callbacks)
+
+    @fluent
+    def delay(self, delay=1000):
+        """
+        Delay network response with certain milliseconds.
+        Only supported by asynchronous HTTP clients, such as ``aiohttp``.
+
+        Arguments:
+            delay (int): milliseconds to delay response.
+        """
+        self._delay = int(delay)
 
     @fluent
     def error(self, error):
