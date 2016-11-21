@@ -79,7 +79,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
             # Simulate network delay
             if mock._delay:
-                yield from asyncio.sleep(mock._delay / 1000)
+                yield from asyncio.sleep(mock._delay / 1000)  # noqa
 
             # Shortcut to mock response
             res = mock._response
