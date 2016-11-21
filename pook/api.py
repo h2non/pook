@@ -138,17 +138,6 @@ def mock(url=None, **kw):
     return mock
 
 
-def patch(url=None, **kw):
-    """
-    Registers a new mock.
-    Alias to mock()
-
-    Returns:
-        pook.Mock: mock instance
-    """
-    return mock(url, method='PATCH', **kw)
-
-
 def get(url, **kw):
     """
     Registers a new mock for GET method.
@@ -197,6 +186,17 @@ def head(url, **kw):
         pook.Mock: mock instance
     """
     return mock(url, method='HEAD', **kw)
+
+
+def patch(url=None, **kw):
+    """
+    Registers a new mock.
+    Alias to mock()
+
+    Returns:
+        pook.Mock: mock instance
+    """
+    return mock(url, method='PATCH', **kw)
 
 
 def pending():
