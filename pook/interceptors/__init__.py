@@ -1,16 +1,18 @@
+import sys
 from .urllib3 import Urllib3Interceptor
-from .aiohttp import AIOHTTPInterceptor
 from .http import HTTPClientInterceptor
 from .base import BaseInterceptor  # noqa
 
-
 # Store built-in interceptors in pook.
-# Note: order is intentional.
 interceptors = [
     Urllib3Interceptor,
-    AIOHTTPInterceptor,
     HTTPClientInterceptor
 ]
+
+# Import aiohttp in modern Python versions
+if sys.version_info >= (3, 4, 2):
+    from .aiohttp import AIOHTTPInterceptor
+    interceptors.append(AIOHTTPInterceptor)
 
 
 def add(*interceptors):

@@ -11,8 +11,7 @@ with pook.use():
              reply=403, response_type='json',
              response_headers={'pepe': 'lopez'},
              response_json={'error': 'not found'},
-             callback=on_match
-             )
+             callback=on_match)
 
     res = requests.get('http://httpbin.org/ip')
     print('Status:', res.status_code)

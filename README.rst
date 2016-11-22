@@ -3,7 +3,7 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Versatile and expressive utility library for simple HTTP traffic mocking and expectations in `Python`_.
 
-`pook` is HTTP client agnostic and works with most popular HTTP packages via adapters.
+``pook`` is HTTP client agnostic and works with most popular HTTP packages via adapters.
 If someone is not supported yet, it can be in a future via interceptor adapter.
 
 pook was heavily inspired by `gock`_ Go package.
@@ -14,14 +14,17 @@ Features
 --------
 
 -  Simple, expressive and fluent API.
--  Pythonic DSL for easy mocks and responses definition.
--  Full-featured, idiomatic HTTP response expectations.
+-  Provides both Pythonic and chainable DSL API styles.
+-  Full-feated HTTP response definitions and expectations.
 -  Match any HTTP protocol primitive (URL, method, query params, headers, body...)
--  Full RegExp capable HTTP traffic matching.
--  JSON Schema based body matching.
+-  Full ``RegExp`` capable HTTP matching engine.
 -  HTTP client agnostic via adapters (works with most popular HTTP packages).
--  Extensible design: write your own HTTP matchers and adapters.
--  Extensible, pluggable and hackable API.
+-  Easily simulate error
+-  Supports JSON Schema body matching.
+-  Works with any testing framework or engine.
+-  Can be used as decorator and/or via context managers.
+-  Extensible by design: write your own components and plug in.
+-  Pluggable and hackable API.
 -  Work with Python +2.7 and 3.
 -  Just one dependency = JSONSchema validator.
 
@@ -31,7 +34,7 @@ Supported HTTP clients
 - [✔] urllib3 / requests
 - [✔] aiohttp
 - [✔] urllib / http.client (experimental)
-- [x] pycurl (pending)
+- [x] pycurl (pending, see `#16`_)
 
 Installation
 ------------
@@ -105,6 +108,7 @@ MIT - Tomas Aparicio
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.rtfd.io
+.. #16: https://github.com/h2non/pook/issues/16
 
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master

@@ -6,8 +6,6 @@ import async_timeout
 import pook
 
 
-print(pook.response)
-
 async def fetch(session, url, data):
     with async_timeout.timeout(10):
         async with session.get(url, data=data) as res:
