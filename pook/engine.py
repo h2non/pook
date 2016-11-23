@@ -1,5 +1,6 @@
 from functools import partial
 from inspect import isfunction
+from .mock import Mock
 from .types import isregex
 from .interceptors import interceptors
 from .exceptions import PookNoMatches, PookExpiredMock
@@ -58,6 +59,22 @@ class Engine(object):
         can stablish real network connections.
         """
         self.network_filters = self.network_filters + fn
+
+    def mock(self, url=None, **kw):
+        """
+        Creates and register a new HTTP mock.
+
+        Arguments:
+            url (str): request URL to mock.
+            **kw (mixed): variadic keyword arguments.
+
+        Returns:
+            pook.Mock: mock instance
+        """
+        mock = Mock(url=url, **kw)
+        self.add_mock(mock)
+        self.activate()
+        return mock
 
     def add_mock(self, mock):
         """
@@ -119,8 +136,7 @@ class Engine(object):
             return None
 
         self.active = True
-        for interceptor in self.interceptors:
-            interceptor.activate()
+        [interceptor.activate() for interceptor in self.interceptors]
 
     def disable(self):
         """
@@ -129,18 +145,16 @@ class Engine(object):
         if not self.active:
             return None
 
+        # Restore HTTP interceptors
+        [interceptor.disable() for interceptor in self.interceptors]
+        # Reset engine state
         self.reset()
-        self.active = False
 
     def reset(self):
         """
         Resets and flushes engine state and mocks to defaults.
         """
-        if self.active:
-            for interceptor in self.interceptors:
-                interceptor.disable()
-
-        # Reset attributes to defaults
+        # Reset engine
         Engine.__init__(self, network=self.networking)
 
     def unmatched_requests(self):
@@ -278,7 +292,7 @@ class Engine(object):
                 raise ValueError('map function must return a request object')
 
         # Try to match the request against registered mock definitions
-        for mock in self.mocks:
+        for mock in self.mocks[:]:
             try:
                 # Return the first matched HTTP request mock
                 if mock.match(request.copy()):

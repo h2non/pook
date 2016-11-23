@@ -100,6 +100,7 @@ def use(network=False):
             assert res.status_code == 404
     """
     global engine
+
     # Create temporal engine
     _engine = engine
     activated = _engine.active
@@ -112,11 +113,12 @@ def use(network=False):
     # Yield enfine to be used by the context manager
     yield engine
 
-    # Restore global engine
+    # Restore engine state
     engine.disable()
     if network:
         engine.disable_network()
 
+    # Restore previous engine
     engine = _engine
     if activated:
         engine.activate()
@@ -124,18 +126,16 @@ def use(network=False):
 
 def mock(url=None, **kw):
     """
-    Registers a new mock for GET method.
+    Creates and register a new HTTP mock.
 
     Arguments:
         url (str): request URL to mock.
+        **kw (mixed): variadic keyword arguments.
 
     Returns:
         pook.Mock: mock instance
     """
-    mock = Mock(url=url, **kw)
-    engine.add_mock(mock)
-    engine.activate()
-    return mock
+    return engine.mock(url, **kw)
 
 
 def get(url, **kw):

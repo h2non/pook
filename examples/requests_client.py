@@ -13,7 +13,19 @@ with pook.use():
              response_json={'error': 'not found'},
              callback=on_match)
 
+    pook.get('http://httpbin.org/headers',
+             reply=404, response_type='json',
+             response_headers={'pepe': 'lopez'},
+             response_json={'error': 'not found'},
+             error=Exception('foo'),
+             callback=on_match)
+
     res = requests.get('http://httpbin.org/ip')
+    print('Status:', res.status_code)
+    print('Headers:', res.headers)
+    print('Body:', res.json())
+
+    res = requests.get('http://httpbin.org/headers')
     print('Status:', res.status_code)
     print('Headers:', res.headers)
     print('Body:', res.json())

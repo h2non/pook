@@ -228,6 +228,7 @@ class Mock(object):
         if not self._persist:
             self._times -= 1
 
+        # Raise simulated error
         if self._error:
             raise self._error
 
