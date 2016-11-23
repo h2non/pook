@@ -2,7 +2,6 @@ import re
 import functools
 from inspect import isfunction
 from contextlib import contextmanager
-from .mock import Mock
 from .engine import Engine
 
 # Singleton mock engine
