@@ -25,7 +25,7 @@ Features
 -  Can be used as decorator and/or via context managers.
 -  Extensible by design: write your own components and plug in.
 -  Pluggable and hackable API.
--  Work with Python +2.7 and 3.
+-  Work with Python +2.7 and +3.0.
 -  Just one dependency = JSONSchema validator.
 
 Supported HTTP clients
