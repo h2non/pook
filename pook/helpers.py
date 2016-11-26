@@ -6,6 +6,13 @@ def trigger_methods(instance, args):
     """"
     Triggers specific class methods using a simple reflection
     mechanism based on the given input dictionary params.
+
+    Arguments:
+        instance (object): target instance to dynamically trigger methods.
+        args (iterable): input arguments to trigger objects to
+
+    Returns:
+        None
     """
     for name in sorted(args):
         value = args[name]
@@ -14,6 +21,7 @@ def trigger_methods(instance, args):
         # If response attibutes
         if name.startswith('response_') or name.startswith('reply_'):
             name = name.replace('response_', '').replace('reply_', '')
+            # If instance has response attribute, use it
             if hasattr(instance, '_response'):
                 target = instance._response
 

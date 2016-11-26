@@ -1,9 +1,9 @@
 # flake8: noqa
 
+import pook
 import aiohttp
 import asyncio
 import async_timeout
-import pook
 
 
 async def fetch(session, url, data):

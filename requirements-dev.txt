@@ -6,4 +6,5 @@ pytest-flakes~=1.0.1
 Sphinx~=1.4.8
 sphinx-rtd-theme~=0.1.9
 requests~=2.11.1
+urllib3~=1.19.1
 aiohttp~=1.1.5 ; python_version >= '3.4.2'

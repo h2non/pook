@@ -75,13 +75,25 @@ class Response(object):
 
     @property
     def mock(self):
+        """
+        Getter accessor for `mock` attribute.
+        """
         return self._mock
 
     @mock.setter
     def mock(self, mock):
+        """
+        Setter for `mock` attribute.
+        """
         self._mock = mock
 
     def __repr__(self):
+        """
+        Returns an human friendly readable instance data representation.
+
+        Returns:
+            str
+        """
         args = []
         for key in ('headers', 'status', 'body'):
             value = getattr(self, '_{}'.format(key))

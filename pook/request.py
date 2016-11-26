@@ -10,7 +10,7 @@ else:                           # Python 3
 
 class Request(object):
     """
-    Request object representing the request mock expectation.
+    Request object representing the request mock expectation DSL.
     """
 
     # Store keys
@@ -86,12 +86,24 @@ class Request(object):
         self._body = body
 
     def copy(self):
+        """
+        Copies the current Request object instance for side-effects purposes.
+
+        Returns:
+            pook.Request: copy of the current Request instance.
+        """
         req = type(self)()
         req.__dict__ = self.__dict__.copy()
         req._headers = self.headers.copy()
         return req
 
     def __repr__(self):
+        """
+        Returns an human friendly readable instance data representation.
+
+        Returns:
+            str
+        """
         args = []
         for key in self.keys:
             value = getattr(self, '_{}'.format(key))

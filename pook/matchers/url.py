@@ -1,3 +1,4 @@
+import re
 import sys
 from .base import BaseMatcher
 from .helpers import compare
@@ -9,6 +10,9 @@ if sys.version_info < (3,):     # Python 2
 else:                           # Python 3
     from urllib.parse import urlparse
 
+# URI protocol test regular expression
+protoregex = re.compile('^http[s]?://', re.IGNORECASE)
+
 
 class URLMatcher(BaseMatcher):
     """
@@ -18,6 +22,13 @@ class URLMatcher(BaseMatcher):
     def __init__(self, url):
         if not url:
             raise ValueError('url argument cannot be empty')
+        if not isinstance(url, str):
+            raise TypeError('url most be a string')
+
+        # Add protocol prefix in the URL
+        if not protoregex.match(url):
+            url = 'http://{}'.format(url)
+
         self.expectation = urlparse(url)
 
     def match_path(self, req):

@@ -3,13 +3,16 @@ from .urllib3 import Urllib3Interceptor
 from .http import HTTPClientInterceptor
 from .base import BaseInterceptor  # noqa
 
+# Explicit symbols to export
+__all__ = ('interceptors', 'add', 'get')
+
 # Store built-in interceptors in pook.
 interceptors = [
     Urllib3Interceptor,
     HTTPClientInterceptor
 ]
 
-# Import aiohttp in modern Python versions
+# Import aiohttp in modern Python runtimes
 if sys.version_info >= (3, 4, 2):
     from .aiohttp import AIOHTTPInterceptor
     interceptors.append(AIOHTTPInterceptor)

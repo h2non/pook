@@ -35,7 +35,15 @@ class Engine(object):
 
     def enable_network(self, *hostnames):
         """
-        Enables real networking mode.
+        Enables real networking mode, optionally passing one or multiple
+        hostnames that would be used as filter.
+
+        If at least one hostname matches with the outgoing traffic, the
+        request will be executed via the real network.
+
+        Arguments:
+            *hostnames: optional list of host names to enable real network
+                against them. hostname value can be a regular expression.
         """
         def hostname_filter(hostname, req):
             if isregex(hostname):
@@ -57,23 +65,36 @@ class Engine(object):
         """
         Adds network filters to determine if outgoing unmatched HTTP traffic
         can stablish real network connections.
+
+        Arguments:
+            *fn (function): variadic function filter arguments to be used.
         """
         self.network_filters = self.network_filters + fn
 
+    def flush_network_filters(self):
+        """
+        Flushed real networking filters.
+        """
+        self.network_filters = []
+
     def mock(self, url=None, **kw):
         """
-        Creates and register a new HTTP mock.
+        Creates and registers a new HTTP mock in the current engine.
 
         Arguments:
             url (str): request URL to mock.
-            **kw (mixed): variadic keyword arguments.
+            **kw (mixed): variadic keyword arguments for ``Mock`` constructor.
 
         Returns:
-            pook.Mock: mock instance
+            pook.Mock: new mock instance.
         """
+        # Create the new HTTP mock expectation
         mock = Mock(url=url, **kw)
+        # Register the mock in the current engine
         self.add_mock(mock)
+        # Activate mock engine transparently, if it was not active yet
         self.activate()
+        # Return it for consumer satisfaction
         return mock
 
     def add_mock(self, mock):
@@ -261,6 +282,16 @@ class Engine(object):
         self._append(self.mappers, *mappers)
 
     def should_use_network(self, request):
+        """
+        Verifies if real networking mode should be used for the given
+        request, passing it to the registered network filters.
+
+        Arguments:
+            request (pook.Request): outgoing HTTP request to test.
+
+        Returns:
+            bool
+        """
         return (self.networking and
                 all((fn(request) for fn in self.network_filters)))
 

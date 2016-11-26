@@ -4,6 +4,16 @@ from inspect import isfunction
 from contextlib import contextmanager
 from .engine import Engine
 
+# Explicit symbols to export.
+__all__ = (
+    'activate', 'on', 'disable', 'off', 'engine',
+    'use_network', 'enable_network', 'use', 'mock',
+    'get', 'post', 'put', 'patch', 'head',
+    'delete', 'options', 'pending', 'ispending',
+    'pending_mocks', 'unmatched_requests', 'isunmatched',
+    'unmatched', 'isactive', 'isdone', 'regex'
+)
+
 # Singleton mock engine
 engine = Engine()
 
@@ -13,6 +23,29 @@ def activate(fn=None):
     Enables the HTTP traffic interceptors.
 
     This function can be used as decorator.
+
+    Arguments:
+        fn (function): Optional function argument if used as decorator.
+
+    Returns:
+        function: decorator wrapper function, only if called as decorator.
+
+    Usage::
+
+        # Standard usage
+        pook.activate()
+        pook.mock('server.com/foo').reply(404)
+
+        res = requests.get('server.com/foo')
+        assert res.status_code == 404
+
+        # Usage as decorator
+        @pook.activate
+        def test_request():
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
     """
     engine.activate()
 
@@ -34,7 +67,28 @@ def activate(fn=None):
 def on(fn=None):
     """
     Enables the HTTP traffic interceptors.
-    Alias to pook.activate().
+    Alias to ``pook.activate()``.
+
+    Arguments:
+        fn (function): Optional function argument if used as decorator.
+
+    Returns:
+        function: decorator wrapper function, only if called as decorator.
+
+            # Standard usage
+            pook.on()
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
+
+            # Usage as decorator
+            @pook.on
+            def test_request():
+                pook.mock('server.com/foo').reply(404)
+
+                res = requests.get('server.com/foo')
+                assert res.status_code == 404
     """
     return activate(fn)
 
@@ -49,7 +103,7 @@ def disable():
 def off():
     """
     Disables HTTP traffic interceptors.
-    Alias to pook.disable().
+    Alias to ``pook.disable()``.
     """
     disable()
 
@@ -189,13 +243,23 @@ def head(url, **kw):
 
 def patch(url=None, **kw):
     """
-    Registers a new mock.
-    Alias to mock()
+    Creates a new mock for the given URL. Alias to `mock()`.
 
     Returns:
-        pook.Mock: mock instance
+        pook.Mock: new mock instance.
     """
     return mock(url, method='PATCH', **kw)
+
+
+def options(url=None, **kw):
+    """
+    Creates a new mock for the given URL with the OPTIONS HTTP verb.
+    Alias to `mock()`.
+
+    Returns:
+        pook.Mock: new mock instance.
+    """
+    return mock(url, method='OPTIONS', **kw)
 
 
 def pending():

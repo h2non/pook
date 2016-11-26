@@ -7,7 +7,11 @@ from .headers import HeadersMatcher
 from .path import PathMatcher
 # from .constants import NEGATE
 
-# Expose built-in matchers
+# Explicit symbols to export
+__all__ = ('matchers', 'init', 'add', 'get')
+
+# List of built-in matchers
+# This is intended to be mutable.
 matchers = [
     MethodMatcher,
     URLMatcher,

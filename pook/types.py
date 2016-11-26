@@ -16,4 +16,4 @@ def has_regex_methods(value):
 def isregex(value):
     if not value:
         return False
-    return any((isregex_string(value), has_regex_methods(value)))
+    return any([isregex_string(value), has_regex_methods(value)])

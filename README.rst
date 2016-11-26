@@ -1,14 +1,16 @@
 pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
 ====================================================================================================
 
-Versatile and expressive utility library for simple HTTP traffic mocking and expectations in `Python`_.
+Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
 
-``pook`` is HTTP client agnostic and works with most popular HTTP packages via adapters.
-If someone is not supported yet, it can be in a future via interceptor adapter.
+``pook`` can intercept and mock traffic for most popular HTTP client implementations in Python ecosystem.
 
-pook was heavily inspired by `gock`_ Go package.
+The API is highly hackable and simple to use, giving you the ability to support new HTTP clients and
+custom HTTP mock matchers very easily.
 
-**Note**: work in progress.
+pook was heavily inspired by `gock`_, its Go equivalent package.
+
+**Still beta**: report any issue you may experiment.
 
 Features
 --------
@@ -21,12 +23,15 @@ Features
 -  HTTP client agnostic via adapters (works with most popular HTTP packages).
 -  Easily simulate error
 -  Supports JSON Schema body matching.
--  Works with any testing framework or engine.
+-  Works with any testing framework or engine (unittest, pytest, nosetests...)
+-  Usable in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
 -  Extensible by design: write your own components and plug in.
 -  Pluggable and hackable API.
--  Work with Python +2.7 and +3.0.
+-  Does not support WebSocket traffic mocking.
+-  Work with Python +2.7 and +3.0 (including PyPy).
 -  Just one dependency = JSONSchema validator.
+
 
 Supported HTTP clients
 ----------------------
@@ -35,6 +40,7 @@ Supported HTTP clients
 - [✔] aiohttp
 - [✔] urllib / http.client (experimental)
 - [x] pycurl (pending, see `#16`_)
+
 
 Installation
 ------------
@@ -51,13 +57,23 @@ Or install the latest sources from Github::
 
     pip install -e git+git://github.com/h2non/pook.git#egg=pook
 
+
+Documentation
+------------
+
+See RTD documentation: |Documentation Status|
+
+
 API
 ---
 
 See `API reference`_ documention.
 
+
 Examples
 --------
+
+See `examples/`_ directory for full featured code and usage case examples.
 
 Basic mocking
 ^^^^^^^^^^^^^
@@ -100,6 +116,48 @@ Using the chainable API
         assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
+
+Usage as decorator
+^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    import pook
+    import requests
+
+    @pook.get('http://httpbin.org/status/500', reply=204)
+    @pook.get('http://httpbin.org/status/400', reply=200)
+    def fetch(url):
+        return requests.get(url)
+
+    res = fetch('http://httpbin.org/status/400')
+    print('#1 status:', res.status_code)
+
+    res = fetch('http://httpbin.org/status/500')
+    print('#2 status:', res.status_code)
+
+
+Example using Hy language (Lisp dialect for Python)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: hy
+
+    (import [pook])
+    (import [requests])
+
+    (defn request [url &optional [status 404]]
+      (doto (.mock pook url) (.reply status))
+      (let [res (.get requests url)]
+        (. res status_code)))
+
+    (defn run []
+      (with [(.use pook)]
+        (print "Status:" (request "http://server.com/foo" :status 204))))
+
+    ;; Run test program
+    (defmain [&args] (run))
+
+
 License
 -------
 
@@ -109,6 +167,7 @@ MIT - Tomas Aparicio
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.rtfd.io
 .. #16: https://github.com/h2non/pook/issues/16
+.. examples/: https://github.com/h2non/pook/tree/master/examples
 
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
