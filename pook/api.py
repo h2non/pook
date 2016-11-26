@@ -4,17 +4,22 @@ from inspect import isfunction
 from contextlib import contextmanager
 from .engine import Engine
 
-# Explicit symbols to export.
-__all__ = (
+from .mock import Mock  # noqa
+from .request import Request  # noqa
+from .response import Response  # noqa
+
+# Explicit symbols to export (analog to __all__)
+api_exports = (
     'activate', 'on', 'disable', 'off', 'engine',
     'use_network', 'enable_network', 'use', 'mock',
     'get', 'post', 'put', 'patch', 'head',
     'delete', 'options', 'pending', 'ispending',
     'pending_mocks', 'unmatched_requests', 'isunmatched',
-    'unmatched', 'isactive', 'isdone', 'regex'
+    'unmatched', 'isactive', 'isdone', 'regex',
+    'Engine', 'Mock', 'Request', 'Response'
 )
 
-# Singleton mock engine
+# Default singleton mock engine to be used
 engine = Engine()
 
 
@@ -75,20 +80,22 @@ def on(fn=None):
     Returns:
         function: decorator wrapper function, only if called as decorator.
 
-            # Standard usage
-            pook.on()
+    Usage::
+
+        # Standard usage
+        pook.on()
+        pook.mock('server.com/foo').reply(404)
+
+        res = requests.get('server.com/foo')
+        assert res.status_code == 404
+
+        # Usage as decorator
+        @pook.on
+        def test_request():
             pook.mock('server.com/foo').reply(404)
 
             res = requests.get('server.com/foo')
             assert res.status_code == 404
-
-            # Usage as decorator
-            @pook.on
-            def test_request():
-                pook.mock('server.com/foo').reply(404)
-
-                res = requests.get('server.com/foo')
-                assert res.status_code == 404
     """
     return activate(fn)
 
@@ -134,7 +141,7 @@ def enable_network(*hostnames):
 
 def disable_network():
     """
-    Disable real traffic networking.
+    Disables real traffic networking mode.
     """
     engine.disable_network()
 

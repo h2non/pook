@@ -1,10 +1,22 @@
-assertion
----------
+Examples
+========
 
-.. code-block:: python
 
-    pook('http://api.example.com').get('/foo').reply(200, headers={'Server': 'nginx'})
+Simple ``requests`` example
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    pook('http://api.example.com').get('/bar').reply(404)
+.. literalinclude:: ../examples/requests_client.py
 
-    pook('http://api.example.com').get('/baz').reply(400)
+
+
+Asynchronous HTTP request using ``aiohttp``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/aiohttp.py
+
+
+
+Hy programming language
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/basic.hy

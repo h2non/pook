@@ -10,7 +10,7 @@ from .exceptions import PookExpiredMock
 from .matchers import init as matcher  # noqa
 
 
-def append_funcs(target, items):
+def _append_funcs(target, items):
     """
     Helper function to append functions into a given list.
 
@@ -22,7 +22,7 @@ def append_funcs(target, items):
      if isfunction(item) or ismethod(item)]
 
 
-def trigger_request(instance, request):
+def _trigger_request(instance, request):
     """
     Triggers request mock definition methods dynamically based on input
     keyword arguments passed to `pook.Mock` constructor.
@@ -75,7 +75,7 @@ class Mock(object):
 
         # Trigger request fields, if present
         if request:
-            trigger_request(self, request)
+            _trigger_request(self, request)
 
     @fluent
     def protocol(self, value):
@@ -247,7 +247,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        append_funcs(self.filters, filters)
+        _append_funcs(self.filters, filters)
 
     @fluent
     def map(self, *mappers):
@@ -255,7 +255,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        append_funcs(self.mappers, mappers)
+        _append_funcs(self.mappers, mappers)
 
     @fluent
     def callback(self, *callbacks):
@@ -263,7 +263,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        append_funcs(self.callbacks, callbacks)
+        _append_funcs(self.callbacks, callbacks)
 
     @fluent
     def delay(self, delay=1000):

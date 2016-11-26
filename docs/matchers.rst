@@ -1,4 +1,0 @@
-Matchers
-========
-
-.. include:: examples.rst

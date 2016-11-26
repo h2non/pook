@@ -18,16 +18,16 @@ Features
 -  Simple, expressive and fluent API.
 -  Provides both Pythonic and chainable DSL API styles.
 -  Full-feated HTTP response definitions and expectations.
--  Match any HTTP protocol primitive (URL, method, query params, headers, body...)
+-  Match any HTTP protocol primitive (URL, method, query params, headers, body...).
 -  Full regular expressions capable mock expectations matching.
 -  HTTP client agnostic via adapters (works with most popular HTTP packages).
 -  Supports JSON Schema body matching.
--  Works with any testing framework or engine (unittest, pytest, nosetests...)
+-  Works with any testing framework or engine (unittest, pytest, nosetests...).
 -  Usable in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
 -  Extensible by design: write your own components and plug in.
 -  Simulated error exceptions.
--  Network delay simulation (only available in ``aiohttp``)
+-  Network delay simulation (only available in ``aiohttp``).
 -  Pluggable and hackable API.
 -  Does not support WebSocket traffic mocking.
 -  Works with Python +2.7 and +3.0 (including PyPy).
@@ -37,10 +37,10 @@ Features
 Supported HTTP clients
 ----------------------
 
-- ✔ `urllib3`_ / `requests`_
-- ✔ `aiohttp`_
-- ✔ `urllib`_ / `http.client`_ (experimental)
-- ✘ `pycurl`_ (see #`16`_)
+-  ✔ `urllib3`_ / `requests`_
+-  ✔ `aiohttp`_
+-  ✔ `urllib`_ / `http.client`_ (experimental)
+-  ✘ `pycurl`_ (see `#16`_)
 
 
 Installation
@@ -60,7 +60,7 @@ Or install the latest sources from Github:
 
 
 Documentation
-------------
+-------------
 
 See RTD documentation
 
@@ -70,16 +70,15 @@ See RTD documentation
 API
 ---
 
-See `API reference`_ documention.
+See `annotated API reference`_ documention.
 
 
 Examples
 --------
 
-See `examples/`_ directory for full featured code and usage case examples.
+See `examples`_ documentation for full featured code and use case examples.
 
-Basic mocking
-^^^^^^^^^^^^^
+Basic mocking:
 
 .. code:: python
 
@@ -99,8 +98,7 @@ Basic mocking
         assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
-Using the chainable API
-^^^^^^^^^^^^^^^^^^^^^^^
+Using the chainable API:
 
 .. code:: python
 
@@ -120,8 +118,7 @@ Using the chainable API
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
 
-Usage as decorator
-^^^^^^^^^^^^^^^^^^
+Usage as decorator:
 
 .. code:: python
 
@@ -140,8 +137,26 @@ Usage as decorator
     print('#2 status:', res.status_code)
 
 
-Example using Hy language (Lisp dialect for Python)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Usage with context manager:
+
+.. code:: python
+
+    import pook
+    import requests
+
+    # Enable HTTP traffic interceptor
+    with pook.use():
+        pook.get('http://httpbin.org/status/500', reply=204)
+
+        res = requests.get('http://httpbin.org/status/500')
+        print('#1 status:', res.status_code)
+
+    # Interception-free HTTP traffic
+    res = requests.get('http://httpbin.org/status/200')
+    print('#2 status:', res.status_code)
+
+
+Example using Hy language (Lisp dialect for Python):
 
 .. code:: hy
 
@@ -161,6 +176,51 @@ Example using Hy language (Lisp dialect for Python)
     (defmain [&args] (run))
 
 
+Development
+-----------
+
+Clone the repository:
+
+.. code:: bash
+
+    git clone git@github.com:h2non/pook.git
+
+
+Install dependencies:
+
+.. code:: bash
+
+    pip install -r requirements.txt requirements-dev.txt
+
+
+Install Python dependencies:
+
+.. code:: bash
+
+    make install
+
+
+Lint code:
+
+.. code:: bash
+
+    make lint
+
+
+Run tests:
+
+.. code:: bash
+
+    make test
+
+
+Generate documentation:
+
+.. code:: bash
+
+    make htmldocs
+
+
 License
 -------
 
@@ -169,14 +229,14 @@ MIT - Tomas Aparicio
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.rtfd.io
-.. 16: https://github.com/h2non/pook/issues/16
-.. examples/: https://github.com/h2non/pook/tree/master/examples
-.. aiohttp: https://github.com/KeepSafe/aiohttp
-.. requests: http://docs.python-requests.org/en/master/
-.. urllib3: https://github.com/shazow/urllib3
-.. urllib: https://docs.python.org/3/library/urllib.html
-.. http.client: https://docs.python.org/3/library/http.client.html
-.. pycurl: http://pycurl.io/
+.. _#16: https://github.com/h2non/pook/issues/16
+.. _examples/: http://pook.readthedocs.io/en/latest/examples.html
+.. _aiohttp: https://github.com/KeepSafe/aiohttp
+.. _requests: http://docs.python-requests.org/en/master/
+.. _urllib3: https://github.com/shazow/urllib3
+.. _urllib: https://docs.python.org/3/library/urllib.html
+.. _http.client: https://docs.python.org/3/library/http.client.html
+.. _pycurl: http://pycurl.io/
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook

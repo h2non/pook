@@ -14,6 +14,10 @@ htmldocs:
 	@rm -rf docs/_build
 	$(MAKE) -C docs html
 
+install:
+	@pip install -r requirements.txt
+	@pip install -r requirements-dev.txt
+
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
 	@flake8 .

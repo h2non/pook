@@ -4,7 +4,13 @@ from .http import HTTPClientInterceptor
 from .base import BaseInterceptor  # noqa
 
 # Explicit symbols to export
-__all__ = ('interceptors', 'add', 'get')
+__all__ = (
+    'interceptors', 'add', 'get',
+    'BaseInterceptor',
+    'Urllib3Interceptor',
+    'HTTPClientInterceptor',
+    'AIOHTTPInterceptor',
+)
 
 # Store built-in interceptors in pook.
 interceptors = [
