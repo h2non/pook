@@ -30,7 +30,7 @@ Features
 -  Network delay simulation (only available in ``aiohttp``)
 -  Pluggable and hackable API.
 -  Does not support WebSocket traffic mocking.
--  Work with Python +2.7 and +3.0 (including PyPy).
+-  Works with Python +2.7 and +3.0 (including PyPy).
 -  Just one dependency = JSONSchema validator.
 
 
@@ -52,7 +52,7 @@ Using ``pip`` package manager:
 
     pip install pook
 
-Or install the latest sources from Github::
+Or install the latest sources from Github:
 
 .. code:: bash
 
@@ -62,7 +62,9 @@ Or install the latest sources from Github::
 Documentation
 ------------
 
-See RTD documentation: |Documentation Status|
+See RTD documentation
+
+|Documentation Status|
 
 
 API
