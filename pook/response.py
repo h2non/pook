@@ -74,6 +74,14 @@ class Response(object):
         self._body = body
 
     @property
+    def file(self, path):
+        """
+        Reads the response body from a file.
+        """
+        with open(path, 'r') as f:
+            self.body = str(f.read())
+
+    @property
     def mock(self):
         """
         Getter accessor for `mock` attribute.

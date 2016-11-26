@@ -16,6 +16,7 @@ install:
 script:
   - make lint
   - make test
+  - make htmldocs
 
 after_success:
   coveralls

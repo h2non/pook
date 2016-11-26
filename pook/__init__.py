@@ -1,7 +1,7 @@
 from .api import *  # noqa
 
 # Explicit symbols export
-__all__ = api_exports
+__all__ = api_exports  # noqa
 
 # Package metadata
 __author__ = 'Tomas Aparicio'

@@ -186,6 +186,14 @@ class Mock(object):
         self.add_matcher(matcher('QueryMatcher', params))
 
     @fluent
+    def body(self, body):
+        """
+        Returns:
+            self: current Mock instance.
+        """
+        self.add_matcher(matcher('BodyMatcher', body))
+
+    @fluent
     def json(self, body):
         """
         Returns:
@@ -200,6 +208,17 @@ class Mock(object):
             self: current Mock instance.
         """
         self.add_matcher(matcher('JSONSchemaMatcher', schema))
+
+    @fluent
+    def file(self, path):
+        """
+        Reads the body to match from a disk file.
+
+        Returns:
+            self: current Mock instance.
+        """
+        with open(path, 'r') as f:
+            self.body(str(f.read()))
 
     @fluent
     def xml(self, body):

@@ -5,7 +5,6 @@ from .json import JSONMatcher
 from .method import MethodMatcher
 from .headers import HeadersMatcher
 from .path import PathMatcher
-# from .constants import NEGATE
 
 # Explicit symbols to export
 __all__ = ('matchers', 'init', 'add', 'get')

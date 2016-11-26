@@ -25,7 +25,9 @@ Features
 -  Works with any testing framework or engine (unittest, pytest, nosetests...).
 -  Usable in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
--  Extensible by design: write your own components and plug in.
+-  Real networking mode with optional traffic filtering.
+-  Map/filter mocks easy for generic or custom mock expectations.
+-  First-class JSON/XML body expectations and responses.
 -  Simulated error exceptions.
 -  Network delay simulation (only available in ``aiohttp``).
 -  Pluggable and hackable API.
