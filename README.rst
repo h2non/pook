@@ -19,14 +19,15 @@ Features
 -  Provides both Pythonic and chainable DSL API styles.
 -  Full-feated HTTP response definitions and expectations.
 -  Match any HTTP protocol primitive (URL, method, query params, headers, body...)
--  Full ``RegExp`` capable HTTP matching engine.
+-  Full regular expressions capable mock expectations matching.
 -  HTTP client agnostic via adapters (works with most popular HTTP packages).
--  Easily simulate error
 -  Supports JSON Schema body matching.
 -  Works with any testing framework or engine (unittest, pytest, nosetests...)
 -  Usable in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
 -  Extensible by design: write your own components and plug in.
+-  Simulated error exceptions.
+-  Network delay simulation (only available in ``aiohttp``)
 -  Pluggable and hackable API.
 -  Does not support WebSocket traffic mocking.
 -  Work with Python +2.7 and +3.0 (including PyPy).
@@ -36,10 +37,10 @@ Features
 Supported HTTP clients
 ----------------------
 
-- [✔] urllib3 / requests
-- [✔] aiohttp
-- [✔] urllib / http.client (experimental)
-- [x] pycurl (pending, see `#16`_)
+- ✔ `urllib3`_ / `requests`_
+- ✔ `aiohttp`_
+- ✔ `urllib`_ / `http.client`_ (experimental)
+- ✘ `pycurl`_ (see #`16`_)
 
 
 Installation
@@ -166,9 +167,14 @@ MIT - Tomas Aparicio
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.rtfd.io
-.. #16: https://github.com/h2non/pook/issues/16
+.. 16: https://github.com/h2non/pook/issues/16
 .. examples/: https://github.com/h2non/pook/tree/master/examples
-
+.. aiohttp: https://github.com/KeepSafe/aiohttp
+.. requests: http://docs.python-requests.org/en/master/
+.. urllib3: https://github.com/shazow/urllib3
+.. urllib: https://docs.python.org/3/library/urllib.html
+.. http.client: https://docs.python.org/3/library/http.client.html
+.. pycurl: http://pycurl.io/
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook
