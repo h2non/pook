@@ -294,7 +294,7 @@ class Mock(object):
         Defines the mock response.
 
         Returns:
-            gook.Response: mock response definition instance.
+            pook.Response: mock response definition instance.
         """
         # Use or create a Response mock instance
         res = self._response or Response(**kw)
@@ -307,12 +307,25 @@ class Mock(object):
         # Return response
         return res
 
+    def status(self, code=200):
+        """
+        Defines the response status code.
+        Equivalent to ``self.reply(code)``.
+
+        Arguments:
+            code (int): response status code. Defaults to ``200``.
+
+        Returns:
+            pook.Response: mock response definition instance.
+        """
+        return self.reply(status=code)
+
     def response(self, status=200, **kw):
         """
         Defines the mock response. Alias to ``.reply()``
 
         Returns:
-            gook.Response: mock response definition instance.
+            pook.Response: mock response definition instance.
         """
         return self.reply(status=status, **kw)
 
