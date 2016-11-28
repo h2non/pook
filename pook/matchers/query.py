@@ -1,15 +1,49 @@
 import sys
 from .base import BaseMatcher
+from .compare import compare
 
 if sys.version_info < (3,):     # Python 2
-    from urlparse import urlparse, parse_qs
+    from urlparse import parse_qs
 else:                           # Python 3
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import parse_qs
 
 
 class QueryMatcher(BaseMatcher):
-    def __init__(self, params):
-        self.params = parse_qs(params)
+    """
+    QueryMatcher implements an URL query params matcher.
+    """
 
+    def match_query(self, query, req_query):
+        def test(key, param):
+            match = req_query.get(key)
+            if match is None:
+                return False
+
+            # Compare query params
+            for index, value in enumerate(param):
+                if index >= len(match):
+                    return False
+                if not compare(value, match[index]):
+                    return False
+
+            return True
+
+        return all([test(key, param) for key, param in query.items()])
+
+    @BaseMatcher.matcher
     def match(self, req):
-        return True
+        query = self.expectation
+
+        # Parse and assert type
+        if isinstance(query, str):
+            query = parse_qs(self.expectation)
+
+        # Validate query params
+        if not isinstance(query, dict):
+            raise ValueError('query params must be a str or dict')
+
+        # Parse request URL query
+        req_query = parse_qs(req.url.query)
+
+        # Match query params
+        return self.match_query(query, req_query)

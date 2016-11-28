@@ -2,7 +2,7 @@
 """
 pook
 ====
-Expressive HTTP traffic mocking and expectations made easy in Python.
+Versatile HTTP traffic mocking and expectations made easy in Python.
 
 :copyright: (c) 2016 Tomas Aparicio
 :license: MIT
@@ -49,6 +49,8 @@ class PyTest(TestCommand):
 
 with open('requirements-dev.txt') as f:
     tests_require = f.read().splitlines()
+with open('requirements.txt') as f:
+    install_requires = f.read().splitlines()
 with open('README.rst') as f:
     readme = f.read()
 with open('History.rst') as f:
@@ -60,16 +62,20 @@ setup(
     version=version,
     author='Tomas Aparicio',
     description=(
-        'Expressive HTTP traffic mocking and expectations made easy in Python.'
+        'Versatile HTTP traffic mocking and expectations made easy in Python.'
     ),
     url='https://github.com/h2non/pook',
     license='MIT',
     long_description=readme + '\n\n' + history,
     py_modules=['pook'],
     zip_safe=False,
+    install_requires=install_requires,
     tests_require=tests_require,
-    packages=find_packages(exclude=['tests', 'examples']),
-    package_data={'': ['LICENSE', 'History.rst', 'requirements-dev.txt']},
+    packages=find_packages(exclude=['tests', 'examples', 'docs']),
+    package_data={'': [
+        'LICENSE', 'README.rst', 'History.rst',
+        'requirements.txt', 'requirements-dev.txt'
+    ]},
     package_dir={'pook': 'pook'},
     include_package_data=True,
     cmdclass={'test': PyTest},
@@ -80,7 +86,6 @@ setup(
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',

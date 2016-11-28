@@ -24,14 +24,16 @@ class HTTPHeaderDict(MutableMapping):
     constructor or ``.update``, the behavior is undefined and some will be
     lost.
 
-    >>> headers = HTTPHeaderDict()
-    >>> headers.add('Set-Cookie', 'foo=bar')
-    >>> headers.add('set-cookie', 'baz=quxx')
-    >>> headers['content-length'] = '7'
-    >>> headers['SET-cookie']
-    'foo=bar, baz=quxx'
-    >>> headers['Content-Length']
-    '7'
+    Usage::
+
+        headers = HTTPHeaderDict()
+        headers.add('Set-Cookie', 'foo=bar')
+        headers.add('set-cookie', 'baz=quxx')
+        headers['content-length'] = '7'
+        headers['SET-cookie']
+        > 'foo=bar, baz=quxx'
+        headers['Content-Length']
+        > '7'
     """
 
     def __init__(self, headers=None, **kwargs):
@@ -114,10 +116,13 @@ class HTTPHeaderDict(MutableMapping):
         """
         Adds a (name, value) pair, doesn't overwrite the value if it already
         exists.
-        >>> headers = HTTPHeaderDict(foo='bar')
-        >>> headers.add('Foo', 'baz')
-        >>> headers['foo']
-        'bar, baz'
+
+        Usage::
+
+            headers = HTTPHeaderDict(foo='bar')
+            headers.add('Foo', 'baz')
+            headers['foo']
+            > 'bar, baz'
         """
         key_lower = key.lower()
         new_vals = key, val
@@ -137,10 +142,13 @@ class HTTPHeaderDict(MutableMapping):
         """
         Sets a header field with the given value, removing
         previous values.
-        >>> headers = HTTPHeaderDict(foo='bar')
-        >>> headers.set('Foo', 'baz')
-        >>> headers['foo']
-        'baz'
+
+        Usage::
+
+            headers = HTTPHeaderDict(foo='bar')
+            headers.set('Foo', 'baz')
+            headers['foo']
+            > 'baz'
         """
         key_lower = key.lower()
         new_vals = key, val
@@ -231,6 +239,9 @@ class HTTPHeaderDict(MutableMapping):
 
     def items(self):
         return list(self.iteritems())
+
+    def to_dict(self):
+        return {key: values for key, values in self.items()}
 
     @classmethod
     def from_httplib(cls, message):  # Python 2

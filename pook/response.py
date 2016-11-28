@@ -2,38 +2,50 @@ import json
 from .decorators import fluent
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
-
-TYPES = {
-  'html': 'text/html',
-  'json': 'application/json',
-  'xml': 'application/xml',
-  'urlencoded': 'application/x-www-form-urlencoded',
-  'form': 'application/x-www-form-urlencoded',
-  'form-data': 'application/x-www-form-urlencoded'
-}
+from .constants import TYPES
 
 
 class Response(object):
+    """
+    Response is used to declare and compose an HTTP mock response.
+    Provides a chainable DSL API.
+    """
+
     def __init__(self, **args):
+        self._status = 200
         self._mock = None
         self._body = None
         self._headers = HTTPHeaderDict()
+
+        # Trigger response method based on input arguments
         trigger_methods(self, args)
 
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, status=200):
-        self._status = status
-
     @fluent
-    def status(self, status=200):
-        self._status = status
+    def status(self, code=200):
+        """
+        Defines the response status code.
+
+        Arguments:
+            code (int): response status code.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self._status = int(code)
 
     @fluent
     def header(self, key, value):
+        """
+        Defines a new response header.
+        Alias to ``Response.header()``.
+
+        Arguments:
+            header (str): header name.
+            value (str): header value.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
         if type(key) is tuple:
             key, value = str(key[0]), key[1]
 
@@ -42,30 +54,162 @@ class Response(object):
 
     @fluent
     def headers(self, headers):
+        """
+        Defines a new response header.
+        Alias to ``Response.header()``.
+
+        Arguments:
+            header (str): header name.
+            value (str): header value.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
         self._headers.extend(headers)
 
     @fluent
+    def set(self, header, value):
+        """
+        Defines a new response header.
+        Alias to ``Response.header()``.
+
+        Arguments:
+            header (str): header name.
+            value (str): header value.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self._headers[header] = value
+
+    @fluent
     def type(self, name):
-        value = TYPES.get(name, name)
-        self._headers['Content-Type'] = [value]
+        """
+        Defines the response ``Content-Type`` header.
+        Alias to ``Response.content(mime)``.
+
+        You can pass one of the following type aliases instead of the full
+        MIME type representation:
+
+        - ``json`` = ``application/json``
+        - ``xml`` = ``application/xml``
+        - ``html`` = ``text/html``
+        - ``urlencoded`` = ``application/x-www-form-urlencoded``
+        - ``form`` = ``application/x-www-form-urlencoded``
+        - ``form-data`` = ``application/x-www-form-urlencoded``
+
+        Arguments:
+            value (str): type alias or header value to match.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self.content(name)
+
+    @fluent
+    def content(self, name):
+        """
+        Defines the response ``Content-Type`` header.
+
+        You can pass one of the following type aliases instead of the full
+        MIME type representation:
+
+        - ``json`` = ``application/json``
+        - ``xml`` = ``application/xml``
+        - ``html`` = ``text/html``
+        - ``urlencoded`` = ``application/x-www-form-urlencoded``
+        - ``form`` = ``application/x-www-form-urlencoded``
+        - ``form-data`` = ``application/x-www-form-urlencoded``
+
+        Arguments:
+            value (str): type alias or header value to match.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self._headers['Content-Type'] = TYPES.get(name, name)
+
+    @fluent
+    def body(self, body):
+        """
+        Defines response body data.
+
+        Arguments:
+            body (str): response body to use.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self._body = body
 
     @fluent
     def json(self, data):
+        """
+        Defines the mock response JSON body.
+
+        Arguments:
+            data (dict|list|str): JSON body data.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
         self._headers['Content-Type'] = 'application/json'
-        self._body = json.dumps(data, indent=4)
+        if not isinstance(data, str):
+            data = json.dumps(data, indent=4)
+        self._body = data
 
-    @property
-    def body(self):
-        return self._body
+    @fluent
+    def xml(self, xml):
+        """
+        Defines the mock response XML body.
 
-    @body.setter
-    def body(self, body):
-        self._body = body
+        For not it only supports ``str`` as input type.
+
+        Arguments:
+            xml (str): XML body data to use.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        self.body(xml)
+
+    @fluent
+    def file(self, path):
+        """
+        Defines the response body from file contents.
+
+        Arguments:
+            path (str): disk file path to load.
+
+        Returns:
+            self: ``pook.Response`` current instance.
+        """
+        with open(path, 'r') as f:
+            self.body = str(f.read())
 
     @property
     def mock(self):
+        """
+        Getter accessor for `mock` attribute.
+        """
         return self._mock
 
     @mock.setter
     def mock(self, mock):
+        """
+        Setter for ``mock`` attribute.
+        """
         self._mock = mock
+
+    def __repr__(self):
+        """
+        Returns an human friendly readable instance data representation.
+
+        Returns:
+            str
+        """
+        args = []
+        for key in ('headers', 'status', 'body'):
+            value = getattr(self, '_{}'.format(key))
+            args.append('{}={}'.format(key, value))
+        return 'Response(\n    {}\n)'.format(',\n    '.join(args))
