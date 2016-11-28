@@ -36,17 +36,10 @@ Features
 Supported HTTP clients
 ----------------------
 
-<<<<<<< HEAD
--  ✔ `urllib3`_ / `requests`_
--  ✔ `aiohttp`_
--  ✔ `urllib`_ / `http.client`_ (experimental)
--  ✘ `pycurl`_ (see `#16`_)
-=======
 -  ✔  `urllib3`_ / `requests`_
 -  ✔  `aiohttp`_
 -  ✔  `urllib`_ / `http.client`_ (experimental)
 -  ✘  `pycurl`_ (see `#16`_)
->>>>>>> develop
 
 
 Installation
