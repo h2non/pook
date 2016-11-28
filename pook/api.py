@@ -121,7 +121,8 @@ def disable():
 
 def off():
     """
-    Disables HTTP traffic interceptors.
+    Disables mock engine, HTTP traffic interceptors and flushed all the
+    registered mocks.
 
     Internally, it calls ``pook.disable()`` and ``pook.off()``.
     """

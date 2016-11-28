@@ -13,7 +13,7 @@ def test_enable_engine():
     pook.get('server.com/foo').reply(204)
     res = requests.get('http://server.com/foo')
     assert res.status_code == 204
-    pook.off()
+    pook.disable()
 
 
 @pook.get('server.com/bar', reply=204)
