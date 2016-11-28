@@ -8,7 +8,7 @@ from .request import Request
 from .matcher import MatcherEngine
 from .helpers import trigger_methods
 from .exceptions import PookExpiredMock
-from .matchers import init as matcher  # noqa
+from .matchers import init as matcher
 
 
 def _append_funcs(target, items):
