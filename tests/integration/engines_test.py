@@ -4,9 +4,9 @@ import subprocess
 
 # List of engine specific test commands to run
 engine_tests = (
-    'py.test tests/integration/engines/pytest.py',
-    'nosetests tests/integration/engines/nose.py',
-    'python -m unittest tests.integration.engines.unittest',
+    'py.test tests/integration/engines/pytest_suite.py',
+    'nosetests tests/integration/engines/nose_suite.py',
+    'python -m unittest tests.integration.engines.unittest_suite',
 )
 
 

@@ -91,6 +91,8 @@ class Engine(object):
         """
         # Create the new HTTP mock expectation
         mock = Mock(url=url, **kw)
+        # Expose current engine instance via mock
+        mock._engine = self
         # Register the mock in the current engine
         self.add_mock(mock)
         # Activate mock engine transparently, if it was not active yet

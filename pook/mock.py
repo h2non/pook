@@ -107,6 +107,8 @@ class Mock(object):
         self._delay = 0
         # Stores the mock persistance mode. `True` means it will live forever
         self._persist = False
+        # Optional binded engine where the mock belongs to
+        self._engine = None
         # Stores the input request instance
         self._request = request
         # Stores the response mock instance
@@ -600,30 +602,6 @@ class Mock(object):
         """
         return (self._persist and self._matches > 0) or self._times <= 0
 
-    def __call__(self, fn):
-        """
-        Overload Mock instance as callable object in order to be used
-        as decorator definition syntax.
-
-        Returns:
-            function or pook.Mock
-        """
-        # Support chain sequences of mock definitions
-        if isinstance(fn, Response):
-            return fn.mock
-        if isinstance(fn, Mock):
-            return fn
-
-        # Force type assertion and raise an error if it is not a function
-        if not isfunction(fn) and not ismethod(fn):
-            raise TypeError('first argument must be a method or function')
-
-        @functools.wraps(fn)
-        def wrapper(*args, **kw):
-            return fn(*args, **kw)
-
-        return wrapper
-
     def match(self, request):
         """
         Matches an outgoing HTTP request against the current mock matchers.
@@ -675,6 +653,40 @@ class Mock(object):
             callback(request, self)
 
         return True
+
+    def __call__(self, fn):
+        """
+        Overload Mock instance as callable object in order to be used
+        as decorator definition syntax.
+
+        Arguments:
+            fn (function): function to decorate.
+
+        Returns:
+            function or pook.Mock
+        """
+        # Support chain sequences of mock definitions
+        if isinstance(fn, Response):
+            return fn.mock
+        if isinstance(fn, Mock):
+            return fn
+
+        # Force type assertion and raise an error if it is not a function
+        if not isfunction(fn) and not ismethod(fn):
+            raise TypeError('first argument must be a method or function')
+
+        @functools.wraps(fn)
+        def decorator(*args, **kw):
+            # Force engine activation, if available
+            # This prevents state issue while declaring mocks as decorators.
+            # This might be removed in the future.
+            if self._engine:
+                self._engine.activate()
+
+            # Call decorated target function
+            return fn(*args, **kw)
+
+        return decorator
 
     def __repr__(self):
         """

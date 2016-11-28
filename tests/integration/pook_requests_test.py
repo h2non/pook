@@ -18,18 +18,7 @@ def test_requests_get(mock):
 
     res = requests.get('http://foo.com')
     assert res.status_code == 404
-    assert res.headers == {"Content-Type": "application/json"}
-    assert res.json() == body
-    assert pook.isdone() is True
-
-
-def test_requests_get2(mock):
-    body = {'error': 'not found'}
-    mock.get('http://foo.com').reply(404).json(body)
-
-    res = requests.get('http://foo.com')
-    assert res.status_code == 404
-    assert res.headers == {"Content-Type": "application/json"}
+    assert res.headers == {'Content-Type': 'application/json'}
     assert res.json() == body
     assert pook.isdone() is True
 
@@ -40,6 +29,6 @@ def test_requests_match_url(mock):
 
     res = requests.get('http://foo.com')
     assert res.status_code == 200
-    assert res.headers == {"Content-Type": "application/json"}
+    assert res.headers == {'Content-Type': 'application/json'}
     assert res.json() == body
     assert pook.isdone() is True
