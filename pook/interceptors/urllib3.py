@@ -2,6 +2,7 @@ import io
 import sys
 from ..request import Request
 from .base import BaseInterceptor
+from .http import URLLIB3_BYPASS
 
 # Support Python 2/3
 try:
@@ -69,9 +70,13 @@ class Urllib3Interceptor(BaseInterceptor):
 
     def _on_request(self, urlopen, path, pool, method, url,
                     body=None, headers=None, **kw):
+        # Remove bypass headers
+        real_headers = dict(headers or {})
+        real_headers.pop(URLLIB3_BYPASS)
+
         # Create request contract based on incoming params
         req = Request(method)
-        req.headers = headers or {}
+        req.headers = real_headers
         req.body = body
 
         # Compose URL
@@ -102,17 +107,22 @@ class Urllib3Interceptor(BaseInterceptor):
         # Return mocked HTTP response
         return HTTPResponse(
             path,
-            body=body_io(res.body),
-            status=res.status,
+            body=body_io(res._body),
+            status=res._status,
             headers=headers,
             preload_content=False,
-            reason=http_reasons.get(res.status),
+            reason=http_reasons.get(res._status),
             original_response=FakeResponse(headers),
         )
 
     def _patch(self, path):
-        def handler(pool, method, url, body=None, headers=None, **kw):
-            return self._on_request(urlopen, path, pool, method, url,
+        def handler(conn, method, url, body=None, headers=None, **kw):
+            # Flag that the current request as urllib3 intercepted
+            headers = headers or {}
+            headers[URLLIB3_BYPASS] = True
+
+            # Call request interceptor
+            return self._on_request(urlopen, path, conn, method, url,
                                     body=body, headers=headers, **kw)
 
         try:

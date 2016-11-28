@@ -1,7 +1,7 @@
 import re
 import sys
+from .compare import compare
 from .base import BaseMatcher
-from .helpers import compare
 from .path import PathMatcher
 from .query import QueryMatcher
 

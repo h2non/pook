@@ -11,6 +11,7 @@ with pook.use():
     r = http.request('GET', 'http://httpbin.org/status/404')
     print('#1 status:', r.status)
 
+
 # Real request outside of the context manager
 http = urllib3.PoolManager()
 r = http.request('GET', 'http://httpbin.org/status/404')

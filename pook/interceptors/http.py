@@ -21,6 +21,8 @@ PATCHES = (
 RESPONSE_CLASS = 'HTTPResponse'
 RESPONSE_PATH = 'http.client'
 
+URLLIB3_BYPASS = '__urllib3_bypass__'
+
 
 def HTTPResponse(*args, **kw):
     # Dynamically load package
@@ -48,7 +50,7 @@ class HTTPClientInterceptor(BaseInterceptor):
     """
 
     def _on_request(self, _request, conn, method, url,
-                    body=None, headers=None):
+                    body=None, headers=None, **kw):
         # Create request contract based on incoming params
         req = Request(method)
         req.headers = headers or {}
@@ -60,11 +62,12 @@ class HTTPClientInterceptor(BaseInterceptor):
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
 
-        # If cannot match any mock, run real HTTP request since networking
-        # or silent model will be enabled, otherwise this statement won't
-        # be reached (an exception will be raised before).
+        # If cannot match any mock, run real HTTP request since networking,
+        # otherwise this statement won't be reached
+        # (an exception will be raised before).
         if not mock:
-            return _request(method, url, body=body, headers=headers)
+            return _request(conn, method, url,
+                            body=body, headers=headers, **kw)
 
         # Shortcut to mock response
         res = mock._response
@@ -89,13 +92,23 @@ class HTTPClientInterceptor(BaseInterceptor):
 
         # Path reader
         def read():
-            return res.body or ''
+            return res._body or ''
         mockres.read = read
 
         return mockres
 
     def _patch(self, path):
         def handler(conn, method, url, body=None, headers=None, **kw):
+            # Detect if httplib was called by urllib3 interceptor
+            # This is a bit ugly, I know. Ideas are welcome!
+            if headers and URLLIB3_BYPASS in headers:
+                # Remove bypass header used as flag
+                headers.pop(URLLIB3_BYPASS)
+                # Call original patched function
+                return request(conn, method, url,
+                               body=body, headers=headers, **kw)
+
+            # Otherwise call the request interceptor
             return self._on_request(request, conn, method, url,
                                     body=body, headers=headers, **kw)
 

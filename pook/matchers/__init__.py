@@ -1,13 +1,29 @@
+from .base import BaseMatcher
 from .url import URLMatcher
 from .body import BodyMatcher
 from .query import QueryMatcher
-from .json import JSONMatcher
 from .method import MethodMatcher
 from .headers import HeadersMatcher
 from .path import PathMatcher
+from .xml import XMLMatcher
+from .json import JSONMatcher
+from .json_schema import JSONSchemaMatcher
 
 # Explicit symbols to export
-__all__ = ('matchers', 'init', 'add', 'get')
+__all__ = (
+    'matchers', 'init', 'add', 'get',
+    'BaseMatcher',
+    'MethodMatcher',
+    'URLMatcher',
+    'HeadersMatcher',
+    'QueryMatcher',
+    'PathMatcher',
+    'BodyMatcher',
+    'XMLMatcher',
+    'JSONMatcher',
+    'JSONSchemaMatcher',
+    'QueryMatcher',
+)
 
 # List of built-in matchers
 # This is intended to be mutable.
@@ -18,7 +34,9 @@ matchers = [
     QueryMatcher,
     PathMatcher,
     BodyMatcher,
+    XMLMatcher,
     JSONMatcher,
+    JSONSchemaMatcher,
     QueryMatcher,
 ]
 

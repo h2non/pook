@@ -1,7 +1,9 @@
 import re
 import functools
-from .constants import NEGATE
 from ..types import isregex
+
+# Negate is used a reserved token identifier to negate matching
+NEGATE = '!!'
 
 
 def compile(expr):

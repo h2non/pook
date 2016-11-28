@@ -18,6 +18,7 @@ class BaseMatcher(object):
     def __init__(self, expectation, negate=False):
         if not expectation:
             raise ValueError('expectation argument cannot be empty')
+
         self.negate = negate
         self._expectation = expectation
 

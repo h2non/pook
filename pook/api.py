@@ -7,20 +7,31 @@ from .engine import Engine
 from .mock import Mock  # noqa
 from .request import Request  # noqa
 from .response import Response  # noqa
+from .matcher import MatcherEngine  # noqa
 
 # Explicit symbols to export (analog to __all__)
 api_exports = (
-    'activate', 'on', 'disable', 'off', 'engine',
+    'activate', 'on', 'disable', 'off', 'reset', 'engine',
     'use_network', 'enable_network', 'use', 'mock',
     'get', 'post', 'put', 'patch', 'head',
     'delete', 'options', 'pending', 'ispending',
     'pending_mocks', 'unmatched_requests', 'isunmatched',
     'unmatched', 'isactive', 'isdone', 'regex',
-    'Engine', 'Mock', 'Request', 'Response'
+    'Engine', 'Mock', 'Request', 'Response', 'MatcherEngine'
 )
 
 # Default singleton mock engine to be used
-engine = Engine()
+_engine = Engine()
+
+
+def engine():
+    """
+    Returns the current running mock engine.
+
+    Returns:
+        pook.Engine: current used engine.
+    """
+    return _engine
 
 
 def activate(fn=None):
@@ -35,16 +46,17 @@ def activate(fn=None):
     Returns:
         function: decorator wrapper function, only if called as decorator.
 
-    Usage::
+    Example::
 
-        # Standard usage
+        # Standard use case
         pook.activate()
         pook.mock('server.com/foo').reply(404)
 
         res = requests.get('server.com/foo')
         assert res.status_code == 404
+        pook.disable()
 
-        # Usage as decorator
+        # Decorator use case
         @pook.activate
         def test_request():
             pook.mock('server.com/foo').reply(404)
@@ -52,7 +64,7 @@ def activate(fn=None):
             res = requests.get('server.com/foo')
             assert res.status_code == 404
     """
-    engine.activate()
+    _engine.activate()
 
     if not isfunction(fn):
         return None
@@ -64,7 +76,7 @@ def activate(fn=None):
         except Exception as err:
             raise err
         finally:
-            engine.disable()
+            _engine.disable()
 
     return wrapper
 
@@ -80,7 +92,7 @@ def on(fn=None):
     Returns:
         function: decorator wrapper function, only if called as decorator.
 
-    Usage::
+    Example::
 
         # Standard usage
         pook.on()
@@ -104,15 +116,82 @@ def disable():
     """
     Disables HTTP traffic interceptors.
     """
-    engine.disable()
+    _engine.disable()
 
 
 def off():
     """
     Disables HTTP traffic interceptors.
-    Alias to ``pook.disable()``.
+
+    Internally, it calls ``pook.disable()`` and ``pook.off()``.
     """
     disable()
+    reset()
+
+
+def reset():
+    """
+    Resets current mock engine state, flushing all the registered mocks.
+
+    This action will not disable the mock engine.
+    """
+    _engine.reset()
+
+
+@contextmanager
+def use(network=False):
+    """
+    Creates a new isolated mock engine to be used via context manager.
+
+    Example::
+
+        with pook.use() as engine:
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
+    """
+    global _engine
+
+    # Create temporal engine
+    __engine = _engine
+    activated = __engine.active
+    if activated:
+        __engine.disable()
+
+    _engine = Engine(network=network)
+    _engine.activate()
+
+    # Yield enfine to be used by the context manager
+    yield _engine
+
+    # Restore engine state
+    _engine.disable()
+    if network:
+        _engine.disable_network()
+
+    # Restore previous engine
+    _engine = __engine
+    if activated:
+        _engine.activate()
+
+
+def context(network=False):
+    """
+    Create a new isolated mock engine to be used via context manager.
+
+    Semantic alias to ``pook.context()``.
+
+    Example::
+
+        with pook.use() as engine:
+            pook.mock('server.com/foo').reply(404)
+
+            res = requests.get('server.com/foo')
+            assert res.status_code == 404
+    """
+    with use(network=network) as engine:
+        yield engine
 
 
 @contextmanager
@@ -120,7 +199,7 @@ def use_network():
     """
     Creates a new mock engine to be used as context manager
 
-    Usage::
+    Example::
 
         with pook.use_network() as engine:
             pook.mock('server.com/foo').reply(404)
@@ -134,54 +213,36 @@ def use_network():
 
 def enable_network(*hostnames):
     """
-    Enables real networking if no mock can be matched.
+    Enables real networking mode for unmatched mocks in the current
+    mock engine.
     """
-    engine.enable_network(*hostnames)
+    _engine.enable_network(*hostnames)
 
 
 def disable_network():
     """
-    Disables real traffic networking mode.
+    Disables real traffic networking mode in the current mock engine.
     """
-    engine.disable_network()
+    _engine.disable_network()
 
 
-@contextmanager
-def use(network=False):
+def use_network_filter(*fn):
     """
-    Create a new isolated mock engine to be used via context manager.
+    Adds network filters to determine if certain outgoing
+    unmatched HTTP traffic can stablish real network connections.
 
-    Usage::
-
-        with pook.use() as engine:
-            pook.mock('server.com/foo').reply(404)
-
-            res = requests.get('server.com/foo')
-            assert res.status_code == 404
+    Arguments:
+        *fn (function): variadic function filter arguments to be used.
     """
-    global engine
+    _engine.use_network_filter(*fn)
 
-    # Create temporal engine
-    _engine = engine
-    activated = _engine.active
-    if activated:
-        engine.disable()
 
-    engine = Engine(network=network)
-    engine.activate()
-
-    # Yield enfine to be used by the context manager
-    yield engine
-
-    # Restore engine state
-    engine.disable()
-    if network:
-        engine.disable_network()
-
-    # Restore previous engine
-    engine = _engine
-    if activated:
-        engine.activate()
+def flush_network_filters():
+    """
+    Flushes registered real networking filters in the current
+    mock engine.
+    """
+    _engine.flush_network_filters()
 
 
 def mock(url=None, **kw):
@@ -195,12 +256,16 @@ def mock(url=None, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return engine.mock(url, **kw)
+    return _engine.mock(url, **kw)
 
 
 def get(url, **kw):
     """
-    Registers a new mock for GET method.
+    Registers a new mock HTTP request with GET method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: mock instance
@@ -210,7 +275,11 @@ def get(url, **kw):
 
 def post(url, **kw):
     """
-    Registers a new mock for POST method.
+    Registers a new mock HTTP request with POST method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: mock instance
@@ -220,7 +289,11 @@ def post(url, **kw):
 
 def put(url, **kw):
     """
-    Registers a new mock for PUT method.
+    Registers a new mock HTTP request with PUT method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: mock instance
@@ -230,7 +303,11 @@ def put(url, **kw):
 
 def delete(url, **kw):
     """
-    Registers a new mock for DELETE method.
+    Registers a new mock HTTP request with DELETE method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: mock instance
@@ -240,7 +317,11 @@ def delete(url, **kw):
 
 def head(url, **kw):
     """
-    Registers a new mock for HEAD method.
+    Registers a new mock HTTP request with HEAD method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: mock instance
@@ -250,7 +331,11 @@ def head(url, **kw):
 
 def patch(url=None, **kw):
     """
-    Creates a new mock for the given URL. Alias to `mock()`.
+    Registers a new mock HTTP request with PATCH method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: new mock instance.
@@ -260,8 +345,11 @@ def patch(url=None, **kw):
 
 def options(url=None, **kw):
     """
-    Creates a new mock for the given URL with the OPTIONS HTTP verb.
-    Alias to `mock()`.
+    Registers a new mock HTTP request with OPTIONS method.
+
+    Arguments:
+        url (str): request URL to mock.
+        **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
         pook.Mock: new mock instance.
@@ -276,7 +364,7 @@ def pending():
     Returns:
         int: number of pending mocks to match.
     """
-    return engine.pending()
+    return _engine.pending()
 
 
 def ispending():
@@ -286,7 +374,7 @@ def ispending():
     Returns:
         int: number of pending mocks to match.
     """
-    return engine.ispending()
+    return _engine.ispending()
 
 
 def pending_mocks():
@@ -296,7 +384,7 @@ def pending_mocks():
     Returns:
         list: pending mock instances.
     """
-    return engine.pending_mocks()
+    return _engine.pending_mocks()
 
 
 def unmatched_requests():
@@ -309,7 +397,7 @@ def unmatched_requests():
     Returns:
         tuple: unmatched intercepted requests.
     """
-    return engine.unmatched_requests()
+    return _engine.unmatched_requests()
 
 
 def unmatched():
@@ -322,7 +410,7 @@ def unmatched():
     Returns:
         int: total number of unmatched requests.
     """
-    return engine.unmatched()
+    return _engine.unmatched()
 
 
 def isunmatched():
@@ -335,7 +423,7 @@ def isunmatched():
     Returns:
         bool
     """
-    return engine.isunmatched()
+    return _engine.isunmatched()
 
 
 def isactive():
@@ -346,7 +434,7 @@ def isactive():
     Returns:
         bool: True is all the registered mocks are gone, otherwise False.
     """
-    return engine.isactive()
+    return _engine.isactive()
 
 
 def isdone():
@@ -356,21 +444,26 @@ def isdone():
     Returns:
         bool: True is all the registered mocks are gone, otherwise False.
     """
-    return engine.isdone()
+    return _engine.isdone()
 
 
 def regex(expression, flags=re.IGNORECASE):
     """
     Convenient shortcut to ``re.compile()`` for fast, easy to use
-    regular expression compilation.
+    regular expression compilation without an extra import statement.
+
+    Arguments:
+        expression (str): regular expression value.
+        flags (int): optional regular expression flags.
+            Defaults to ``re.IGNORECASE``
 
     Returns:
-        expression (str): string regular expression.
+        expression (str): string based regular expression.
 
     Raises:
         Exception: in case of regular expression compilation error
 
-    Usage::
+    Example::
 
         (pook
             .get('api.com/foo')

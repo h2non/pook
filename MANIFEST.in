@@ -3,5 +3,7 @@ include README.rst LICENSE History.rst
 include requirements.txt
 include requirements-dev.txt
 
+recursive-include tests *
+
 prune docs/_build
 prune tasks

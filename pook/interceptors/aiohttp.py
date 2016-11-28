@@ -93,8 +93,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
         # response status
         _res.version = (1, 1)
-        _res.status = res.status
-        _res.reason = http_reasons.get(res.status)
+        _res.status = res._status
+        _res.reason = http_reasons.get(res._status)
         _res._should_close = False
 
         # Add response headers
@@ -106,8 +106,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # Define `_content` attribute with an empty string to
         # force do not read from stream (which won't exists)
         _res._content = ''
-        if res.body:
-            _res._content = res.body.encode('utf-8', errors='replace')
+        if res._body:
+            _res._content = res._body.encode('utf-8', errors='replace')
 
         # Return response based on mock definition
         return _res

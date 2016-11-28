@@ -3,14 +3,11 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
 
-``pook`` can intercept and mock traffic for most popular HTTP client implementations in Python ecosystem.
-
-The API is highly hackable and simple to use, giving you the ability to support new HTTP clients and
-custom HTTP mock matchers very easily.
+``pook`` can intercept and mock out traffic in most popular HTTP client implementations in Python ecosystem.
 
 pook was heavily inspired by `gock`_, its Go equivalent package.
 
-**Still beta**: report any issue you may experiment.
+**Still beta**: please, report any issue you may experiment.
 
 Features
 --------
@@ -22,18 +19,19 @@ Features
 -  Full regular expressions capable mock expectations matching.
 -  HTTP client agnostic via adapters (works with most popular HTTP packages).
 -  Supports JSON Schema body matching.
+-  Configurable volatile, persistent or TTL limited mocks.
 -  Works with any testing framework or engine (unittest, pytest, nosetests...).
 -  Usable in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
--  Real networking mode with optional traffic filtering.
--  Map/filter mocks easy for generic or custom mock expectations.
--  First-class JSON/XML body expectations and responses.
+-  Real networking mode with optional custom traffic filtering.
+-  Map/filter mocks easily for generic or custom mock expectations.
+-  First-class JSON/XML body matching support and response expectations.
 -  Simulated error exceptions.
 -  Network delay simulation (only available in ``aiohttp``).
 -  Pluggable and hackable API.
--  Does not support WebSocket traffic mocking.
+-  Does not support WebSocket.
 -  Works with Python +2.7 and +3.0 (including PyPy).
--  Just one dependency = JSONSchema validator.
+-  Dependency-less (just 2 small dependencies for JSONSchema and XML comparison helpers)
 
 
 Supported HTTP clients
@@ -61,10 +59,10 @@ Or install the latest sources from Github:
     pip install -e git+git://github.com/h2non/pook.git#egg=pook
 
 
-Documentation
--------------
+Getting started
+---------------
 
-See RTD documentation
+See ReadTheDocs documentation:
 
 |Documentation Status|
 
@@ -100,7 +98,7 @@ Basic mocking:
         assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
-Using the chainable API:
+Using the chainable API DSL:
 
 .. code:: python
 
@@ -120,7 +118,7 @@ Using the chainable API:
         assert mock.calls[0].response.text == '{"error": "not found"}'
 
 
-Usage as decorator:
+Using the decorator:
 
 .. code:: python
 
@@ -139,7 +137,7 @@ Usage as decorator:
     print('#2 status:', res.status_code)
 
 
-Usage with context manager:
+Using the context manager for isolated HTTP traffic interception blocks:
 
 .. code:: python
 

@@ -1,5 +1,5 @@
 from .base import BaseMatcher
-from .helpers import compare
+from .compare import compare
 
 
 class PathMatcher(BaseMatcher):

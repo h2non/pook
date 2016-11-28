@@ -63,8 +63,8 @@ class Engine(object):
 
     def use_network_filter(self, *fn):
         """
-        Adds network filters to determine if outgoing unmatched HTTP traffic
-        can stablish real network connections.
+        Adds network filters to determine if certain outgoing unmatched
+        HTTP traffic can stablish real network connections.
 
         Arguments:
             *fn (function): variadic function filter arguments to be used.
@@ -73,7 +73,8 @@ class Engine(object):
 
     def flush_network_filters(self):
         """
-        Flushed real networking filters.
+        Flushes registered real networking filters in the current
+        mock engine.
         """
         self.network_filters = []
 
@@ -156,8 +157,8 @@ class Engine(object):
         if self.active:
             return None
 
-        self.active = True
         [interceptor.activate() for interceptor in self.interceptors]
+        self.active = True
 
     def disable(self):
         """
@@ -167,9 +168,14 @@ class Engine(object):
             return None
 
         # Restore HTTP interceptors
-        [interceptor.disable() for interceptor in self.interceptors]
-        # Reset engine state
-        self.reset()
+        for interceptor in self.interceptors:
+            try:
+                interceptor.disable()
+            except RuntimeError:
+                pass  # explicitely ignore runtime patch errors
+
+        # Restore engine state
+        self.active = False
 
     def reset(self):
         """
@@ -230,7 +236,7 @@ class Engine(object):
         Returns:
             tuple: pending mock instances.
         """
-        return (mock for mock in self.mocks if mock.isdone())
+        return [mock for mock in self.mocks if not mock.isdone()]
 
     def ispending(self):
         """

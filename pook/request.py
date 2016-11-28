@@ -1,4 +1,5 @@
 import sys
+import json as _json
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 
@@ -72,7 +73,7 @@ class Request(object):
         self._query = parse_qs(params)
 
     @property
-    def body(self, data):
+    def body(self):
         return self._body
 
     @body.setter
@@ -84,6 +85,17 @@ class Request(object):
                 pass
 
         self._body = body
+
+    @property
+    def json(self, data):
+        return _json.loads(self._body)
+
+    @json.setter
+    def json(self, data):
+        if isinstance(data, str):
+            self._body = data
+        else:
+            self._body = _json.dumps(data)
 
     def copy(self):
         """

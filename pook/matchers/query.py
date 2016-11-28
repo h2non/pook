@@ -1,6 +1,6 @@
 import sys
 from .base import BaseMatcher
-from .helpers import compare
+from .compare import compare
 
 if sys.version_info < (3,):     # Python 2
     from urlparse import parse_qs

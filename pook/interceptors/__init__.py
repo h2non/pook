@@ -1,7 +1,7 @@
 import sys
 from .urllib3 import Urllib3Interceptor
 from .http import HTTPClientInterceptor
-from .base import BaseInterceptor  # noqa
+from .base import BaseInterceptor
 
 # Explicit symbols to export
 __all__ = (
