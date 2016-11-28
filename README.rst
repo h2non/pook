@@ -136,6 +136,30 @@ Using the decorator:
     print('#2 status:', res.status_code)
 
 
+Simple ``unittest`` integration:
+
+.. code:: python
+
+    import pook
+    import unittest
+    import requests
+
+
+    class TestUnitTestEngine(unittest.TestCase):
+
+        @pook.activate
+        def test_request(self):
+            pook.get('server.com/foo').reply(204)
+            res = requests.get('http://server.com/foo')
+            self.assertEqual(res.status_code, 204)
+
+        def test_request_with_context_manager(self):
+            with pook.use():
+                pook.get('server.com/bar', reply=204)
+                res = requests.get('http://server.com/bar')
+                self.assertEqual(res.status_code, 204)
+
+
 Using the context manager for isolated HTTP traffic interception blocks:
 
 .. code:: python

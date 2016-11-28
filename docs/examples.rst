@@ -51,6 +51,13 @@ Enable real networking mode
 
 
 
+Simple ``unittest`` integration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/unittest_example.py
+
+
+
 Simulated error exception on mock matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
