@@ -36,10 +36,10 @@ Features
 Supported HTTP clients
 ----------------------
 
--  ✔ `urllib3`_ / `requests`_
--  ✔ `aiohttp`_
--  ✔ `urllib`_ / `http.client`_ (experimental)
--  ✘ `pycurl`_ (see `#16`_)
+-  ✔  `urllib3`_ / `requests`_
+-  ✔  `aiohttp`_
+-  ✔  `urllib`_ / `http.client`_ (experimental)
+-  ✘  `pycurl`_ (see `#16`_)
 
 
 Installation
@@ -252,9 +252,9 @@ MIT - Tomas Aparicio
 .. _Go: https://golang.org
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
-.. _annotated API reference: http://pook.rtfd.io
+.. _annotated API reference: http://pook.readthedocs.io/en/latest/api.html
 .. _#16: https://github.com/h2non/pook/issues/16
-.. _examples/: http://pook.readthedocs.io/en/latest/examples.html
+.. _examples: http://pook.readthedocs.io/en/latest/examples.html
 .. _aiohttp: https://github.com/KeepSafe/aiohttp
 .. _requests: http://docs.python-requests.org/en/master/
 .. _urllib3: https://github.com/shazow/urllib3

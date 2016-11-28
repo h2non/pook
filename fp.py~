@@ -1,6 +1,0 @@
-import pook
-import requests
-
-(pook.get('api.fp.tools/forums/stats')
-   .reply(200)
-   .json({'forums': 300, 'threads': 5130321})
