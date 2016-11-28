@@ -3,11 +3,10 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
 
-``pook`` can intercept and mock out traffic in most popular HTTP client implementations in Python ecosystem.
-
-pook was heavily inspired by `gock`_, its Go equivalent package.
+``pook`` was heavily inspired in `gock`_, its equivalent package for `Go`_.
 
 **Still beta**: please, report any issue you may experiment.
+
 
 Features
 --------
@@ -108,8 +107,8 @@ Using the chainable API DSL:
     @pook.on
     def test_my_api():
         mock = (pook.get('http://twitter.com/api/1/foobar')
-               .reply(404)
-               .json({'error': 'not found'}))
+                  .reply(404)
+                  .json({'error': 'not found'}))
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
@@ -226,6 +225,7 @@ License
 
 MIT - Tomas Aparicio
 
+.. _Go: https://golang.org
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.rtfd.io
