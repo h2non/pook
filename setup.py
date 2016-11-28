@@ -62,7 +62,7 @@ setup(
     version=version,
     author='Tomas Aparicio',
     description=(
-        'Versatile HTTP traffic mocking and expectations made easy in Python.'
+        'HTTP traffic mocking and expectations made easy'
     ),
     url='https://github.com/h2non/pook',
     license='MIT',
