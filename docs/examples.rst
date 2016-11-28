@@ -75,7 +75,7 @@ Using ``urllib3`` as HTTP client
 Asynchronous HTTP request using ``aiohttp``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. literalinclude:: ../examples/aiohttp.py
+.. literalinclude:: ../examples/aiohttp_client.py
 
 
 
