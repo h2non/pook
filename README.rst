@@ -41,6 +41,9 @@ Supported HTTP clients
 -  ✔  `urllib`_ / `http.client`_ (experimental)
 -  ✘  `pycurl`_ (see `#16`_)
 
+Note: only recent HTTP client versions has been tested.
+Multiple versions can be supported, but the latest one will have always priority.
+
 
 Installation
 ------------

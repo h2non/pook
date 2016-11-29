@@ -11,7 +11,8 @@ from .json_schema import JSONSchemaMatcher
 
 # Explicit symbols to export
 __all__ = (
-    'matchers', 'init', 'add', 'get',
+    'matchers', 'init',
+    'add', 'get',
     'BaseMatcher',
     'MethodMatcher',
     'URLMatcher',
@@ -71,7 +72,7 @@ def init(name, *args):
 
     Arguments:
         name (str): matcher class name or alias to execute.
-        *args: variadic argument
+        *args (mixed): variadic argument
 
     Returns:
         matcher: matcher instance.

@@ -9,8 +9,8 @@ from .request import Request  # noqa
 from .response import Response  # noqa
 from .matcher import MatcherEngine  # noqa
 
-# Explicit symbols to export (analog to __all__)
-api_exports = (
+# Public API symbols to export
+__all__ = (
     'activate', 'on', 'disable', 'off', 'reset', 'engine',
     'use_network', 'enable_network', 'use', 'mock',
     'get', 'post', 'put', 'patch', 'head',
