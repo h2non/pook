@@ -271,7 +271,7 @@ MIT - Tomas Aparicio
    :target: https://pypi.python.org/pypi/pook
 .. |Coverage Status| image:: https://coveralls.io/repos/github/h2non/pook/badge.svg?branch=master
    :target: https://coveralls.io/github/h2non/pook?branch=master
-.. |Documentation Status| image:: https://readthedocs.org/projects/pook/badge/?version=latest
+.. |Documentation Status| image:: https://img.shields.io/badge/docs-latest-green.svg?style=flat
    :target: http://pook.readthedocs.io/en/latest/?badge=latest
 .. |Quality| image:: https://codeclimate.com/github/h2non/pook/badges/gpa.svg
    :target: https://codeclimate.com/github/h2non/pook
