@@ -5,7 +5,7 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 ``pook`` was heavily inspired in `gock`_, its equivalent package for `Go`_.
 
-**Still beta**: please, report any issue you may experiment.
+**Note**: still beta quality library please. Some features, more examples and better test coverage is still pending.
 
 
 Features
@@ -13,10 +13,10 @@ Features
 
 -  Simple, expressive and fluent API.
 -  Provides both Pythonic and chainable DSL API styles.
--  Full-feated HTTP response definitions and expectations.
--  Match any HTTP protocol primitive (URL, method, query params, headers, body...).
+-  Full-featured HTTP response definitions and expectations.
+-  Matches any HTTP protocol primitive (URL, method, query params, headers, body...).
 -  Full regular expressions capable mock expectations matching.
--  HTTP client agnostic via adapters (works with most popular HTTP packages).
+-  Supports multiple HTTP clients via interceptor adapters (works with most popular HTTP client implementations).
 -  Supports JSON Schema body matching.
 -  Configurable volatile, persistent or TTL limited mocks.
 -  Works with any testing framework or engine (unittest, pytest, nosetests...).
@@ -24,8 +24,8 @@ Features
 -  Can be used as decorator and/or via context managers.
 -  Real networking mode with optional custom traffic filtering.
 -  Map/filter mocks easily for generic or custom mock expectations.
--  First-class JSON/XML body matching support and response expectations.
--  Simulated error exceptions.
+-  First-class JSON & XML support.
+-  Simulated raised error exceptions.
 -  Network delay simulation (only available in ``aiohttp``).
 -  Pluggable and hackable API.
 -  Does not support WebSocket.

@@ -3,7 +3,10 @@ import functools
 
 def fluent(fn):
     """
-    Method decorator to allow easy method chaining.
+    Simple function decorator allowing easy method chaining.
+
+    Arguments:
+        fn (function): target function to decorate.
     """
     @functools.wraps(fn)
     def wrapper(self, *args, **kw):

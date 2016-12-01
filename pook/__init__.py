@@ -1,6 +1,7 @@
 from .api import *  # noqa
 from .api import __all__ as api_exports
 
+# Delegate to API export
 __all__ = api_exports
 
 # Package metadata

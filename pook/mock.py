@@ -266,6 +266,7 @@ class Mock(object):
         - ``json`` = ``application/json``
         - ``xml`` = ``application/xml``
         - ``html`` = ``text/html``
+        - ``text`` = ``text/plain``
         - ``urlencoded`` = ``application/x-www-form-urlencoded``
         - ``form`` = ``application/x-www-form-urlencoded``
         - ``form-data`` = ``application/x-www-form-urlencoded``
@@ -289,6 +290,7 @@ class Mock(object):
         - ``json`` = ``application/json``
         - ``xml`` = ``application/xml``
         - ``html`` = ``text/html``
+        - ``text`` = ``text/plain``
         - ``urlencoded`` = ``application/x-www-form-urlencoded``
         - ``form`` = ``application/x-www-form-urlencoded``
         - ``form-data`` = ``application/x-www-form-urlencoded``

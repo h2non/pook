@@ -1,5 +1,6 @@
 # MIME type aliases for semantic convenience
 TYPES = {
+  'text': 'text/plain',
   'html': 'text/html',
   'json': 'application/json',
   'xml': 'application/xml',

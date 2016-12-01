@@ -24,7 +24,7 @@ lint:
 
 test: clean
 	@echo "$(OK_COLOR)==> Runnings tests ...$(NO_COLOR)"
-	@py.test -s -v --cov pook --cov-report term-missing
+	@py.test -s -v --capture sys --cov pook --cov-report term-missing
 
 coverage:
 	@coverage run --source pook -m py.test

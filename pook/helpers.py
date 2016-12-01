@@ -10,10 +10,8 @@ def trigger_methods(instance, args):
     Arguments:
         instance (object): target instance to dynamically trigger methods.
         args (iterable): input arguments to trigger objects to
-
-    Returns:
-        None
     """
+    # Start the magic
     for name in sorted(args):
         value = args[name]
         target = instance

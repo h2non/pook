@@ -7,8 +7,9 @@ from .constants import TYPES
 
 class Response(object):
     """
-    Response is used to declare and compose an HTTP mock response.
-    Provides a chainable DSL API.
+    Response is used to declare and compose an HTTP mock responses fields.
+
+    It provides a chainable DSL interface for easier and declarative usage.
     """
 
     def __init__(self, **args):
@@ -94,6 +95,7 @@ class Response(object):
         - ``json`` = ``application/json``
         - ``xml`` = ``application/xml``
         - ``html`` = ``text/html``
+        - ``text`` = ``text/plain``
         - ``urlencoded`` = ``application/x-www-form-urlencoded``
         - ``form`` = ``application/x-www-form-urlencoded``
         - ``form-data`` = ``application/x-www-form-urlencoded``
@@ -117,6 +119,7 @@ class Response(object):
         - ``json`` = ``application/json``
         - ``xml`` = ``application/xml``
         - ``html`` = ``text/html``
+        - ``text`` = ``text/plain``
         - ``urlencoded`` = ``application/x-www-form-urlencoded``
         - ``form`` = ``application/x-www-form-urlencoded``
         - ``form-data`` = ``application/x-www-form-urlencoded``

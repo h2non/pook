@@ -1,36 +1,28 @@
-from inspect import isfunction
+import re
+
+# Little hack to extra the regexp object type at runtime
+retype = type(re.compile(''))
 
 
-def isregex_string(expr):
+def isregex_expr(expr):
     """
     Returns ``True`` is the given expression value is a regular expression
     like string with prefix ``re/`` and suffix ``/``, otherwise ``False``.
 
     Arguments:
-        expt (mixed): expression value to test.
+        expr (mixed): expression value to test.
 
     Returns:
         bool
     """
     if not isinstance(expr, str):
         return False
-    return expr.startswith('re/') and expr.endswith('/')
 
-
-def has_regex_methods(value):
-    """
-    Returns ``True`` if the input object implements the regular
-    expressesion interface methods, otherwise ``False``.
-
-    Arguments:
-        value (mixed): input value to test.
-
-    Returns:
-        bool
-    """
-    methods = (getattr(value, 'match', None),
-               getattr(value, 'search', None))
-    return all(isfunction(x) for x in methods)
+    return all([
+        len(expr) > 3,
+        expr.startswith('re/'),
+        expr.endswith('/')
+    ])
 
 
 def isregex(value):
@@ -46,4 +38,4 @@ def isregex(value):
     """
     if not value:
         return False
-    return any([isregex_string(value), has_regex_methods(value)])
+    return any((isregex_expr(value), isinstance(value, retype)))
