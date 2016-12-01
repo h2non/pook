@@ -5,7 +5,7 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 ``pook`` was heavily inspired in `gock`_, its equivalent package for `Go`_.
 
-**Note**: still beta quality library please. Some features, more examples and better test coverage is still pending.
+**Note**: still beta quality library please. Additional features, more examples and better test coverage are still pending.
 
 
 Features
