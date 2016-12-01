@@ -1,6 +1,5 @@
 from ..types import isregex
 from .base import BaseMatcher
-from .compare import compare
 
 
 class BodyMatcher(BaseMatcher):

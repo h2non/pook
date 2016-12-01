@@ -14,7 +14,6 @@ install:
   - pip install -r requirements-dev.txt
 
 script:
-  - make lint
   - make test
 
 after_success:

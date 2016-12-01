@@ -61,8 +61,8 @@ class BaseMatcher(object):
         if not isregex(re):
             return False
 
-        if isregex_expr(expr):
-            expr = strip_regex(expr)
+        if isregex_expr(re):
+            re = strip_regex(re)
 
         try:
             return bool(re.compile(re).match(value))

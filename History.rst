@@ -13,7 +13,6 @@ History
 
 - First version (still beta)
 
-
 0.1.0-rc.1 (2016-11-27)
 -----------------------
 

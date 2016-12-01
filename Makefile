@@ -22,7 +22,7 @@ lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
 	@flake8 .
 
-test: clean
+test: clean lint
 	@echo "$(OK_COLOR)==> Runnings tests ...$(NO_COLOR)"
 	@py.test -s -v --capture sys --cov pook --cov-report term-missing
 
