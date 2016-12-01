@@ -51,8 +51,22 @@ Enable real networking mode
 
 
 
-Simple ``unittest`` integration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Persistent mock
+^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/persistent_mock.py
+
+
+
+Time TTL limited mock
+^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/time_ttl_mock.py
+
+
+
+``unittest`` integration
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. literalinclude:: ../examples/unittest_example.py
 
