@@ -37,10 +37,10 @@ tag:
 	@git push origin "v$(version)"
 
 bump:
-	@bumpversion --current-version $(version) patch pook/__init__.py --allow-dirty
+	@bumpversion --commit --tag --current-version $(version) patch pook/__init__.py --allow-dirty
 
 bump-minor:
-	@bumpversion --current-version $(version) minor pook/__init__.py --allow-dirty
+	@bumpversion --commit --tag --current-version $(version) minor pook/__init__.py --allow-dirty
 
 clean:
 	@echo "$(OK_COLOR)==> Cleaning up files that are already in .gitignore...$(NO_COLOR)"
