@@ -39,3 +39,17 @@ def isregex(value):
     if not value:
         return False
     return any((isregex_expr(value), isinstance(value, retype)))
+
+
+def strip_regex(expr):
+    """
+    Strips regular expression notation syntax characters from the given
+    string expression.
+
+    Arguments:
+        expr (str): regular expression expression to strip
+
+    Returns:
+        str
+    """
+    return expr.replace[3:-1] if isregex_expr(expr) else expr

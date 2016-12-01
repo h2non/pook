@@ -1,6 +1,6 @@
 import re
 import functools
-from ..types import isregex
+from ..types import isregex, isregex_expr, strip_regex
 
 # Negate is used a reserved token identifier to negate matching
 NEGATE = '!!'
@@ -25,6 +25,15 @@ def strip_negate(value):
 
 
 def comparison(fn):
+    """
+    Decorator function for comparison.
+
+    Arguments:
+        fn (function): target function to decorate.
+
+    Returns:
+        function
+    """
     @functools.wraps(fn)
     def tester(expr, value):
         # If no expression value to test, pass the test
@@ -35,6 +44,7 @@ def comparison(fn):
         if expr and not value:
             return False
 
+        # If string instance
         if isinstance(expr, str):
             negate = str.startswith(expr, NEGATE)
             if negate:
@@ -47,8 +57,20 @@ def comparison(fn):
 
 @comparison
 def compare(expr, value):
+    """
+    Compares an string or regular expression againast a given value.
+
+    Arguments:
+        expr (str|regex): string or regular expression value to compare.
+        value (str): value to compare against to.
+
+    Returns:
+        bool
+    """
     # Try with RegExp matching
     if isregex(expr):
+        if isregex_expr(expr):
+            expr = strip_regex(expr)
         return re.match(expr, value)
 
     # Strict comparison equality

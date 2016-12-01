@@ -25,4 +25,4 @@ class BodyMatcher(BaseMatcher):
         if not isinstance(body, str):
             return False
 
-        return compare(self.expectation, body)
+        return self.compare(self.expectation, body)

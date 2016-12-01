@@ -29,6 +29,7 @@ class URLMatcher(BaseMatcher):
         if not protoregex.match(url):
             url = 'http://{}'.format(url)
 
+        self.url = url
         self.expectation = urlparse(url)
 
     def match_path(self, req):
@@ -53,3 +54,9 @@ class URLMatcher(BaseMatcher):
             self.match_path(req),
             self.match_query(req)
         ])
+
+    def __str__(self):
+        return self.url
+
+    def __repr__(self):
+        return '{}({})'.format(self.name, self.url)

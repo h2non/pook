@@ -13,13 +13,15 @@ class HeadersMatcher(BaseMatcher):
 
     @BaseMatcher.matcher
     def match(self, req):
-        for key, value in self.expectation.items():
+        for key in self.expectation:
+            # Retrieve value to match
+            value = self.expectation[key]
+
+            # Retrieve header value by key
             header = req.headers.get(key)
 
-            if not header:
-                return False
-
-            if not self.match_regexp(value, header) or header != value:
+            # Compare header value
+            if not self.compare(value, header):
                 return False
 
         return True

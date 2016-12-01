@@ -28,7 +28,7 @@ class QueryMatcher(BaseMatcher):
 
             return True
 
-        return all([test(key, param) for key, param in query.items()])
+        return all([test(key, query[key]) for key in query])
 
     @BaseMatcher.matcher
     def match(self, req):
