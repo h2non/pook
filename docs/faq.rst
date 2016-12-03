@@ -13,9 +13,9 @@ What HTTP clients are supported?
 Please, see `supported HTTP clients`_ section.
 
 
-.. _supported HTTP clients: <index.html#supported-http-clients>
+.. _supported HTTP clients: index.html#supported-http-clients
 
-.. _how it works: <how_it_works.html>
+.. _how it works: how_it_works.html
 
 
 Does ``pook`` mock out all the outgoing HTTP traffic from my app?
