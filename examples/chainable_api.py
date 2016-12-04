@@ -6,7 +6,7 @@ import requests
 (pook.post('httpbin.org/post')
     .json({'foo': 'bar'})
     .type('json')
-    .header({'Client': 'requests'})
+    .header('Client', 'requests')
     .reply(204)
     .headers({'server': 'pook'})
     .json({'error': 'simulated'}))
