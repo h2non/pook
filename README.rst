@@ -89,12 +89,10 @@ Basic mocking:
 
     @pook.activate
     def test_my_api():
-        mock = pook.get('http://twitter.com/api/1/foobar',
-                        type='json',
-                        json={'error': 'not found'})
-        mock.reply(404, json={'error': 'foo'})
+        mock = pook.get('http://twitter.com/api/1/foobar', reply=404, response_json={'error': 'foo'})
 
         resp = requests.get('http://twitter.com/api/1/foobar')
+        assert resp.status_code == 404
         assert resp.json() == {"error": "not found"}
         assert len(mock.calls) == 1
         assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
