@@ -655,16 +655,6 @@ class Mock(object):
             callback(request, self)
 
         return True
-    
-    @property
-    def calls(self):
-        """
-        Accessor to retrieve the number of mock matched calls.
-        
-        Returns:
-            int
-        """
-        return self._matches
 
     def __call__(self, fn):
         """
