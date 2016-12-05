@@ -38,7 +38,7 @@ Supported HTTP clients
 
 -  ✔  `urllib3`_ / `requests`_
 -  ✔  `aiohttp`_
--  ✔  `urllib`_ / `http.client`_ (experimental)
+-  ✔  `urllib`_ / `http.client`_ 
 -  ✘  `pycurl`_ (see `#16`_)
 
 Note: only recent HTTP client versions has been tested.
@@ -48,11 +48,11 @@ Multiple versions can be supported, but the latest one will have always priority
 Installation
 ------------
 
-Using ``pip`` package manager:
+Using ``pip`` package manager (requires pip 1.8+):
 
 .. code:: bash
 
-    pip install pook
+    pip install --upgrade pook
 
 Or install the latest sources from Github:
 
