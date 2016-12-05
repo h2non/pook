@@ -45,6 +45,7 @@ def comparison(fn):
             return False
 
         # If string instance
+        negate = False
         if isinstance(expr, str):
             negate = str.startswith(expr, NEGATE)
             if negate:
