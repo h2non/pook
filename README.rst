@@ -111,10 +111,7 @@ Using the chainable API DSL:
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
-        assert len(mock.calls) == 1
-        assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
-        assert mock.calls[0].response.text == '{"error": "not found"}'
-
+        assert mock._matches == 1
 
 Using the decorator:
 
