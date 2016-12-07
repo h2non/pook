@@ -109,6 +109,8 @@ class Mock(object):
         self._persist = False
         # Optional binded engine where the mock belongs to
         self._engine = None
+        # Store request-response mock matched calls
+        self._calls = []
         # Stores the input request instance
         self._request = request
         # Stores the response mock instance
@@ -188,8 +190,8 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        headers = (name, value)
-        self.add_matcher(matcher('HeadersMatcher', *headers))
+        headers = {name: value}
+        self.add_matcher(matcher('HeadersMatcher', headers))
 
     @fluent
     def headers(self, headers=None, **kw):
@@ -604,6 +606,70 @@ class Mock(object):
         """
         return (self._persist and self._matches > 0) or self._times <= 0
 
+    def ismatched(self):
+        """
+        Returns ``True`` is the mock has been matched at least once time.
+
+        Returns:
+            bool
+        """
+        return self._matches > 0
+
+    @property
+    def done(self):
+        """
+        Attribute accessor that would be ``True`` if the current mock
+        is done, and therefore have been matched multiple times.
+
+        Returns:
+            bool
+        """
+        return self.isdone()
+
+    @property
+    def matched(self):
+        """
+        Accessor property that would be ``True`` if the current mock
+        have been matched at least once.
+
+        See ``Mock.total_matches`` for more information.
+
+        Returns:
+            bool
+        """
+        return self._matches > 0
+
+    @property
+    def total_matches(self):
+        """
+        Accessor property to retrieve the total number of times that the
+        current mock has been matched.
+
+        Returns:
+            int
+        """
+        return self._matches
+
+    @property
+    def matches(self):
+        """
+        Accessor to retrieve the mock match calls registry.
+
+        Returns:
+            list[MockCall]
+        """
+        return self._calls
+
+    @property
+    def calls(self):
+        """
+        Accessor to retrieve the mock match calls registry.
+
+        Returns:
+            list[MockCall]
+        """
+        return self.matches
+
     def match(self, request):
         """
         Matches an outgoing HTTP request against the current mock matchers.
@@ -617,16 +683,18 @@ class Mock(object):
             Exception: if the mock has an exception defined.
 
         Returns:
-            bool: `True` if the mock matches the outgoing HTTP request,
-                otherwise `False`.
+            tuple(bool, list[Exception]): ``True`` if the mock matches
+                the outgoing HTTP request, otherwise ``False``. Also returns
+                an optional list of error exceptions.
         """
+        # If mock already expired, fail it
         if self._times <= 0:
             raise PookExpiredMock('Mock expired')
 
         # Trigger mock filters
         for test in self.filters:
             if not test(request, self):
-                return False
+                return False, []
 
         # Trigger mock mappers
         for mapper in self.mappers:
@@ -635,11 +703,14 @@ class Mock(object):
                 raise ValueError('map function must return a request object')
 
         # Match incoming request against registered mock matchers
-        matches = self.matchers.match(request)
+        matches, errors = self.matchers.match(request)
 
         # If not matched, return False
         if not matches:
-            return False
+            return False, errors
+
+        # Register matched request for further inspecion and reference
+        self._calls.append(request)
 
         # Increase mock call counter
         self._matches += 1
@@ -654,7 +725,7 @@ class Mock(object):
         for callback in self.callbacks:
             callback(request, self)
 
-        return True
+        return True, []
 
     def __call__(self, fn):
         """

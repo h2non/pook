@@ -30,7 +30,7 @@ Features
 -  Pluggable and hackable API.
 -  Does not support WebSocket.
 -  Works with Python +2.7 and +3.0 (including PyPy).
--  Dependency-less (just 2 small dependencies for JSONSchema and XML comparison helpers)
+-  Dependency-less: just 2 small dependencies for JSONSchema and XML comparison helpers.
 
 
 Supported HTTP clients
@@ -38,7 +38,7 @@ Supported HTTP clients
 
 -  ✔  `urllib3`_ / `requests`_
 -  ✔  `aiohttp`_
--  ✔  `urllib`_ / `http.client`_ (experimental)
+-  ✔  `urllib`_ / `http.client`_
 -  ✘  `pycurl`_ (see `#16`_)
 
 Note: only recent HTTP client versions has been tested.
@@ -52,7 +52,7 @@ Using ``pip`` package manager:
 
 .. code:: bash
 
-    pip install pook
+    pip install --upgrade pook
 
 Or install the latest sources from Github:
 

@@ -4,9 +4,9 @@ from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 
 if sys.version_info < (3,):     # Python 2
-    from urlparse import urlparse, parse_qs
+    from urlparse import urlparse, parse_qs, urlunparse
 else:                           # Python 3
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import urlparse, parse_qs, urlunparse
 
 
 class Request(object):
@@ -119,5 +119,7 @@ class Request(object):
         args = []
         for key in self.keys:
             value = getattr(self, '_{}'.format(key))
+            if key == 'url':
+                value = urlunparse(value)
             args.append('{}={},\n'.format(key, value))
         return 'Request(\n  {})'.format('  '.join(args))

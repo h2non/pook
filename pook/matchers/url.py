@@ -1,6 +1,5 @@
 import re
 import sys
-from .compare import compare
 from .base import BaseMatcher
 from .path import PathMatcher
 from .query import QueryMatcher
@@ -48,9 +47,9 @@ class URLMatcher(BaseMatcher):
     def match(self, req):
         url = self.expectation
         return all([
-            compare(url.scheme, req.url.scheme),
-            compare(url.hostname, req.url.hostname),
-            compare(url.port, req.url.port),
+            self.compare(url.scheme, req.url.scheme),
+            self.compare(url.hostname, req.url.hostname),
+            self.compare(url.port or req.url.port, req.url.port),
             self.match_path(req),
             self.match_query(req)
         ])

@@ -30,9 +30,3 @@ def test_context_manager():
         pook.get('server.com/baz', reply=204)
         res = requests.get('http://server.com/baz')
         assert res.status_code == 204
-
-
-def test_no_match_exception():
-    pook.get('server.com/bar', reply=204)
-    with pytest.raises(RuntimeError):
-        requests.get('http://server.com/baz')

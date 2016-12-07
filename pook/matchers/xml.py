@@ -1,7 +1,6 @@
 import json
 import xmltodict
 from .base import BaseMatcher
-from ..types import isregex
 
 
 class XMLMatcher(BaseMatcher):
@@ -28,11 +27,5 @@ class XMLMatcher(BaseMatcher):
 
         if not isinstance(data, str):
             return False
-
-        if data == self.expectation:
-            return True
-
-        if isregex(self.expectation):
-            return self.expectation.match(data or '') is not None
 
         return self.compare(data)

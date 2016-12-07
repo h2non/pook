@@ -29,9 +29,21 @@ class MatcherEngine(list):
             request (pook.Request): outgoing request to match.
 
         Returns:
-            bool: `True` if all the matcher tests passes, otherwise `False`.
+            tuple(bool, list[Exception]): ``True`` if all matcher tests
+                passes, otherwise ``False``. Also returns an optional list
+                of error exceptions.
         """
-        return all([matcher.match(request) for matcher in self])
+        errors = []
+
+        def match(matcher):
+            try:
+                return matcher.match(request)
+            except Exception as err:
+                err = '{}: {}'.format(type(matcher).__name__, err)
+                errors.append(err)
+                return False
+
+        return all([match(matcher) for matcher in self]), errors
 
     def __repr__(self):
         """

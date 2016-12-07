@@ -1,5 +1,4 @@
 from .base import BaseMatcher
-from .compare import compare
 
 
 class PathMatcher(BaseMatcher):
@@ -9,4 +8,4 @@ class PathMatcher(BaseMatcher):
 
     @BaseMatcher.matcher
     def match(self, req):
-        return compare(self.expectation, req.url.path)
+        return self.compare(self.expectation, req.url.path)

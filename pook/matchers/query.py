@@ -1,6 +1,5 @@
 import sys
 from .base import BaseMatcher
-from .compare import compare
 
 if sys.version_info < (3,):     # Python 2
     from urlparse import parse_qs
@@ -23,8 +22,8 @@ class QueryMatcher(BaseMatcher):
             for index, value in enumerate(param):
                 if index >= len(match):
                     return False
-                if not compare(value, match[index]):
-                    return False
+                # Perform query param comparison
+                self.compare(value, match[index])
 
             return True
 

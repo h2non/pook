@@ -6,14 +6,15 @@ import requests
 (pook.post('httpbin.org/post')
     .json({'foo': 'bar'})
     .type('json')
-    .header({'Client': 'requests'})
+    .header('Client', 'requests')
     .reply(204)
     .headers({'server': 'pook'})
     .json({'error': 'simulated'}))
 
 res = requests.post('http://httpbin.org/post',
-                    headers={'Client': 'requests'},
-                    data=json.dumps({'foo': 'bar'}))
+                    data=json.dumps({'foo': 'bar'}),
+                    headers={'Client': 'requests',
+                             'Content-Type': 'application/json'})
 
 print('Status:', res.status_code)
 print('Body:', res.json())

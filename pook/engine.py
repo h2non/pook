@@ -1,7 +1,7 @@
 from functools import partial
 from inspect import isfunction
 from .mock import Mock
-from .types import isregex
+from .regex import isregex
 from .interceptors import interceptors
 from .exceptions import PookNoMatches, PookExpiredMock
 
@@ -330,11 +330,17 @@ class Engine(object):
             if not request:
                 raise ValueError('map function must return a request object')
 
+        # Store list of mock matching errors for further debugging
+        match_errors = []
+
         # Try to match the request against registered mock definitions
         for mock in self.mocks[:]:
             try:
                 # Return the first matched HTTP request mock
-                if mock.match(request.copy()):
+                matches, errors = mock.match(request.copy())
+                if len(errors):
+                    match_errors += errors
+                if matches:
                     return mock
             except PookExpiredMock:
                 # Remove the mock if already expired
@@ -342,7 +348,15 @@ class Engine(object):
 
         # Validate that we have a mock
         if not self.should_use_network(request):
-            raise PookNoMatches('Cannot match any mock for request:', request)
+            msg = 'Cannot match any mock for request:\n{}'.format(request)
+
+            # Compose unmatch error details
+            err = '\n\n'.join([str(err) for err in match_errors])
+            if err:
+                msg += '\n\n=> Matching errors:\n{}'.format(err)
+
+            # Raise no matches exception
+            raise PookNoMatches(msg)
 
         # Register unmatched request
         self.unmatched_reqs.append(request)

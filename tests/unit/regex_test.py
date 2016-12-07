@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from pook.types import isregex_expr, isregex
+from pook.regex import isregex_expr, isregex
 
 
 def test_isregex_expr():

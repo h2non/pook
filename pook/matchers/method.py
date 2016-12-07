@@ -9,4 +9,4 @@ class MethodMatcher(BaseMatcher):
     @BaseMatcher.matcher
     def match(self, req):
         return (self.expectation == '*' or
-                req.method.lower() == self.expectation.lower())
+                self.compare(req.method.lower(), self.expectation.lower()))

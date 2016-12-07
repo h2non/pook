@@ -1,8 +1,8 @@
 import functools
 from copy import deepcopy
 from abc import abstractmethod, ABCMeta
-from .compare import compare
-from ..types import isregex, isregex_expr, strip_regex
+from ..compare import compare
+from ..regex import isregex, isregex_expr, strip_regex
 
 
 class BaseMatcher(object):
