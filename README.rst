@@ -7,7 +7,7 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 **Note**: still beta quality library. Additional features, more examples and better test coverage are still pending.
 
-**UPDATE**: version [0.1.3](https://github.com/h2non/pook/milestone/3) is coming shortly fixing most bugs and introducing new features.
+**UPDATE**: version `0.1.3`_ is coming shortly fixing most bugs and introducing new features.
 
 Features
 --------
@@ -257,7 +257,8 @@ MIT - Tomas Aparicio
 .. _urllib3: https://github.com/shazow/urllib3
 .. _urllib: https://docs.python.org/3/library/urllib.html
 .. _http.client: https://docs.python.org/3/library/http.client.html
-.. _pycurl: http://pycurl.io/
+.. _pycurl: http://pycurl.io
+.. _0.1.3: https://github.com/h2non/pook/milestone/3
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook
