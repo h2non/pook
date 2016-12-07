@@ -7,6 +7,7 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 **Note**: still beta quality library. Additional features, more examples and better test coverage are still pending.
 
+**UPDATE**: version `0.1.3`_ is coming shortly fixing most bugs and introducing new features.
 
 Features
 --------
@@ -48,7 +49,7 @@ Multiple versions can be supported, but the latest one will have always priority
 Installation
 ------------
 
-Using ``pip`` package manager:
+Using ``pip`` package manager (requires pip 1.8+):
 
 .. code:: bash
 
@@ -89,16 +90,12 @@ Basic mocking:
 
     @pook.activate
     def test_my_api():
-        mock = pook.get('http://twitter.com/api/1/foobar',
-                        type='json',
-                        json={'error': 'not found'})
-        mock.reply(404, json={'error': 'foo'})
+        mock = pook.get('http://twitter.com/api/1/foobar', reply=404, response_json={'error': 'foo'})
 
         resp = requests.get('http://twitter.com/api/1/foobar')
+        assert resp.status_code == 404
         assert resp.json() == {"error": "not found"}
-        assert len(mock.calls) == 1
-        assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
-        assert mock.calls[0].response.text == '{"error": "not found"}'
+        assert mock._matches == 1
 
 Using the chainable API DSL:
 
@@ -115,10 +112,7 @@ Using the chainable API DSL:
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
-        assert len(mock.calls) == 1
-        assert mock.calls[0].request.url == 'http://twitter.com/api/1/foobar'
-        assert mock.calls[0].response.text == '{"error": "not found"}'
-
+        assert mock._matches == 1
 
 Using the decorator:
 
@@ -263,7 +257,8 @@ MIT - Tomas Aparicio
 .. _urllib3: https://github.com/shazow/urllib3
 .. _urllib: https://docs.python.org/3/library/urllib.html
 .. _http.client: https://docs.python.org/3/library/http.client.html
-.. _pycurl: http://pycurl.io/
+.. _pycurl: http://pycurl.io
+.. _0.1.3: https://github.com/h2non/pook/milestone/3
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook
