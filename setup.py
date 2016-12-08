@@ -24,7 +24,7 @@ if 'test' in sys.argv:
 
 
 def read_version(package):
-    with open(os.path.join(package, '__init__.py'), 'r') as fd:
+    with open(os.path.join(package, '__init__.py'), 'r', encoding='UTF-8') as fd:
         for line in fd:
             if line.startswith('__version__ = '):
                 return line.split()[-1].strip().strip("'")
@@ -47,13 +47,13 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-with open('requirements-dev.txt') as f:
+with open('requirements-dev.txt', encoding='UTF-8') as f:
     tests_require = f.read().splitlines()
-with open('requirements.txt') as f:
+with open('requirements.txt', encoding='UTF-8') as f:
     install_requires = f.read().splitlines()
-with open('README.rst') as f:
+with open('README.rst', encoding='UTF-8') as f:
     readme = f.read()
-with open('History.rst') as f:
+with open('History.rst', encoding='UTF-8') as f:
     history = f.read()
 
 
