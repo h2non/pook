@@ -34,5 +34,5 @@ def test_context_manager():
 
 def test_no_match_exception():
     pook.get('server.com/bar', reply=204)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(Exception):
         requests.get('http://server.com/baz')
