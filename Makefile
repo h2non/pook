@@ -42,6 +42,9 @@ bump:
 bump-minor:
 	@bumpversion --commit --tag --current-version $(version) minor pook/__init__.py --allow-dirty
 
+history:
+	@git changelog --tag $(version)
+
 clean:
 	@echo "$(OK_COLOR)==> Cleaning up files that are already in .gitignore...$(NO_COLOR)"
 	@for pattern in `cat .gitignore`; do find . -name "*/$$pattern" -delete; done
