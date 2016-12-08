@@ -72,6 +72,13 @@ Time TTL limited mock
 
 
 
+``py.test`` integration
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/pytest_example.py
+
+
+
 Simulated error exception on mock matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
