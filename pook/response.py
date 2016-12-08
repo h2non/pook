@@ -10,16 +10,28 @@ class Response(object):
     Response is used to declare and compose an HTTP mock responses fields.
 
     It provides a chainable DSL interface for easier and declarative usage.
+
+    Arguments:
+        status (int): HTTP response status code. Defaults to ``200``.
+        headers (dict): HTTP response headers.
+        body (str|bytes): HTTP response body.
+        json (str|dict|list): HTTP response JSON body.
+        xml (str): HTTP response XML body.
+        type (str): HTTP response content MIME type.
+        file (str): file path to HTTP body response.
+
+    Attributes:
+        mock (pook.Mock): reference to mock instance.
     """
 
-    def __init__(self, **args):
+    def __init__(self, **kw):
         self._status = 200
         self._mock = None
         self._body = None
         self._headers = HTTPHeaderDict()
 
         # Trigger response method based on input arguments
-        trigger_methods(self, args)
+        trigger_methods(self, kw)
 
     @fluent
     def status(self, code=200):

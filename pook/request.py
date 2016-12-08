@@ -12,6 +12,26 @@ else:                           # Python 3
 class Request(object):
     """
     Request object representing the request mock expectation DSL.
+
+    Arguments:
+        method (str): HTTP method to match. Defaults to ``GET``.
+        url (str): URL request to intercept and match.
+        headers (dict): HTTP headers to match.
+        query (dict): URL query params to match. Complementely to URL
+            defined query params.
+        body (str|regex): request body payload to match.
+        json (str|dict|list): JSON payload body structure to match.
+        xml (str): XML payload data structure to match.
+
+    Attributes:
+        method (str): HTTP method to match. Defaults to ``GET``.
+        url (str): URL request to intercept and match.
+        headers (dict): HTTP headers to match.
+        query (dict): URL query params to match. Complementely to URL
+            defined query params.
+        body (str|regex): request body payload to match.
+        json (str|dict|list): JSON payload body structure to match.
+        xml (str): XML payload data structure to match.
     """
 
     # Store keys
@@ -87,7 +107,7 @@ class Request(object):
         self._body = body
 
     @property
-    def json(self, data):
+    def json(self):
         return _json.loads(self._body)
 
     @json.setter
@@ -96,6 +116,14 @@ class Request(object):
             self._body = data
         else:
             self._body = _json.dumps(data)
+
+    @property
+    def xml(self):
+        return self._body
+
+    @xml.setter
+    def xml(self, data):
+        self._body = data
 
     def copy(self):
         """
