@@ -4,4 +4,3 @@ include requirements.txt
 include requirements-dev.txt
 
 prune docs/_build
-prune tasks
