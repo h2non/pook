@@ -3,9 +3,10 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
 
-``pook`` was heavily inspired in `gock`_, its equivalent package for `Go`_.
+``pook`` was heavily inspired by `gock`_.
 
-**Note**: still beta quality library. Additional features, more examples and better test coverage are still pending.
+**Note**: still beta quality library. More docs, examples and better test coverage are still a work in progress.
+
 
 Features
 --------
@@ -25,11 +26,11 @@ Features
 -  Map/filter mocks easily for generic or custom mock expectations.
 -  First-class JSON & XML support.
 -  Simulated raised error exceptions.
--  Network delay simulation (only available in ``aiohttp``).
+-  Network delay simulation (only available for ``aiohttp``).
 -  Pluggable and hackable API.
--  Does not support WebSocket.
+-  Does not support WebSocket traffic mocking.
 -  Works with Python +2.7 and +3.0 (including PyPy).
--  Dependency-less: just 2 small dependencies for JSONSchema and XML comparison helpers.
+-  Dependency-less: just 2 small dependencies for JSONSchema and XML tree comparison.
 
 
 Supported HTTP clients
@@ -40,7 +41,7 @@ Supported HTTP clients
 -  ✔  `urllib`_ / `http.client`_
 -  ✘  `pycurl`_ (see `#16`_)
 
-Note: only recent HTTP client versions has been tested.
+**Note**: only recent HTTP client versions has been tested.
 Multiple versions can be supported, but the latest one will have always priority.
 
 
