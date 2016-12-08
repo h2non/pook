@@ -1,6 +1,13 @@
 History
 =======
 
+0.1.3 (2016-12-08)
+------------------
+
+- fix(core): several bug fixes.
+- feat(core): add pending features and major refactors.
+- feat(matchers): use ``unittest.TestCase`` matching engine by default.
+
 0.1.2 (2016-12-01)
 ------------------
 

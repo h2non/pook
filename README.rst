@@ -7,8 +7,6 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 **Note**: still beta quality library. Additional features, more examples and better test coverage are still pending.
 
-**UPDATE**: version `0.1.3`_ is coming shortly fixing most bugs and introducing new features.
-
 Features
 --------
 
