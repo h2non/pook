@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pook
-import pytest
 import requests
 
 
