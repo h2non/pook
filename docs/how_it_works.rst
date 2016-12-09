@@ -53,7 +53,7 @@ and therefore consumed, it will be flushed.
 
 You can modify this behaviour via:
 
-Explicitely definining the TTL of each mock, so effectively the number of times the mock can be matched and consumed:
+Explicitly definining the TTL of each mock, so effectively the number of times the mock can be matched and consumed:
 
 .. code:: python
 
@@ -64,7 +64,7 @@ Explicitely definining the TTL of each mock, so effectively the number of times 
     pook.get('server.com/api', times=5)
 
 
-Explicitely definining a persistent mock:
+Explicitly definining a persistent mock:
 
 .. code:: python
 
