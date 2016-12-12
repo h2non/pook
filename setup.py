@@ -25,7 +25,7 @@ if 'test' in sys.argv:
 
 def read_version(package):
     init_path = os.path.join(package, '__init__.py')
-    with open(init_path, 'r', encoding='UTF-8') as fd:
+    with open(init_path, 'r') as fd:
         for line in fd:
             if line.startswith('__version__ = '):
                 return line.split()[-1].strip().strip("'")
