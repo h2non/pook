@@ -9,4 +9,4 @@ __author__ = 'Tomas Aparicio'
 __license__ = 'MIT'
 
 # Current version
-__version__ = '0.1.4'
+__version__ = '0.1.5'
