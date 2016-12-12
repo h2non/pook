@@ -19,7 +19,7 @@ def equal(x, y):
     return TestCase().assertEqual(x, y) or True
 
 
-def matches(x, y):
+def matches(x, y, regex_expr=False):
     """
     Tries to match a regular expression value ``x`` against ``y``.
     Aliast``unittest.TestCase.assertEqual()``
@@ -27,6 +27,7 @@ def matches(x, y):
     Arguments:
         x (regex|str): regular expression to test.
         y (str): value to match.
+        regex_expr (bool): enables regex string based expression matching.
 
     Raises:
         AssertionError: in case of mismatching.
@@ -34,11 +35,15 @@ def matches(x, y):
     Returns:
         bool
     """
-    x = strip_regex(x) if isregex_expr(x) else x
+    # Parse regex expression, if needed
+    x = strip_regex(x) if regex_expr and isregex_expr(x) else x
+    # Retrieve original regex pattern
+    x = x.pattern if isregex(x) else x
+    # Run regex assertion
     return TestCase().assertRegexpMatches(x, y) or True
 
 
-def test(x, y):
+def test(x, y, regex_expr=False):
     """
     Compares to values based on regular expression matching or
     strict equality comparison.
@@ -46,11 +51,12 @@ def test(x, y):
     Arguments:
         x (regex|str): string or regular expression to test.
         y (str): value to match.
+        regex_expr (bool): enables regex string based expression matching.
 
     Raises:
-        AssertionError: in case of mismatching.
+        AssertionError: in case of matching error.
 
     Returns:
         bool
     """
-    return matches(x, y) if isregex(x) else equal(x, y)
+    return matches(x, y, regex_expr=regex_expr) if isregex(x) else equal(x, y)

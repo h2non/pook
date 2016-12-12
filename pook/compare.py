@@ -23,13 +23,17 @@ def strip_negate(value):
     return value[len(NEGATE):].lstrip()
 
 
-def compare(expr, value):
+def compare(expr, value, regex_expr=False):
     """
     Compares an string or regular expression againast a given value.
 
     Arguments:
         expr (str|regex): string or regular expression value to compare.
         value (str): value to compare against to.
+        regex_expr (bool, optional): enables string based regex matching.
+
+    Raises:
+        AssertionError: in case of assertion error.
 
     Returns:
         bool
@@ -42,15 +46,15 @@ def compare(expr, value):
     negate = False
     if isinstance(expr, str):
         negate = expr.startswith(NEGATE)
-        if negate:
-            expr = strip_negate(expr)
+        expr = strip_negate(expr) if negate else expr
 
     try:
         # RegExp or strict equality comparison
-        test(expr, value)
-        return True
+        test(expr, value, regex_expr=regex_expr)
     except Exception as err:
         if negate:
             return True
         else:
             raise err
+
+    return True

@@ -3,6 +3,7 @@ import sys
 from .base import BaseMatcher
 from .path import PathMatcher
 from .query import QueryMatcher
+from ..regex import isregex
 
 if sys.version_info < (3,):     # Python 2
     from urlparse import urlparse
@@ -18,18 +19,25 @@ class URLMatcher(BaseMatcher):
     URLMatcher implements an URL schema matcher.
     """
 
+    # Matches URL as regular expression
+    regex = False
+
     def __init__(self, url):
         if not url:
             raise ValueError('url argument cannot be empty')
-        if not isinstance(url, str):
-            raise TypeError('url most be a string')
 
-        # Add protocol prefix in the URL
-        if not protoregex.match(url):
-            url = 'http://{}'.format(url)
-
+        # Store original URL value
         self.url = url
-        self.expectation = urlparse(url)
+
+        # Process as regex value
+        if isregex(url):
+            self.regex = True
+            self.expectation = url
+        else:
+            # Add protocol prefix in the URL
+            if not protoregex.match(url):
+                self.url = 'http://{}'.format(url)
+            self.expectation = urlparse(self.url)
 
     def match_path(self, req):
         path = self.expectation.path
@@ -46,6 +54,12 @@ class URLMatcher(BaseMatcher):
     @BaseMatcher.matcher
     def match(self, req):
         url = self.expectation
+
+        # Match as regex
+        if self.regex:
+            return self.compare(url, req.url.geturl(), regex_expr=True)
+
+        # Match URL
         return all([
             self.compare(url.scheme, req.url.scheme),
             self.compare(url.hostname, req.url.hostname),

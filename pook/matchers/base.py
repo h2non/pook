@@ -2,7 +2,6 @@ import functools
 from copy import deepcopy
 from abc import abstractmethod, ABCMeta
 from ..compare import compare
-from ..regex import isregex, isregex_expr, strip_regex
 
 
 class BaseMatcher(object):
@@ -14,8 +13,6 @@ class BaseMatcher(object):
 
     # Negate matching if necessary
     negate = False
-    # Defines if the matching supports regular expression matching
-    regexp = False
 
     def __init__(self, expectation, negate=False):
         if not expectation:
@@ -30,7 +27,11 @@ class BaseMatcher(object):
 
     @property
     def expectation(self):
-        return self._expectation if hasattr(self, '_expectation') else None
+        return self._expectation
+
+    @expectation.setter
+    def expectation(self, value):
+        self._expectation = value
 
     @abstractmethod
     def match(self, request):
@@ -43,47 +44,19 @@ class BaseMatcher(object):
         """
         pass
 
-    @expectation.setter
-    def expectation(self, value):
-        self._expectation = value
-
-    def match_regexp(self, re, value):
-        """
-        Matches a regular expression value.
-
-        Arguments:
-            re (str|regex): regular expression value to use.
-            value (str): value to match.
-
-        Returns:
-            bool
-        """
-        if not isregex(re):
-            return False
-
-        if isregex_expr(re):
-            re = strip_regex(re)
-
-        try:
-            return bool(re.compile(re).match(value))
-        except:
-            return False
-
-    def compare(self, value, expectation):
+    def compare(self, value, expectation, regex_expr=False):
         """
         Compares two values with regular expression matching support.
 
         Arguments:
             value (mixed): value to compare.
             expectation (mixed): value to match.
+            regex_expr (bool, optional): enables string based regex matching.
 
         Returns:
             bool
         """
-        if not value:
-            return False
-
-        return compare(value, expectation)
+        return compare(value, expectation, regex_expr=regex_expr)
 
     def to_dict(self):
         """
