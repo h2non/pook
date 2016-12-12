@@ -12,7 +12,7 @@ class _BaseMatcher(BaseMatcher):
 
 def test_base_matcher_instance():
     matcher = _BaseMatcher('foo')
-    assert matcher.name is '_BaseMatcher'
+    assert matcher.name == '_BaseMatcher'
     assert matcher.negate is False
     assert matcher.expectation == 'foo'
     assert matcher.to_dict() == {'_BaseMatcher': 'foo'}
