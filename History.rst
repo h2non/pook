@@ -1,6 +1,13 @@
 History
 =======
 
+0.1.5 / 2016-12-12
+------------------
+
+* fix(matchers): fix matching issue in URL.
+* refactor(assertion): regex expression based matching must be explicitly enabled.
+* feat(tests): add initial matchers tests.
+
 0.1.4 / 2016-12-08
 ------------------
 
