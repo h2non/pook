@@ -1,5 +1,10 @@
+import re
+import sys
 from unittest import TestCase
 from .regex import isregex, strip_regex, isregex_expr
+
+# If running Python 3
+PY_3 = sys.version_info >= (3,)
 
 
 def equal(x, y):
@@ -16,7 +21,10 @@ def equal(x, y):
     Returns:
         bool
     """
-    return TestCase().assertEqual(x, y) or True
+    if PY_3:
+        return TestCase().assertEqual(x, y) or True
+
+    assert x == y
 
 
 def matches(x, y, regex_expr=False):
@@ -39,8 +47,16 @@ def matches(x, y, regex_expr=False):
     x = strip_regex(x) if regex_expr and isregex_expr(x) else x
     # Retrieve original regex pattern
     x = x.pattern if isregex(x) else x
+
     # Run regex assertion
-    return TestCase().assertRegexpMatches(x, y) or True
+    if PY_3:
+        return TestCase().assertRegexpMatches(y, x) or True
+
+    # Primitive regex matching for Python 2.7
+    if isinstance(x, str):
+        x = re.compile(x, re.IGNORECASE)
+
+    assert x.match(y) is not None
 
 
 def test(x, y, regex_expr=False):

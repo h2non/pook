@@ -8,7 +8,7 @@ from pook.matchers.url import URLMatcher
 
 def run_tests(cases, regex=False):
     for test in cases:
-        url, match_url, matches = test
+        match_url, url, matches = test
         req = Request(url=url)
 
         if regex:
@@ -57,5 +57,5 @@ def test_url_matcher_regex():
         ('http://foo.com/foo', 'http://foo.com/bar', False),
         ('http://foo.com/foo/bar', 'http://foo.com/bar/foo', False),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/baz/bar/foo', False),
-        ('http://foo.com/foo\?x=[1-3]', 'http://foo.com/foo?x=5y', False),
+        ('http://foo.com/foo\?x=[1-3]', 'http://foo.com/foo?x=5', False),
     ), regex=True)
