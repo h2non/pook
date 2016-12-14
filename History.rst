@@ -1,6 +1,18 @@
 History
 =======
 
+v0.1.6 / 2016-12-14
+-------------------
+
+* fix(setup.py): force utf-8 encoding
+* feat(setup.py): add encoding header
+* feat(api): add debug mode
+* refactor(docs): minor enhancements
+* refactor(tests): update URL matcher test cases
+* refactor(docs): add note about HTTP clients and update features list
+* fix(setup.py): remove encoding param
+* fix(tests): use strict equality assertion
+
 0.1.5 / 2016-12-12
 ------------------
 
