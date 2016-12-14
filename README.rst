@@ -3,7 +3,7 @@ pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| 
 
 Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
 
-``pook`` was heavily inspired by `gock`_.
+Heavily inspired by `gock`_.
 
 **Note**: still beta quality library. More docs, examples and better test coverage are still a work in progress.
 
@@ -17,14 +17,15 @@ Features
 -  Matches any HTTP protocol primitive (URL, method, query params, headers, body...).
 -  Full regular expressions capable mock expectations matching.
 -  Supports most popular HTTP clients via interceptor adapters.
--  Supports JSON Schema body matching.
 -  Configurable volatile, persistent or TTL limited mocks.
--  Works with any testing framework or engine (unittest, pytest, nosetests...).
--  Usable in both runtime and testing environments.
+-  Works with any testing framework/engine (unittest, pytest, nosetests...).
+-  First-class JSON & XML support matching and responses.
+-  Supports JSON Schema body matching.
+-  Works in both runtime and testing environments.
 -  Can be used as decorator and/or via context managers.
--  Real networking mode with optional custom traffic filtering.
+-  Supports real networking mode with optional traffic filtering.
 -  Map/filter mocks easily for generic or custom mock expectations.
--  First-class JSON & XML support.
+-  Custom user-defined mock matcher functions.
 -  Simulated raised error exceptions.
 -  Network delay simulation (only available for ``aiohttp``).
 -  Pluggable and hackable API.
