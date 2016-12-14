@@ -7,8 +7,10 @@ Versatile HTTP traffic mocking and expectations made easy in Python.
 :copyright: (c) 2016 Tomas Aparicio
 :license: MIT
 """
+
 import os
 import sys
+import codecs
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
@@ -48,13 +50,13 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-with open('requirements-dev.txt') as f:
+with codecs.open('requirements-dev.txt', encoding='utf-8') as f:
     tests_require = f.read().splitlines()
-with open('requirements.txt') as f:
+with codecs.open('requirements.txt', encoding='utf-8') as f:
     install_requires = f.read().splitlines()
-with open('README.rst') as f:
+with codecs.open('README.rst', encoding='utf-8') as f:
     readme = f.read()
-with open('History.rst') as f:
+with codecs.open('History.rst', encoding='utf-8') as f:
     history = f.read()
 
 
