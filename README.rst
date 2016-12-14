@@ -16,7 +16,7 @@ Features
 -  Full-featured HTTP response definitions and expectations.
 -  Matches any HTTP protocol primitive (URL, method, query params, headers, body...).
 -  Full regular expressions capable mock expectations matching.
--  Supports multiple HTTP clients via interceptor adapters (works with most popular HTTP client implementations).
+-  Supports most popular HTTP clients via interceptor adapters.
 -  Supports JSON Schema body matching.
 -  Configurable volatile, persistent or TTL limited mocks.
 -  Works with any testing framework or engine (unittest, pytest, nosetests...).
@@ -28,6 +28,7 @@ Features
 -  Simulated raised error exceptions.
 -  Network delay simulation (only available for ``aiohttp``).
 -  Pluggable and hackable API.
+-  Ideal for painless test doubles.
 -  Does not support WebSocket traffic mocking.
 -  Works with Python +2.7 and +3.0 (including PyPy).
 -  Dependency-less: just 2 small dependencies for JSONSchema and XML tree comparison.
@@ -41,9 +42,9 @@ Supported HTTP clients
 -  ✔  `urllib`_ / `http.client`_
 -  ✘  `pycurl`_ (see `#16`_)
 
-**Note**: only recent HTTP client versions has been tested.
-Multiple versions can be supported, but the latest one will have always priority.
+New HTTP clients can be supported in the future. PRs are welcome too.
 
+**Note**: only recent HTTP client package versions were tested.
 
 Installation
 ------------
