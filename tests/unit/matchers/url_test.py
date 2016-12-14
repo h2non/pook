@@ -26,6 +26,7 @@ def test_url_matcher_urlparse():
         # Valid cases
         ('http://foo.com', 'http://foo.com', True),
         ('http://foo.com:80', 'http://foo.com:80', True),
+        ('http://foo.com', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo', 'http://foo.com/foo', True),
         ('http://foo.com/foo/bar', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/foo/bar/baz', True),
@@ -34,6 +35,7 @@ def test_url_matcher_urlparse():
         # Invalid cases
         ('http://foo.com', 'http://bar.com', False),
         ('http://foo.com:80', 'http://foo.com:443', False),
+        ('http://foo.com/foo', 'http://foo.com', False),
         ('http://foo.com/foo', 'http://foo.com/bar', False),
         ('http://foo.com/foo/bar', 'http://foo.com/bar/foo', False),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/baz/bar/foo', False),
@@ -46,6 +48,7 @@ def test_url_matcher_regex():
         # Valid cases
         ('http://foo.com', 'http://foo.com', True),
         ('http://foo.com:80', 'http://foo.com:80', True),
+        ('^http://foo.com', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo', 'http://foo.com/foo', True),
         ('http://foo.com/foo/bar', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/foo/bar/baz', True),
@@ -54,6 +57,7 @@ def test_url_matcher_regex():
         # Invalid cases
         ('http://foo.com', 'http://bar.com', False),
         ('http://foo.com:80', 'http://foo.com:443', False),
+        ('^http://foo.com$', 'http://foo.com/bar', False),
         ('http://foo.com/foo', 'http://foo.com/bar', False),
         ('http://foo.com/foo/bar', 'http://foo.com/bar/foo', False),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/baz/bar/foo', False),
