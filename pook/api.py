@@ -24,6 +24,16 @@ __all__ = (
 _engine = Engine()
 
 
+def debug(enable=True):
+    """
+    Enables or disables debug mode in the current mock engine.
+
+    Arguments:
+        enable (bool): ``True`` to enable debug mode. Otherwise ``False``.
+    """
+    _engine.debug = enable
+
+
 def engine():
     """
     Returns the current running mock engine.

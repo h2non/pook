@@ -547,6 +547,9 @@ class Mock(object):
         """
         Defines a simulated exception error that will be raised.
 
+        Arguments:
+            error (str|Exception): error to raise.
+
         Returns:
             self: current Mock instance.
         """
@@ -555,6 +558,11 @@ class Mock(object):
     def reply(self, status=200, **kw):
         """
         Defines the mock response.
+
+        Arguments:
+            status (int, optional): response status code. Defaults to ``200``.
+            **kw (dict): optional keyword arguments passed to ``pook.Response``
+                constructor.
 
         Returns:
             pook.Response: mock response definition instance.

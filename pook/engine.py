@@ -10,9 +10,28 @@ class Engine(object):
     """
     Engine represents the mock interceptor and matcher engine responsible
     of triggering interceptors and match outgoing HTTP traffic.
+
+    Arguments:
+        network (bool, optional): enables/disables real networking mode.
+
+    Attributes:
+        debug (bool): enables/disables debug mode.
+        active (bool): stores the current engine activation status.
+        networking (bool): stores the current engine networking mode status.
+        mocks (list[pook.Mock]): stores engine mocks.
+        filters (list[function]): stores engine-level mock filter functions.
+        mappers (list[function]): stores engine-level mock mapper functions.
+        interceptors (list[pook.BaseInterceptor]): stores engine-level HTTP
+            traffic interceptors.
+        unmatched_reqs (list[pook.Request]): stores engine-level unmatched
+            outgoing HTTP requests.
+        network_filters (list[function]): stores engine-level real
+            networking mode filters.
     """
 
     def __init__(self, network=False):
+        # Enables/Disables debug mode.
+        self.debug = True
         # Store the engine enable/disable status
         self.active = False
         # Enables/Disables real networking
@@ -348,12 +367,13 @@ class Engine(object):
 
         # Validate that we have a mock
         if not self.should_use_network(request):
-            msg = 'Cannot match any mock for request:\n{}'.format(request)
+            msg = 'Cannot match mock for request:\n{}'.format(request)
 
-            # Compose unmatch error details
-            err = '\n\n'.join([str(err) for err in match_errors])
-            if err:
-                msg += '\n\n=> Matching errors:\n{}'.format(err)
+            # Compose unmatch error details, if debug mode is enabled
+            if self.debug:
+                err = '\n\n'.join([str(err) for err in match_errors])
+                if err:
+                    msg += '\n\n=> Detailed matching errors:\n{}\n'.format(err)
 
             # Raise no matches exception
             raise PookNoMatches(msg)
