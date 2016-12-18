@@ -100,7 +100,7 @@ Basic mocking:
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.status_code == 404
         assert resp.json() == {"error": "not found"}
-        assert mock._matches == 1
+        assert mock.calls == 1
 
 Using the chainable API DSL:
 
@@ -117,7 +117,7 @@ Using the chainable API DSL:
 
         resp = requests.get('http://twitter.com/api/1/foobar')
         assert resp.json() == {"error": "not found"}
-        assert mock._matches == 1
+        assert mock.calls == 1
 
 Using the decorator:
 
