@@ -39,8 +39,8 @@ Features
 Supported HTTP clients
 ----------------------
 
-``pook`` can be work with multiple mock engines, however it provides a built-in
-one which supports the following HTTP clients:
+``pook`` can work with multiple mock engines, however it provides by default a
+built-in one, which currently supports the following HTTP clients traffic mocking:
 
 -  ✔  `urllib3`_ / `requests`_
 -  ✔  `aiohttp`_
