@@ -57,6 +57,8 @@ class Engine(object):
         This is particularly useful if you want to replace the built-in
         HTTP traffic mock interceptor engine with your custom one.
 
+        For mock engine implementation details, see `pook.MockEngine`.
+
         Arguments:
             engine (pook.MockEngine): custom mock engine to use.
         """

@@ -14,7 +14,7 @@ from .mock_engine import MockEngine  # noqa
 __all__ = (
     'activate', 'on', 'disable', 'off', 'reset', 'engine',
     'use_network', 'enable_network', 'use', 'mock',
-    'get', 'post', 'put', 'patch', 'head',
+    'get', 'post', 'put', 'patch', 'head', 'set_mock_engine',
     'delete', 'options', 'pending', 'ispending',
     'pending_mocks', 'unmatched_requests', 'isunmatched',
     'unmatched', 'isactive', 'isdone', 'regex',
@@ -44,6 +44,21 @@ def engine():
         pook.Engine: current used engine.
     """
     return _engine
+
+
+def set_mock_engine(engine):
+    """
+    Sets a custom mock engine, replacing the built-in one.
+
+    This is particularly useful if you want to replace the built-in
+    HTTP traffic mock interceptor engine with your custom one.
+
+    For mock engine implementation details, see `pook.MockEngine`.
+
+    Arguments:
+        engine (pook.MockEngine): custom mock engine to use.
+    """
+    _engine.set_mock_engine(engine)
 
 
 def activate(fn=None):
