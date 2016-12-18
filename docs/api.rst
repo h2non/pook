@@ -42,6 +42,7 @@ Core API
    pook.Engine <http://pook.readthedocs.io/en/latest/api.html#pook.Engine>
    pook.Request <http://pook.readthedocs.io/en/latest/api.html#pook.Request>
    pook.Response <http://pook.readthedocs.io/en/latest/api.html#pook.Response>
+   pook.MockEngine <http://pook.readthedocs.io/en/latest/api.html#pook.MockEngine>
    pook.MatcherEngine <http://pook.readthedocs.io/en/latest/api.html#pook.MatcherEngine>
 
 
