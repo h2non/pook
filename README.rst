@@ -39,12 +39,15 @@ Features
 Supported HTTP clients
 ----------------------
 
+``pook`` can be work with multiple mock engines, however it provides a built-in
+one which supports the following HTTP clients:
+
 -  ✔  `urllib3`_ / `requests`_
 -  ✔  `aiohttp`_
 -  ✔  `urllib`_ / `http.client`_
 -  ✘  `pycurl`_ (see `#16`_)
 
-New HTTP clients can be supported in the future. PRs are welcome too.
+More HTTP clients can be supported progressively.
 
 **Note**: only recent HTTP client package versions were tested.
 
