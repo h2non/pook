@@ -1,6 +1,11 @@
 History
 =======
 
+v0.1.7 / 2016-12-18
+-------------------
+
+* feat(#33): add support for user defined custom mock engine
+
 v0.1.6 / 2016-12-14
 -------------------
 

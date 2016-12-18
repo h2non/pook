@@ -25,7 +25,7 @@ def test_mock_engine_instance(engine):
 
 
 def test_mock_engine_flush(engine):
-    assert len(engine.interceptors) == 2
+    assert len(engine.interceptors) >= 2
     engine.flush_interceptors()
     assert len(engine.interceptors) == 0
 
