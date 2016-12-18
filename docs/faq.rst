@@ -43,6 +43,21 @@ a runtime environment.
 For that cases you probably want to enable the real networking mode.
 
 
+Can I use ``pook`` with a custom HTTP traffic mock interceptor engine?
+----------------------------------------------------------------------
+
+Yes, you can. ``pook`` is very modular and open for extensibility.
+
+You can programmatically define the HTTP traffic mock engine you want to use via
+`pook.set_mock_engine(engine)``. This will replace the built-in one.
+
+This can be particularly useful if you are already using another HTTP mocking
+engine that satisfy your needs, but you want to take benefit of ``pook``
+features, versatility and simple to use expressive API.
+
+For mock engine implementation details, see ``pook.MockEngine`` API documentation.
+
+
 Can I use ``pook`` with any test framework?
 -------------------------------------------
 
