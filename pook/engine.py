@@ -2,7 +2,7 @@ from functools import partial
 from inspect import isfunction
 from .mock import Mock
 from .regex import isregex
-from .interceptors import interceptors
+from .mock_engine import MockEngine
 from .exceptions import PookNoMatches, PookExpiredMock
 
 
@@ -42,15 +42,42 @@ class Engine(object):
         self.filters = []
         # Store engine-level global mappers
         self.mappers = []
-        # Store HTTP traffic interceptors
-        self.interceptors = []
         # Store unmatched requests.
         self.unmatched_reqs = []
         # Store network filters used to determine when a request
         # should be filtered or not.
         self.network_filters = []
-        # Register built-in interceptors
-        self.add_interceptor(*interceptors)
+        # Built-in mock engine to be used
+        self.mock_engine = MockEngine(self)
+
+    def set_mock_engine(self, engine):
+        """
+        Sets a custom mock engine, replacing the built-in one.
+
+        This is particularly useful if you want to replace the built-in
+        HTTP traffic mock interceptor engine with your custom one.
+
+        Arguments:
+            engine (pook.MockEngine): custom mock engine to use.
+        """
+        if not engine:
+            raise TypeError('engine must be a valid object')
+
+        # Instantiate mock engine
+        mock_engine = engine(self)
+
+        # Validate minimum viable interface
+        methods = ('activate', 'disable')
+        if all([hasattr(mock_engine, method) for method in methods]):
+            raise NotImplementedError('engine must implementent the '
+                                      'required methods')
+
+        # Disable previous mock engine, if needed
+        if self.active:
+            self.disable()
+
+        # Use the custom mock engine
+        self.mock_engine = mock_engine
 
     def enable_network(self, *hostnames):
         """
@@ -134,6 +161,15 @@ class Engine(object):
         """
         self.mocks = []
 
+    def _engine_proxy(self, method, *args, **kw):
+        engine_method = getattr(self.mock_engine, method, None)
+
+        if not engine_method:
+            raise NotImplementedError('current mock engine does not implements'
+                                      ' required "{}" method'.format(method))
+
+        return engine_method(self.mock_engine, *args, **kw)
+
     def add_interceptor(self, *interceptors):
         """
         Adds one or multiple HTTP traffic interceptors to the current
@@ -142,30 +178,39 @@ class Engine(object):
         Interceptors are typically HTTP client specific wrapper classes that
         implements the pook interceptor interface.
 
+        Note: this method is may not be implemented if using a custom mock
+        engine.
+
         Arguments:
             interceptors (pook.interceptors.BaseInterceptor)
         """
-        for interceptor in interceptors:
-            self.interceptors.append(interceptor(self))
+        self._engine_proxy('add_interceptor', *interceptors)
 
     def flush_interceptors(self):
         """
         Flushes registered interceptors in the current mocking engine.
 
         This method is low-level. Only call it if you know what you are doing.
-        """
-        self.interceptors = []
 
-    def disable_interceptor(self, name):
-        for index, interceptor in enumerate(self.interceptors):
-            matches = (
-                type(interceptor).__name__ == name or
-                getattr(interceptor, 'name') == name
-            )
-            if matches:
-                self.interceptors.pop(index)
-                return True
-        return False
+        Note: this method is may not be implemented if using a custom mock
+        engine.
+        """
+        self._engine_proxy('flush_interceptors')
+
+    def remove_interceptor(self, name):
+        """
+        Removes a specific interceptor by name.
+
+        Note: this method is may not be implemented if using a custom mock
+        engine.
+
+        Arguments:
+            name (str): interceptor name to disable.
+
+        Returns:
+            bool: `True` if the interceptor was disabled, otherwise `False`.
+        """
+        return self._engine_proxy('remove_interceptor', name)
 
     def activate(self):
         """
@@ -178,7 +223,9 @@ class Engine(object):
         if self.active:
             return None
 
-        [interceptor.activate() for interceptor in self.interceptors]
+        # Activate mock engine
+        self.mock_engine.activate()
+        # Enable engine state
         self.active = True
 
     def disable(self):
@@ -188,14 +235,9 @@ class Engine(object):
         if not self.active:
             return None
 
-        # Restore HTTP interceptors
-        for interceptor in self.interceptors:
-            try:
-                interceptor.disable()
-            except RuntimeError:
-                pass  # explicitely ignore runtime patch errors
-
-        # Restore engine state
+        # Disable current mock engine
+        self.mock_engine.disable()
+        # Disable engine state
         self.active = False
 
     def reset(self):

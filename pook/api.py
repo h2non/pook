@@ -8,6 +8,7 @@ from .mock import Mock  # noqa
 from .request import Request  # noqa
 from .response import Response  # noqa
 from .matcher import MatcherEngine  # noqa
+from .mock_engine import MockEngine  # noqa
 
 # Public API symbols to export
 __all__ = (
@@ -17,7 +18,8 @@ __all__ = (
     'delete', 'options', 'pending', 'ispending',
     'pending_mocks', 'unmatched_requests', 'isunmatched',
     'unmatched', 'isactive', 'isdone', 'regex',
-    'Engine', 'Mock', 'Request', 'Response', 'MatcherEngine'
+    'Engine', 'Mock', 'Request', 'Response',
+    'MatcherEngine', 'MockEngine'
 )
 
 # Default singleton mock engine to be used

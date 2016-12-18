@@ -1,7 +1,7 @@
 pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
 ====================================================================================================
 
-Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations in `Python`_.
+Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations made easy in `Python`_.
 
 Heavily inspired by `gock`_.
 
@@ -29,6 +29,7 @@ Features
 -  Simulated raised error exceptions.
 -  Network delay simulation (only available for ``aiohttp``).
 -  Pluggable and hackable API.
+-  Customizable HTTP traffic mock interceptor engine.
 -  Ideal for painless test doubles.
 -  Does not support WebSocket traffic mocking.
 -  Works with Python +2.7 and +3.0 (including PyPy).
