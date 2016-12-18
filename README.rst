@@ -30,7 +30,7 @@ Features
 -  Network delay simulation (only available for ``aiohttp``).
 -  Pluggable and hackable API.
 -  Customizable HTTP traffic mock interceptor engine.
--  Ideal for painless test doubles.
+-  Fits good for painless test doubles.
 -  Does not support WebSocket traffic mocking.
 -  Works with Python +2.7 and +3.0 (including PyPy).
 -  Dependency-less: just 2 small dependencies for JSONSchema and XML tree comparison.
