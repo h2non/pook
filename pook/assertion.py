@@ -45,11 +45,12 @@ def matches(x, y, regex_expr=False):
     """
     # Parse regex expression, if needed
     x = strip_regex(x) if regex_expr and isregex_expr(x) else x
-    # Retrieve original regex pattern
-    x = x.pattern if isregex(x) else x
 
     # Run regex assertion
     if PY_3:
+        # Retrieve original regex pattern
+        x = x.pattern if isregex(x) else x
+        # Assert regular expression via unittest matchers
         return TestCase().assertRegexpMatches(y, x) or True
 
     # Primitive regex matching for Python 2.7

@@ -21,7 +21,8 @@ class HeadersMatcher(BaseMatcher):
             header = req.headers.get(key)
 
             # Compare header value
-            if not self.compare(value, header):
+            print('Match:', self.compare(value, header, regex_expr=True))
+            if not self.compare(value, header, regex_expr=True):
                 return False
 
         return True
