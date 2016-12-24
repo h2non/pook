@@ -1,6 +1,13 @@
 History
 =======
 
+v0.1.8 / 2016-12-24
+-------------------
+
+* fix(assertion): extract regex pattern only when required
+* feat(examples): add regular expression example
+
+
 v0.1.7 / 2016-12-18
 -------------------
 
