@@ -2,8 +2,8 @@ import pook
 import requests
 
 
-# Registry mock definition
-(pook.get('httpbin.org')
+# Mock definition based
+(pook.get(pook.regex('h[t]{2}pbin.*'))
     .path(pook.regex('/foo/[a-z]+/baz'))
     .header('Client', pook.regex('requests|pook'))
     .times(2)

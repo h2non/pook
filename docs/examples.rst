@@ -65,6 +65,13 @@ Time TTL limited mock
 
 
 
+Regular expression matching
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/regex.py
+
+
+
 ``unittest`` integration
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
