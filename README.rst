@@ -5,6 +5,8 @@ Versatile, expressive and hackable utility library for HTTP traffic mocking and 
 
 Heavily inspired by `gock`_.
 
+To get started, see the `documentation`_, `how it works`_, `FAQ`_ or `examples`_.
+
 **Note**: still beta quality library. More docs, examples and better test coverage are still a work in progress.
 
 
@@ -264,7 +266,9 @@ MIT - Tomas Aparicio
 .. _urllib: https://docs.python.org/3/library/urllib.html
 .. _http.client: https://docs.python.org/3/library/http.client.html
 .. _pycurl: http://pycurl.io
-.. _0.1.3: https://github.com/h2non/pook/milestone/3
+.. _documentation: http://pook.readthedocs.io/en/latest/
+.. _FAQ: http://pook.readthedocs.io/en/latest/faq.html
+.. _how it works: http://pook.readthedocs.io/en/latest/how_it_works.html
 
 .. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
    :target: https://travis-ci.org/h2non/pook
