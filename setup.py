@@ -65,6 +65,7 @@ setup(
     name='pook',
     version=version,
     author='Tomas Aparicio',
+    author_email='tomas+python@aparicio.me',
     description=(
         'HTTP traffic mocking and expectations made easy'
     ),
