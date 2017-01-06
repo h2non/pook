@@ -1,12 +1,19 @@
+
 History
 =======
+
+v0.1.9 / 2017-01-06
+-------------------
+
+* fix(Makefile): remove proper egg file
+* feat(package): add wheel package distribution support
+* feat(docs): add documentation links
 
 v0.1.8 / 2016-12-24
 -------------------
 
 * fix(assertion): extract regex pattern only when required
 * feat(examples): add regular expression example
-
 
 v0.1.7 / 2016-12-18
 -------------------
