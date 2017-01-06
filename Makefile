@@ -49,9 +49,9 @@ clean:
 	@echo "$(OK_COLOR)==> Cleaning up files that are already in .gitignore...$(NO_COLOR)"
 	@for pattern in `cat .gitignore`; do find . -name "*/$$pattern" -delete; done
 
-release: clean publish
-	@echo "$(OK_COLOR)==> Exporting to $(filename) ...$(NO_COLOR)"
-	@tar czf $(filename) pook setup.py README.md LICENSE
-
 publish:
-	@python setup.py sdist register upload
+	@echo "$(OK_COLOR)==> Releasing package ...$(NO_COLOR)"
+	@python setup.py register
+	@python setup.py sdist upload
+	@python setup.py bdist_wheel --universal upload
+	@rm -fr build dist .egg requests.egg-info
