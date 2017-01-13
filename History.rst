@@ -2,6 +2,12 @@
 History
 =======
 
+v0.1.10 / 2017-01-13
+--------------------
+
+* fix(#37): decode byte bodies
+* feat(setup.py): add author email
+
 v0.1.9 / 2017-01-06
 -------------------
 
