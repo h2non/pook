@@ -150,11 +150,14 @@ class Response(object):
         Defines response body data.
 
         Arguments:
-            body (str): response body to use.
+            body (str|bytes): response body to use.
 
         Returns:
             self: ``pook.Response`` current instance.
         """
+        if isinstance(body, bytes):
+            body = body.decode('utf-8')
+
         self._body = body
 
     @fluent

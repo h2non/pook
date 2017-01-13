@@ -9,4 +9,10 @@ class BodyMatcher(BaseMatcher):
 
     @BaseMatcher.matcher
     def match(self, req):
+        expectation = self.expectation
+
+        # Decode bytes input
+        if isinstance(expectation, bytes):
+            expectation = expectation.decode('utf-8')
+
         return self.compare(self.expectation, req.body)
