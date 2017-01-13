@@ -70,7 +70,7 @@ class Engine(object):
 
         # Validate minimum viable interface
         methods = ('activate', 'disable')
-        if all([hasattr(mock_engine, method) for method in methods]):
+        if not all([hasattr(mock_engine, method) for method in methods]):
             raise NotImplementedError('engine must implementent the '
                                       'required methods')
 
