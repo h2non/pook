@@ -18,10 +18,12 @@ class QueryMatcher(BaseMatcher):
             if match is None:
                 return False
 
+            # Normalize param value
+            param = [param] if not isinstance(param, list) else param
+
             # Compare query params
-            for index, value in enumerate(param):
-                # Perform query param comparison
-                [self.compare(value, expect) for expect in match]
+            [[self.compare(value, expect)
+              for expect in match] for value in param]
 
             return True
 
