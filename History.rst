@@ -2,6 +2,13 @@
 History
 =======
 
+v0.1.11 / 2017-01-14
+--------------------
+
+* refactor(query)
+* fix(#37): fix URL comparison
+* fix(#38): proper mock engine interface validation.
+
 v0.1.10 / 2017-01-13
 --------------------
 
