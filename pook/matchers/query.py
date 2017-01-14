@@ -20,10 +20,8 @@ class QueryMatcher(BaseMatcher):
 
             # Compare query params
             for index, value in enumerate(param):
-                if index >= len(match):
-                    return False
                 # Perform query param comparison
-                self.compare(value, match[index])
+                [self.compare(value, expect) for expect in match]
 
             return True
 
