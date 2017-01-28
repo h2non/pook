@@ -7,7 +7,7 @@ Heavily inspired by `gock`_.
 
 To get started, see the `documentation`_, `how it works`_, `FAQ`_ or `examples`_.
 
-**Note**: still beta quality library. More docs, examples and better test coverage are still a work in progress.
+**Note**: more docs, examples and better test coverage are still a work in progress. Contributions are always welcome.
 
 
 Features
