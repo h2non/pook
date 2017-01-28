@@ -2,6 +2,12 @@
 History
 =======
 
+v0.1.12 / 2017-01-28
+====================
+
+* feat(#33): proxy mock definitions into mock.Request
+* refactor(api): `pook.unmatched_requests()` now returns a `list` instead of a lazy `tuple`.
+
 v0.1.11 / 2017-01-14
 --------------------
 
