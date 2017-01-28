@@ -1,7 +1,9 @@
 import sys
 import json as _json
+
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
+from .matchers.url import protoregex
 
 if sys.version_info < (3,):     # Python 2
     from urlparse import urlparse, parse_qs, urlunparse
@@ -79,8 +81,14 @@ class Request(object):
     def url(self):
         return self._url
 
+    @property
+    def rawurl(self):
+        return urlunparse(self._url)
+
     @url.setter
     def url(self, url):
+        if not protoregex.match(url):
+            url = 'http://{}'.format(url)
         self._url = urlparse(url)
         self._query = parse_qs(self._url.query)
 

@@ -423,7 +423,7 @@ def unmatched_requests():
     mode has been enabled.
 
     Returns:
-        tuple: unmatched intercepted requests.
+        list: unmatched intercepted requests.
     """
     return _engine.unmatched_requests()
 

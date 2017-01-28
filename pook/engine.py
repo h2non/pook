@@ -257,9 +257,9 @@ class Engine(object):
         has been enabled.
 
         Returns:
-            tuple: unmatched intercepted requests.
+            list: unmatched intercepted requests.
         """
-        return (mock for mock in self.unmatched_reqs)
+        return [mock for mock in self.unmatched_reqs]
 
     def unmatched(self):
         """

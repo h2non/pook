@@ -1,6 +1,8 @@
 import re
 import functools
+from furl import furl
 from inspect import isfunction, ismethod
+
 from .decorators import fluent
 from .response import Response
 from .constants import TYPES
@@ -112,7 +114,7 @@ class Mock(object):
         # Store request-response mock matched calls
         self._calls = []
         # Stores the input request instance
-        self._request = request
+        self._request = request or Request()
         # Stores the response mock instance
         self._response = response or Response()
         # Stores the mock matcher engine used for outgoing traffic matching
@@ -128,7 +130,7 @@ class Mock(object):
         # Triggers instance methods based on argument names
         trigger_methods(self, kw)
 
-        # Trigger request fields, if present
+        # Trigger matchers based on predefined request object, if needed
         if request:
             _trigger_request(self, request)
 
@@ -146,6 +148,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        self._request.url = url
         self.add_matcher(matcher('URLMatcher', url))
 
     @fluent
@@ -160,6 +163,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        self._request.method = method
         self.add_matcher(matcher('MethodMatcher', method))
 
     @fluent
@@ -175,6 +179,9 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        url = furl(self._request.rawurl)
+        url.path = path
+        self._request.url = url.url
         self.add_matcher(matcher('PathMatcher', path))
 
     @fluent
@@ -191,6 +198,7 @@ class Mock(object):
             self: current Mock instance.
         """
         headers = {name: value}
+        self._request.headers = headers
         self.add_matcher(matcher('HeadersMatcher', headers))
 
     @fluent
@@ -208,6 +216,7 @@ class Mock(object):
             self: current Mock instance.
         """
         headers = kw if kw else headers
+        self._request.headers = headers
         self.add_matcher(matcher('HeadersMatcher', headers))
 
     @fluent
@@ -304,6 +313,7 @@ class Mock(object):
             self: current Mock instance.
         """
         header = {'Content-Type': TYPES.get(value, value)}
+        self._request.headers = header
         self.add_matcher(matcher('HeadersMatcher', header))
 
     @fluent
@@ -344,6 +354,9 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        url = furl(self._request.rawurl)
+        url = url.add(params)
+        self._request.url = url.url
         self.add_matcher(matcher('QueryMatcher', params))
 
     @fluent
@@ -359,6 +372,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        self._request.body = body
         self.add_matcher(matcher('BodyMatcher', body))
 
     @fluent
@@ -376,6 +390,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        self._request.json = json
         self.add_matcher(matcher('JSONMatcher', json))
 
     @fluent
@@ -402,6 +417,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
+        self._request.xml = xml
         self.add_matcher(matcher('XMLMatcher', xml))
 
     @fluent
