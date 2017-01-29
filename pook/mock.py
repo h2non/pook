@@ -687,12 +687,12 @@ class Mock(object):
     @property
     def calls(self):
         """
-        Accessor to retrieve the mock match calls registry.
+        Accessor to retrieve the amount of mock matched calls.
 
         Returns:
-            list[MockCall]
+            int
         """
-        return self.matches
+        return len(self.matches)
 
     def match(self, request):
         """
