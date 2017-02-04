@@ -11,3 +11,4 @@ requests~=2.11.1
 urllib3~=1.19.1
 bumpversion~=0.5.3
 aiohttp~=1.1.5 ; python_version >= '3.4.2'
+mocket~=1.6.0

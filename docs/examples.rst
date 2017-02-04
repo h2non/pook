@@ -113,6 +113,11 @@ Using ``http.client`` standard Python package as HTTP client
 .. literalinclude:: ../examples/http_client_native.py
 
 
+Example using `mocket`_ Python library as underlying mock engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/mocket_example.py
+
 
 Hy programming language example
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
