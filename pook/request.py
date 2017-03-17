@@ -152,10 +152,19 @@ class Request(object):
         Returns:
             str
         """
-        args = []
-        for key in self.keys:
-            value = getattr(self, '_{}'.format(key))
-            if key == 'url':
-                value = urlunparse(value)
-            args.append('{}={},\n'.format(key, value))
-        return 'Request(\n  {})'.format('  '.join(args))
+        entries = []
+
+        entries.append('URL: {}'.format(urlunparse(self._url)))
+        entries.append('Method: {}'.format(self._method))
+
+        if self._query:
+            entries.append('Query: {}'.format(self._query))
+
+        if self._headers:
+            entries.append('Headers: {}'.format(self._headers))
+
+        if self._body:
+            entries.append('Body: {}'.format(self._body))
+
+        separator = '=' * 50
+        return (separator + '\n{}\n' + separator).format('\n'.join(entries))
