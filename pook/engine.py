@@ -161,6 +161,15 @@ class Engine(object):
         """
         self.mocks.append(mock)
 
+    def remove_mock(self, mock):
+        """
+        Removes a specific mock instance by object reference.
+
+        Arguments:
+            mock (pook.Mock): mock instance to remove.
+        """
+        self.mocks = [m for m in self.mocks if m is not mock]
+
     def flush_mocks(self):
         """
         Flushes the current mocks.

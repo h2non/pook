@@ -493,14 +493,14 @@ class Mock(object):
         self._times = times
 
     @fluent
-    def persist(self):
+    def persist(self, status=None):
         """
         Enables persistent mode for the current mock.
 
         Returns:
             self: current Mock instance.
         """
-        self._persist = True
+        self._persist = status if type(status) is bool else True
 
     @fluent
     def filter(self, *filters):
@@ -772,16 +772,32 @@ class Mock(object):
         if not isfunction(fn) and not ismethod(fn):
             raise TypeError('first argument must be a method or function')
 
+        # Remove mock to prevent decorator definition scope collision
+        self._engine.remove_mock(self)
+
         @functools.wraps(fn)
         def decorator(*args, **kw):
+            # Re-register mock on decorator call
+            self._engine.add_mock(self)
+
             # Force engine activation, if available
             # This prevents state issue while declaring mocks as decorators.
             # This might be removed in the future.
-            if self._engine:
+            engine_active = self._engine.active
+            if not engine_active:
                 self._engine.activate()
 
             # Call decorated target function
-            return fn(*args, **kw)
+            try:
+                return fn(*args, **kw)
+            finally:
+                # Finally remove mock after function execution
+                # to prevent shared state
+                self._engine.remove_mock(self)
+
+                # If the engine was not previously active, disable it
+                if not engine_active:
+                    self._engine.disable()
 
         return decorator
 
