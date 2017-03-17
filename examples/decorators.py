@@ -7,6 +7,8 @@ import requests
 def fetch(url):
     return requests.get(url)
 
+
+# Test function
 res = fetch('http://httpbin.org/status/400')
 print('#1 status:', res.status_code)
 

@@ -809,3 +809,33 @@ class Mock(object):
         args = '(\n  {}\n)'.format(',\n  '.join(args))
 
         return type(self).__name__ + args
+
+    def __enter__(self):
+        """
+        Implements context manager enter interface.
+        """
+        # Make mock persistent if using default times
+        if self._times == 1:
+            self._persist = True
+
+        # Automatically enable the mock engine, if needed
+        if not self._engine.active:
+            self._engine.activate()
+            self._disable_engine = True
+
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        """
+        Implements context manager exit interface.
+        """
+        # Force disable mock
+        self._times = 0
+
+        # Automatically disable the mock engine, if needed
+        if getattr(self, '_disable_engine', False):
+            self._disable_engine = False
+            self._engine.disable()
+
+        if etype is not None:
+            raise value

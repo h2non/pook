@@ -143,8 +143,12 @@ class Engine(object):
         mock._engine = self
         # Register the mock in the current engine
         self.add_mock(mock)
-        # Activate mock engine transparently, if it was not active yet
+
+        # Activate mock engine, if needed
+        # if kw.get('activate'):
+        #     kw.pop('activate')
         self.activate()
+
         # Return it for consumer satisfaction
         return mock
 
