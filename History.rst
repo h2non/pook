@@ -1,4 +1,15 @@
 
+v0.1.14 / 2017-03-17
+====================
+
+  * feat(docs): list supported HTTP client versions
+  * fix(#41): disable mocks after decorator call invokation
+  * feat(examples): add mock context manager example file
+  * feat(#40): support context manager definitions
+  * feat(#39): improve unmatched request output
+  * feat(docs): add mocket example file
+  * feat(#33): add mocket examples and documentation
+
 History
 =======
 
