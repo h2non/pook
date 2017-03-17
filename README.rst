@@ -46,9 +46,10 @@ Supported HTTP clients
 built-in one by default, which currently supports traffic mocking in
 the following HTTP clients:
 
--  ✔  `urllib3`_ / `requests`_
--  ✔  `aiohttp`_
--  ✔  `urllib`_ / `http.client`_
+-  ✔  `urllib3`_ ``v1+``
+-  ✔  `requests`_ ``v2+``
+-  ✔  `aiohttp`_ ``v1+``
+-  ✔  `urllib`_ / `http.client`_ ``v2/3``
 -  ✘  `pycurl`_ (see `#16`_)
 
 More HTTP clients can be supported progressively.
@@ -97,7 +98,7 @@ Basic mocking:
     import pook
     import requests
 
-    @pook.activate
+    @pook.on
     def test_my_api():
         mock = pook.get('http://twitter.com/api/1/foobar', reply=404, response_json={'error': 'foo'})
 
@@ -153,7 +154,7 @@ Simple ``unittest`` integration:
 
     class TestUnitTestEngine(unittest.TestCase):
 
-        @pook.activate
+        @pook.on
         def test_request(self):
             pook.get('server.com/foo').reply(204)
             res = requests.get('http://server.com/foo')
