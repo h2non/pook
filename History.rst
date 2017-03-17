@@ -1,6 +1,8 @@
+History
+=======
 
 v0.1.14 / 2017-03-17
-====================
+--------------------
 
   * feat(docs): list supported HTTP client versions
   * fix(#41): disable mocks after decorator call invokation
@@ -10,8 +12,6 @@ v0.1.14 / 2017-03-17
   * feat(docs): add mocket example file
   * feat(#33): add mocket examples and documentation
 
-History
-=======
 
 v0.1.13 / 2017-01-29
 --------------------
@@ -19,7 +19,7 @@ v0.1.13 / 2017-01-29
 * fix(api): `mock.calls` property should be an `int`.
 
 v0.1.12 / 2017-01-28
-====================
+--------------------
 
 * feat(#33): proxy mock definitions into mock.Request
 * refactor(api): `pook.unmatched_requests()` now returns a `list` instead of a lazy `tuple`.
