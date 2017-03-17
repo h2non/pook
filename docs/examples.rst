@@ -16,11 +16,16 @@ Chainable API DSL
 
 
 
-Using context manager for isolated mocking
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Context manager for isolated mocking
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. literalinclude:: ../examples/context_manager.py
 
+
+Single mock context manager definition for isolated mocking
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/mock_context_manager.py
 
 
 Declaring mocks as decorators
