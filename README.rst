@@ -1,13 +1,10 @@
 pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
 ====================================================================================================
 
-Versatile, expressive and hackable utility library for HTTP traffic mocking and expectations made easy in `Python`_.
-
-Heavily inspired by `gock`_.
+Versatile, expressive and hackable utility library for HTTP traffic mocking
+and expectations made easy in `Python`_. Heavily inspired by `gock`_.
 
 To get started, see the `documentation`_, `how it works`_, `FAQ`_ or `examples`_.
-
-**Note**: more docs, examples and better test coverage are still a work in progress. Contributions are always welcome.
 
 
 Features

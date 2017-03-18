@@ -1,6 +1,11 @@
 History
 =======
 
+v0.2.0 / 2017-03-18
+-------------------
+
+  * refactor(engine): do not activate engine on mock declaration if not explicitly requested. This introduces a behavioral library change: you must explicitly use ``pook.on()`` to enable `pook` mock engine.
+
 v0.1.14 / 2017-03-17
 --------------------
 
@@ -11,7 +16,6 @@ v0.1.14 / 2017-03-17
   * feat(#39): improve unmatched request output
   * feat(docs): add mocket example file
   * feat(#33): add mocket examples and documentation
-
 
 v0.1.13 / 2017-01-29
 --------------------
