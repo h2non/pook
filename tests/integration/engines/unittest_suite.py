@@ -7,12 +7,13 @@ import pook
 
 class TestUnitTestEngine(unittest.TestCase):
 
-    @pook.activate
+    @pook.on
     def test_simple_pook_request(self):
         pook.get('server.com/foo').reply(204)
         res = requests.get('http://server.com/foo')
         self.assertEqual(res.status_code, 204)
 
+    @pook.on
     def test_enable_engine(self):
         pook.get('server.com/foo').reply(204)
         res = requests.get('http://server.com/foo')
@@ -29,6 +30,7 @@ class TestUnitTestEngine(unittest.TestCase):
             res = requests.get('http://server.com/bar')
             self.assertEqual(res.status_code, 204)
 
+    @pook.on
     def test_no_match_exception(self):
         pook.get('server.com/bar', reply=204)
         try:

@@ -132,6 +132,8 @@ class Engine(object):
 
         Arguments:
             url (str): request URL to mock.
+            activate (bool): force mock engine activation.
+                Defaults to ``False``.
             **kw (mixed): variadic keyword arguments for ``Mock`` constructor.
 
         Returns:
@@ -144,10 +146,10 @@ class Engine(object):
         # Register the mock in the current engine
         self.add_mock(mock)
 
-        # Activate mock engine, if needed
-        # if kw.get('activate'):
-        #     kw.pop('activate')
-        self.activate()
+        # Activate mock engine, if explicitly requested
+        if kw.get('activate'):
+            kw.pop('activate')
+            self.activate()
 
         # Return it for consumer satisfaction
         return mock

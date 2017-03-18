@@ -91,13 +91,14 @@ def activate(fn=None):
             res = requests.get('server.com/foo')
             assert res.status_code == 404
     """
-    _engine.activate()
-
+    # If not used as decorator, activate the engine and exit
     if not isfunction(fn):
+        _engine.activate()
         return None
 
     @functools.wraps(fn)
     def wrapper(*args, **kw):
+        _engine.activate()
         try:
             fn(*args, **kw)
         except Exception as err:
@@ -279,6 +280,8 @@ def mock(url=None, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic keyword arguments.
 
     Returns:
@@ -293,6 +296,8 @@ def get(url, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -307,6 +312,8 @@ def post(url, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -321,6 +328,8 @@ def put(url, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -335,6 +344,8 @@ def delete(url, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -349,6 +360,8 @@ def head(url, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -363,6 +376,8 @@ def patch(url=None, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
@@ -377,6 +392,8 @@ def options(url=None, **kw):
 
     Arguments:
         url (str): request URL to mock.
+        activate (bool): force mock engine activation.
+            Defaults to ``False``.
         **kw (mixed): variadic arguments to ``pook.Mock`` constructor.
 
     Returns:
