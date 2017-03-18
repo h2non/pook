@@ -2,6 +2,9 @@ import pook
 import requests
 
 
+# Enable mock engine
+pook.on()
+
 pook.get('httpbin.org/ip',
          reply=403, response_type='json',
          response_headers={'server': 'pook'},

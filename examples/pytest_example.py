@@ -12,6 +12,7 @@ def test_simple_pook_request():
     assert res.status_code == 204
 
 
+@pook.on
 def test_enable_engine():
     pook.get('server.com/foo').reply(204)
     res = requests.get('http://server.com/foo')
@@ -32,6 +33,7 @@ def test_context_manager():
         assert res.status_code == 204
 
 
+@pook.on
 def test_no_match_exception():
     pook.get('server.com/bar', reply=204)
     with pytest.raises(Exception):

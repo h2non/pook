@@ -8,7 +8,7 @@ from mocket.plugins.pook_mock_engine import MocketEngine
 # Use mocket library as underlying mock engine
 pook.set_mock_engine(MocketEngine)
 
-# Explicitly enable pook HTTP mocking (optional)
+# Explicitly enable pook HTTP mocking (required)
 pook.on()
 
 # Target server URL to mock out

@@ -426,7 +426,12 @@ class Engine(object):
 
         # Validate that we have a mock
         if not self.should_use_network(request):
-            msg = 'Cannot match mock for request:\n{}'.format(request)
+            msg = 'pook error!\n\n'
+
+            msg += (
+                '=> Cannot match any mock for the '
+                'following request:\n{}'.format(request)
+            )
 
             # Compose unmatch error details, if debug mode is enabled
             if self.debug:

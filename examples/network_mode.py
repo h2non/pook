@@ -2,6 +2,9 @@ import pook
 import requests
 
 
+# Enable mock engine
+pook.on()
+
 # Enable network mode
 pook.enable_network()
 

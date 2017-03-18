@@ -1,6 +1,10 @@
 import pook
 import requests
 
+
+# Enable mock engine
+pook.on()
+
 # Declare mock
 (pook.get('httpbin.org')
     .times(2)

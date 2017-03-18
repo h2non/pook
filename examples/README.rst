@@ -3,10 +3,14 @@
 
 Run examples via:
 
+.. code:: python
+
     $ python examples/<example>.py
 
 
 Example:
+
+.. code:: python
 
     $ python examples/requests_client.py
 

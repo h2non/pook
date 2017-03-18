@@ -2,6 +2,9 @@ import pook
 import requests
 
 
+# Enable mock engine
+pook.on()
+
 # Mock definition based
 (pook.get(pook.regex('h[t]{2}pbin.*'))
     .path(pook.regex('/foo/[a-z]+/baz'))

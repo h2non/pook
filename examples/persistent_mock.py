@@ -2,6 +2,9 @@ import pook
 import requests
 
 
+# Enable mock engine
+pook.on()
+
 (pook.get('httpbin.org')
     .headers({'Client': 'requests'})
     .persist()

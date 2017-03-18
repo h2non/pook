@@ -10,6 +10,9 @@ schema = {
     }
 }
 
+# Enable mock engine
+pook.on()
+
 (pook.post('httpbin.org/post')
     .jsonschema(schema)
     .reply(204)

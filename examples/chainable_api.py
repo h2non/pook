@@ -3,6 +3,9 @@ import pook
 import requests
 
 
+# Enable mock engine
+pook.on()
+
 (pook.post('httpbin.org/post')
     .json({'foo': 'bar'})
     .type('json')

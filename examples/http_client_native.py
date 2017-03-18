@@ -2,6 +2,9 @@ import http.client
 import pook
 
 
+# Enable mock engine
+pook.on()
+
 mock = pook.get('http://httpbin.org/ip',
                 reply=404, response_type='json',
                 response_json={'error': 'not found'})

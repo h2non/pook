@@ -6,6 +6,9 @@ def on_match(request, mock):
     print('On match:', request, mock)
 
 
+# Enable mock engine
+pook.on()
+
 pook.get('httpbin.org/ip',
          reply=403, response_type='json',
          response_headers={'pepe': 'lopez'},
