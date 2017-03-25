@@ -74,12 +74,12 @@ class Engine(object):
             raise NotImplementedError('engine must implementent the '
                                       'required methods')
 
-        # Disable previous mock engine, if needed
-        if self.active:
-            self.disable()
-
         # Use the custom mock engine
         self.mock_engine = mock_engine
+
+        # Enable mock engine, if needed
+        if self.active:
+            self.mock_engine.activate()
 
     def enable_network(self, *hostnames):
         """
