@@ -139,17 +139,17 @@ class Engine(object):
         Returns:
             pook.Mock: new mock instance.
         """
+        # Activate mock engine, if explicitly requested
+        if kw.get('activate'):
+            kw.pop('activate')
+            self.activate()
+
         # Create the new HTTP mock expectation
         mock = Mock(url=url, **kw)
         # Expose current engine instance via mock
         mock._engine = self
         # Register the mock in the current engine
         self.add_mock(mock)
-
-        # Activate mock engine, if explicitly requested
-        if kw.get('activate'):
-            kw.pop('activate')
-            self.activate()
 
         # Return it for consumer satisfaction
         return mock
