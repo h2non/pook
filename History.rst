@@ -1,5 +1,12 @@
+
 History
 =======
+
+v0.2.1 / 2017-03-25
+-------------------
+
+  * fix(engine): enable new mock engine on register if needed
+  * fix(engine): remove activate argument before instantiating the Mock
 
 v0.2.0 / 2017-03-18
 -------------------
