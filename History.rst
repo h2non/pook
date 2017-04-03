@@ -1,6 +1,12 @@
 
+
 History
 =======
+
+v0.2.2 / 2017-04-03
+-------------------
+
+  * refactor(compare): disable maxDiff length limit while comparing values
 
 v0.2.1 / 2017-03-25
 -------------------
