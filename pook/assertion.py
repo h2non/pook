@@ -7,6 +7,18 @@ from .regex import isregex, strip_regex, isregex_expr
 PY_3 = sys.version_info >= (3,)
 
 
+def test_case():
+    """
+    Creates a new ``unittest.TestCase`` instance.
+
+    Returns:
+        unittest.TestCase
+    """
+    test = TestCase()
+    test.maxDiff = None
+    return test
+
+
 def equal(x, y):
     """
     Shortcut function for ``unittest.TestCase.assertEqual()``.
@@ -22,7 +34,7 @@ def equal(x, y):
         bool
     """
     if PY_3:
-        return TestCase().assertEqual(x, y) or True
+        return test_case().assertEqual(x, y) or True
 
     assert x == y
 
@@ -51,7 +63,7 @@ def matches(x, y, regex_expr=False):
         # Retrieve original regex pattern
         x = x.pattern if isregex(x) else x
         # Assert regular expression via unittest matchers
-        return TestCase().assertRegexpMatches(y, x) or True
+        return test_case().assertRegexpMatches(y, x) or True
 
     # Primitive regex matching for Python 2.7
     if isinstance(x, str):
