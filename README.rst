@@ -255,7 +255,7 @@ Install dependencies:
 
 .. code:: bash
 
-    pip install -r requirements.txt requirements-dev.txt
+    pip install -r requirements.txt -r requirements-dev.txt
 
 
 Install Python dependencies:
