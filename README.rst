@@ -45,7 +45,7 @@ the following HTTP clients:
 
 -  ✔  `urllib3`_ v1+
 -  ✔  `requests`_ v2+
--  ✔  `aiohttp`_ v1+
+-  ✔  `aiohttp`_ v1+ - v2+
 -  ✔  `urllib`_ / `http.client`_ v2/3
 -  ✘  `pycurl`_ (see `#16`_)
 
