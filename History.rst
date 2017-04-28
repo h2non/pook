@@ -1,7 +1,14 @@
 
-
 History
 =======
+
+v0.2.3 / 2017-04-28
+-------------------
+
+  * feat(docs): add supported version for aiohttp
+  * Merge branch 'master' of https://github.com/h2non/pook
+  * fix(api): export missing symbol "disable_network"
+  * Update README.rst (#43)
 
 v0.2.2 / 2017-04-03
 -------------------
