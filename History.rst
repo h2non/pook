@@ -5,37 +5,37 @@ History
 v0.2.3 / 2017-04-28
 -------------------
 
-  * feat(docs): add supported version for aiohttp
-  * Merge branch 'master' of https://github.com/h2non/pook
-  * fix(api): export missing symbol "disable_network"
-  * Update README.rst (#43)
+* feat(docs): add supported version for aiohttp
+* Merge branch 'master' of https://github.com/h2non/pook
+* fix(api): export missing symbol "disable_network"
+* Update README.rst (#43)
 
 v0.2.2 / 2017-04-03
 -------------------
 
-  * refactor(compare): disable maxDiff length limit while comparing values
+* refactor(compare): disable maxDiff length limit while comparing values
 
 v0.2.1 / 2017-03-25
 -------------------
 
-  * fix(engine): enable new mock engine on register if needed
-  * fix(engine): remove activate argument before instantiating the Mock
+* fix(engine): enable new mock engine on register if needed
+* fix(engine): remove activate argument before instantiating the Mock
 
 v0.2.0 / 2017-03-18
 -------------------
 
-  * refactor(engine): do not activate engine on mock declaration if not explicitly requested. This introduces a behavioral library change: you must explicitly use ``pook.on()`` to enable `pook` mock engine.
+* refactor(engine): do not activate engine on mock declaration if not explicitly requested. This introduces a behavioral library change: you must explicitly use ``pook.on()`` to enable `pook` mock engine.
 
 v0.1.14 / 2017-03-17
 --------------------
 
-  * feat(docs): list supported HTTP client versions
-  * fix(#41): disable mocks after decorator call invokation
-  * feat(examples): add mock context manager example file
-  * feat(#40): support context manager definitions
-  * feat(#39): improve unmatched request output
-  * feat(docs): add mocket example file
-  * feat(#33): add mocket examples and documentation
+* feat(docs): list supported HTTP client versions
+* fix(#41): disable mocks after decorator call invokation
+* feat(examples): add mock context manager example file
+* feat(#40): support context manager definitions
+* feat(#39): improve unmatched request output
+* feat(docs): add mocket example file
+* feat(#33): add mocket examples and documentation
 
 v0.1.13 / 2017-01-29
 --------------------
