@@ -24,4 +24,4 @@ print('Is done:', pook.isdone())
 print('Pending mocks:', pook.pending_mocks())
 
 # Disable network mode once we're done
-pook.enable_network()
+pook.disable_network()

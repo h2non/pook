@@ -13,11 +13,11 @@ from .mock_engine import MockEngine  # noqa
 # Public API symbols to export
 __all__ = (
     'activate', 'on', 'disable', 'off', 'reset', 'engine',
-    'use_network', 'enable_network', 'use', 'mock',
-    'get', 'post', 'put', 'patch', 'head', 'set_mock_engine',
-    'delete', 'options', 'pending', 'ispending',
-    'pending_mocks', 'unmatched_requests', 'isunmatched',
-    'unmatched', 'isactive', 'isdone', 'regex',
+    'use_network', 'enable_network', 'disable_network',
+    'get', 'post', 'put', 'patch', 'head', 'use',
+    'set_mock_engine', 'delete', 'options', 'pending',
+    'ispending', 'mock', 'pending_mocks', 'unmatched_requests',
+    'isunmatched', 'unmatched', 'isactive', 'isdone', 'regex',
     'Engine', 'Mock', 'Request', 'Response',
     'MatcherEngine', 'MockEngine'
 )
