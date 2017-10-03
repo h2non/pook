@@ -9,6 +9,9 @@ python:
   - pypy
   - pypy3
   - nightly
+  
+allow_failures:
+  - python: pypy
 
 install:
   - pip install -r requirements.txt

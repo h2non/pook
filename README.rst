@@ -6,6 +6,11 @@ and expectations made easy in `Python`_. Heavily inspired by `gock`_.
 
 To get started, see the `documentation`_, `how it works`_, `FAQ`_ or `examples`_.
 
+.. raw:: html
+
+    <a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/1MpD3pzt63uUeG43NP4tDHPY/h2non/pook'>
+      <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/1MpD3pzt63uUeG43NP4tDHPY/h2non/pook.svg' />
+    </a>
 
 Features
 --------
