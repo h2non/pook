@@ -2,6 +2,14 @@
 History
 =======
 
+v0.2.4 / 2017-10-03
+-------------------
+
+* fix(#45): regex URL issue
+* fix(travis): allow failures in pypy
+* feat(docs): add sponsor banner
+* refactor(History): normalize style
+
 v0.2.3 / 2017-04-28
 -------------------
 
