@@ -4,11 +4,11 @@ from inspect import isfunction
 from contextlib import contextmanager
 from .engine import Engine
 
-from .mock import Mock  # noqa
-from .request import Request  # noqa
-from .response import Response  # noqa
-from .matcher import MatcherEngine  # noqa
-from .mock_engine import MockEngine  # noqa
+from .mock import Mock
+from .request import Request
+from .response import Response
+from .matcher import MatcherEngine
+from .mock_engine import MockEngine
 
 # Public API symbols to export
 __all__ = (

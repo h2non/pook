@@ -1,6 +1,7 @@
 import sys
 import json as _json
 
+from .regex import isregex
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 from .matchers.url import protoregex
@@ -83,14 +84,18 @@ class Request(object):
 
     @property
     def rawurl(self):
-        return urlunparse(self._url)
+        return self._url if isregex(self._url) else urlunparse(self._url)
 
     @url.setter
     def url(self, url):
-        if not protoregex.match(url):
-            url = 'http://{}'.format(url)
-        self._url = urlparse(url)
-        self._query = parse_qs(self._url.query)
+        if isregex(url):
+            self._url = url
+        else:
+            if not protoregex.match(url):
+                url = 'http://{}'.format(url)
+            self._url = urlparse(url)
+            self._query = (parse_qs(self._url.query)
+                           if self._url.query else self._query)
 
     @property
     def query(self, url):
@@ -154,8 +159,9 @@ class Request(object):
         """
         entries = []
 
-        entries.append('URL: {}'.format(urlunparse(self._url)))
         entries.append('Method: {}'.format(self._method))
+        entries.append('URL: {}'.format(
+            self._url if isregex(self._url) else self.rawurl))
 
         if self._query:
             entries.append('Query: {}'.format(self._query))
