@@ -632,7 +632,7 @@ class Mock(object):
 
     def ismatched(self):
         """
-        Returns ``True`` is the mock has been matched at least once time.
+        Returns ``True`` if the mock has been matched at least once time.
 
         Returns:
             bool
