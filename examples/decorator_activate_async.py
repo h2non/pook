@@ -1,3 +1,4 @@
+# flake8: noqa
 import pook
 import asyncio
 import aiohttp
