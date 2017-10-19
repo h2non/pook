@@ -34,6 +34,17 @@ Declaring mocks as decorators
 .. literalinclude:: ../examples/decorators.py
 
 
+Activating the mock engine via decorator within the function context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/decorator_activate.py
+
+
+Activating the mock engine via decorator within an async coroutine function context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/decorator_activate_async.py
+
 
 Featured JSON body matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

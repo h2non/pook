@@ -77,10 +77,12 @@ def activate(fn=None):
     This function can be used as decorator.
 
     Arguments:
-        fn (function): Optional function argument if used as decorator.
+        fn (function|coroutinefunction): Optional function argument
+            if used as decorator.
 
     Returns:
-        function: decorator wrapper function, only if called as decorator.
+        function: decorator wrapper function, only if called as decorator,
+            otherwise ``None``.
 
     Example::
 
@@ -105,6 +107,7 @@ def activate(fn=None):
         _engine.activate()
         return None
 
+    # If used as decorator for an async coroutine, wrap it
     if iscoroutinefunction is not None and iscoroutinefunction(fn):
         return activate_async(fn, _engine)
 
@@ -113,8 +116,6 @@ def activate(fn=None):
         _engine.activate()
         try:
             fn(*args, **kw)
-        except Exception as err:
-            raise err
         finally:
             _engine.disable()
 
@@ -127,7 +128,8 @@ def on(fn=None):
     Alias to ``pook.activate()``.
 
     Arguments:
-        fn (function): Optional function argument if used as decorator.
+        fn (function|coroutinefunction): Optional function argument
+            if used as decorator.
 
     Returns:
         function: decorator wrapper function, only if called as decorator.

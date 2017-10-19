@@ -13,8 +13,8 @@ def activate_async(fn, _engine):
     Returns:
         function: decorator wrapper function.
     """
-    @functools.wraps(fn)
     @coroutine
+    @functools.wraps(fn)
     def wrapper(*args, **kw):
         _engine.activate()
         try:
@@ -22,8 +22,6 @@ def activate_async(fn, _engine):
                 yield from fn(*args, **kw)  # noqa
             else:
                 fn(*args, **kw)
-        except Exception as err:
-            raise err
         finally:
             _engine.disable()
 
