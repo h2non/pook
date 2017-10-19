@@ -2,6 +2,15 @@
 History
 =======
 
+v0.2.5 / 2017-10-19
+-------------------
+
+  * refactor(setup): remove extra install dependency
+  * Fix py27 compatibility (#49)
+  * Add activate_async decorator (#48)
+  * fix typo in pook.mock.Mock.ismatched.__doc__ (#47)
+  * fix README example (#46)
+
 v0.2.4 / 2017-10-03
 -------------------
 
