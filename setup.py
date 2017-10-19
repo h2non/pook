@@ -75,6 +75,11 @@ setup(
     py_modules=['pook'],
     zip_safe=False,
     install_requires=install_requires,
+    extras_require={
+        ':python_version < "3.3"': [
+            'mock~=2.0.0',
+        ],
+    },
     tests_require=tests_require,
     packages=find_packages(exclude=['tests', 'examples', 'docs']),
     package_data={'': [
