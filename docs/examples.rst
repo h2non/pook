@@ -139,3 +139,6 @@ Hy programming language example
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. literalinclude:: ../examples/basic.hy
+
+
+.. _mocket: https://github.com/mindflayer/python-mocket
