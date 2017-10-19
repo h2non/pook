@@ -1,14 +1,23 @@
-import re
 import functools
-from inspect import isfunction
+import re
 from contextlib import contextmanager
-from .engine import Engine
+from inspect import isfunction
 
+from .engine import Engine
+from .matcher import MatcherEngine
 from .mock import Mock
+from .mock_engine import MockEngine
 from .request import Request
 from .response import Response
-from .matcher import MatcherEngine
-from .mock_engine import MockEngine
+
+try:
+    from asyncio import iscoroutinefunction
+except ImportError:
+    iscoroutinefunction = None
+if iscoroutinefunction is not None:
+    from .activate_async import activate_async
+else:
+    activate_async = None
 
 # Public API symbols to export
 __all__ = (
@@ -95,6 +104,9 @@ def activate(fn=None):
     if not isfunction(fn):
         _engine.activate()
         return None
+
+    if iscoroutinefunction is not None and iscoroutinefunction(fn):
+        return activate_async(fn, _engine)
 
     @functools.wraps(fn)
     def wrapper(*args, **kw):
