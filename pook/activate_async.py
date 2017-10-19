@@ -1,6 +1,5 @@
 import functools
-from asyncio import iscoroutinefunction
-from asyncio import coroutine
+from asyncio import iscoroutinefunction, coroutine
 
 
 def activate_async(fn, _engine):
