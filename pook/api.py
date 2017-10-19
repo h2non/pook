@@ -11,7 +11,7 @@ from .request import Request
 from .response import Response
 
 try:
-    from inspect import iscoroutinefunction
+    from asyncio import iscoroutinefunction
 except ImportError:
     iscoroutinefunction = None
 if iscoroutinefunction is not None:
