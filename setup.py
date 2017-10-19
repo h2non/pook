@@ -5,7 +5,7 @@ pook
 ====
 Versatile HTTP traffic mocking and expectations made easy in Python.
 
-:copyright: (c) 2016 Tomas Aparicio
+:copyright: (c) 2016-2017 Tomas Aparicio
 :license: MIT
 """
 
@@ -65,7 +65,7 @@ setup(
     name='pook',
     version=version,
     author='Tomas Aparicio',
-    author_email='tomas+python@aparicio.me',
+    author_email='tomas@aparicio.me',
     description=(
         'HTTP traffic mocking and expectations made easy'
     ),
@@ -75,11 +75,6 @@ setup(
     py_modules=['pook'],
     zip_safe=False,
     install_requires=install_requires,
-    extras_require={
-        ':python_version < "3.3"': [
-            'mock~=2.0.0',
-        ],
-    },
     tests_require=tests_require,
     packages=find_packages(exclude=['tests', 'examples', 'docs']),
     package_data={'': [
