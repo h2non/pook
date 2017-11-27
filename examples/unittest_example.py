@@ -22,7 +22,7 @@ class TestUnitTestEngine(unittest.TestCase):
         pook.get('server.com/bar', reply=204)
         try:
             requests.get('http://server.com/baz')
-        except Exception as err:
+        except Exception:
             pass
         else:
             raise RuntimeError('expected to fail')

@@ -22,7 +22,7 @@ class JSONSchemaMatcher(BaseMatcher):
         if isinstance(body, str):
             try:
                 body = json.loads(body)
-            except Exception as err:
+            except Exception:
                 return False
 
         if not body:
@@ -30,7 +30,7 @@ class JSONSchemaMatcher(BaseMatcher):
 
         try:
             validate(body, self.expectation)
-        except Exception as err:
+        except Exception:
             return False
 
         return True

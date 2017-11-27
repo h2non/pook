@@ -114,7 +114,7 @@ class Request(object):
         if hasattr(body, 'decode'):
             try:
                 body = body.decode('utf-8', 'strict')
-            except Exception as err:
+            except Exception:
                 pass
 
         self._body = body

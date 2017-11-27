@@ -8,7 +8,7 @@ NEGATE = '!!'
 def compile(expr):
     try:
         return re.compile(expr, re.IGNORECASE)
-    except Exception as err:
+    except Exception:
         pass
 
 

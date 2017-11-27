@@ -21,7 +21,7 @@ class JSONMatcher(BaseMatcher):
         if isinstance(body, str):
             try:
                 body = json.loads(body)
-            except Exception as err:
+            except Exception:
                 return False
 
         x = json.dumps(self.expectation, sort_keys=True, indent=4)
