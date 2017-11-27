@@ -5,7 +5,7 @@ from .base import BaseInterceptor
 # Support Python 2/3
 try:
     import mock
-except:
+except Exception as err:
     from unittest import mock
 
 if sys.version_info < (3,):     # Python 2
@@ -24,7 +24,7 @@ else:
 try:
     import yarl
     import multidict
-except:
+except Exception as err:
     yarl, multidict = None, None
 
 PATCHES = (
@@ -133,7 +133,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
             _request = patcher.get_original()[0]
             # Start patching function calls
             patcher.start()
-        except:
+        except Exception as err:
             # Exceptions may accur due to missing package
             # Ignore all the exceptions for now
             pass

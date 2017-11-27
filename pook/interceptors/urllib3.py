@@ -7,7 +7,7 @@ from .http import URLLIB3_BYPASS
 # Support Python 2/3
 try:
     import mock
-except:
+except Exception as err:
     from unittest import mock
 
 if sys.version_info < (3,):     # Python 2
@@ -134,7 +134,7 @@ class Urllib3Interceptor(BaseInterceptor):
             urlopen = patcher.get_original()[0]
             # Start patching function calls
             patcher.start()
-        except:
+        except Exception as err:
             # Exceptions may accur due to missing package
             # Ignore all the exceptions for now
             pass

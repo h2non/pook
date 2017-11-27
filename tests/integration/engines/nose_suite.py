@@ -36,7 +36,7 @@ def test_no_match_exception():
     pook.get('server.com/bar', reply=204)
     try:
         requests.get('http://server.com/baz')
-    except:
+    except Exception as err:
         pass
     else:
         raise RuntimeError('expected to fail')

@@ -25,7 +25,7 @@ print('#2 body:', res.json())
 # Real request 3
 try:
     requests.get('http://httpbin.org')
-except:
+except Exception as err:
     print('Request #3 not matched due to expired mock')
 
 print('Is done:', pook.isdone())
