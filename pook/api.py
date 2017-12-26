@@ -219,6 +219,7 @@ def use(network=False):
         _engine.activate()
 
 
+@contextmanager
 def context(network=False):
     """
     Create a new isolated mock engine to be used via context manager.
