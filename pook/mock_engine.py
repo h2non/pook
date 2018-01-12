@@ -3,16 +3,27 @@ from .interceptors import interceptors
 
 class MockEngine(object):
     """
-    MockEngine implements the built-in `pook` mock engine based on HTTP
+    ``MockEngine`` represents the low-level mocking engine abstraction
+    layer between ``pook`` and the underlying mocking mechanism 
+    responsible of intercepting and trigger outgoing HTTP traffic within
+    the Python runtime.
+    
+    ``MockEngine`` implements the built-in `pook` mock engine based on HTTP
     interceptors strategy.
+    
+    Developers can implement and plug in their own ``MockEngine`` in order
+    to fit custom mocking logic needs.
+    
+    You can see a custom ``MockEngine`` implementation here: 
+    http://bit.ly/2EymMro
 
-    Mock engines must implementent the following methods:
+    Custom mock engines must implementent at least the following methods:
 
     - `engine.__init__(self, engine)`
     - `engine.activate(self)`
     - `engine.disable(self)`
 
-    Mock engines can optionally implement the follow methods:
+    Custom mock engines can optionally implement the following methods:
 
     - `engine.add_interceptors(self, *interceptors)`
     - `engine.flush_interceptors(self)`
