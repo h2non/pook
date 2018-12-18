@@ -63,7 +63,7 @@ def matches(x, y, regex_expr=False):
         # Retrieve original regex pattern
         x = x.pattern if isregex(x) else x
         # Assert regular expression via unittest matchers
-        return test_case().assertRegexpMatches(y, x) or True
+        return test_case().assertRegex(y, x) or True
 
     # Primitive regex matching for Python 2.7
     if isinstance(x, str):
