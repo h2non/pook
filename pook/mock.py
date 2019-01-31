@@ -571,7 +571,7 @@ class Mock(object):
         """
         self._error = RuntimeError(error) if isinstance(error, str) else error
 
-    def reply(self, status=200, **kw):
+    def reply(self, status=200, new_response=False, **kw):
         """
         Defines the mock response.
 
@@ -584,7 +584,7 @@ class Mock(object):
             pook.Response: mock response definition instance.
         """
         # Use or create a Response mock instance
-        res = Response(**kw)
+        res = Response(**kw) if new_response else self._response
         # Define HTTP mandatory response status
         res.status(status or res._status)
         # Expose current mock instance in response for self-reference
