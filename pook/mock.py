@@ -584,7 +584,7 @@ class Mock(object):
             pook.Response: mock response definition instance.
         """
         # Use or create a Response mock instance
-        res = self._response or Response(**kw)
+        res = Response(**kw)
         # Define HTTP mandatory response status
         res.status(status or res._status)
         # Expose current mock instance in response for self-reference
