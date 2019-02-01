@@ -1,6 +1,12 @@
 
+
 History
 =======
+
+v0.2.6 / 2019-02-01
+-------------------
+
+  * Add mock.reply(new_response=True) to reset response definition object  
 
 v0.2.5 / 2017-10-19
 -------------------

@@ -2,7 +2,7 @@ import pook
 import requests
 
 
-with pook.use():
+with pook.context():
     pook.get('httpbin.org/ip', reply=403,
              response_headers={'pepe': 'lopez'},
              response_json={'error': 'not found'})
