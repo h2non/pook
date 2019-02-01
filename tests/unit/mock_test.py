@@ -16,3 +16,7 @@ def matcher(mock):
 def test_mock_url(mock):
     mock.url('http://google.es')
     assert str(matcher(mock)) == 'http://google.es'
+
+
+def test_new_response(mock):
+    assert(mock.reply() != mock.reply(new_response=True, json={}))
