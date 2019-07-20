@@ -117,7 +117,7 @@ class Engine(object):
         Arguments:
             *fn (function): variadic function filter arguments to be used.
         """
-        self.network_filters = self.network_filters + fn
+        self.network_filters.extend(fn)
 
     def flush_network_filters(self):
         """
