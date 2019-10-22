@@ -5,7 +5,7 @@ pook
 ====
 Versatile HTTP traffic mocking and expectations made easy in Python.
 
-:copyright: (c) 2016-2017 Tomas Aparicio
+:copyright: (c) 2016-2019 Tomas Aparicio
 :license: MIT
 """
 
