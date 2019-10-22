@@ -28,7 +28,7 @@ __all__ = (
     'ispending', 'mock', 'pending_mocks', 'unmatched_requests',
     'isunmatched', 'unmatched', 'isactive', 'isdone', 'regex',
     'Engine', 'Mock', 'Request', 'Response',
-    'MatcherEngine', 'MockEngine'
+    'MatcherEngine', 'MockEngine', 'use_network_filter'
 )
 
 # Default singleton mock engine to be used
