@@ -2,7 +2,7 @@ import sys
 try:
     from collections.abc import Mapping, MutableMapping
 except ImportError:
-    from collections import Mapping, MutableMapping    
+    from collections import Mapping, MutableMapping
 
 PY3 = sys.version_info >= (3, 0)
 
