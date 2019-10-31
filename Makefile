@@ -51,7 +51,6 @@ clean:
 
 publish:
 	@echo "$(OK_COLOR)==> Releasing package ...$(NO_COLOR)"
-	@python setup.py register
-	@python setup.py sdist upload
-	@python setup.py bdist_wheel --universal upload
+	@python setup.py sdist bdist_wheel
+	@twine upload dist/*
 	@rm -fr build dist .egg pook.egg-info
