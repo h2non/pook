@@ -1,7 +1,16 @@
 
-
 History
 =======
+
+v0.2.8 / 2019-10-31
+-------------------
+
+  * fix collections import warning (#61) 
+
+v0.2.7 / 2019-10-21
+-------------------
+
+  * fix collections import warning (#61)
 
 v0.2.6 / 2019-02-01
 -------------------
