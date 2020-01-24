@@ -150,7 +150,7 @@ class Response(object):
         Defines response body data.
 
         Arguments:
-            body (str|bytes): response body to use.
+            body (str|bytes|list): response body to use.
 
         Returns:
             self: ``pook.Response`` current instance.
