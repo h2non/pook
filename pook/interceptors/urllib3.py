@@ -87,15 +87,30 @@ class FakeResponse(object):
 
 class FakeChunkedResponseBody(object):
     def __init__(self, chunks):
-        self.index = 0
-        self.chunks = chunks
+        # append a terminating chunk
+        chunks.append(b'')
+
+        self.position = 0
+        self.stream = b''.join([self._encode(c) for c in chunks])
         self.closed = False
 
-    def read_chunk(self, amt=-1):
-        pass
+    def _encode(self, chunk):
+        length = '%X\r\n' % len(chunk)
+        return length.encode() + chunk + b'\r\n'
+
+    def read_chunk(self, amt=-1, whole=False):
+        if whole or amt == -1:
+            end_idx = self.stream.index(b'\r\n', self.position) + 2
+        else:
+            end_idx = self.position + amt
+
+        chunk = self.stream[self.position:end_idx]
+        self.position = end_idx
+
+        return chunk
 
     def readline(self):
-        return self.read_chunk()
+        return self.read_chunk(whole=True)
 
     def read(self, amt=-1):
         return self.read_chunk(amt)
@@ -151,7 +166,7 @@ class Urllib3Interceptor(BaseInterceptor):
 
         if is_chunked_response(headers):
             body_chunks = body if isinstance(body, list) else [body]
-            body_chunks = [body_io(chunk) for chunk in body_chunks]
+            body_chunks = [chunk.encode() for chunk in body_chunks]
 
             body = ClientHTTPResponse(MockSock)
             body.fp = FakeChunkedResponseBody(body_chunks)
