@@ -5,65 +5,37 @@ import pook
 
 
 @pook.on
+def assert_chunked_response(input_data, expected):
+    (pook.get('httpbin.org/foo')
+        .reply(204)
+        .body(input_data, chunked=True))
+
+    http = urllib3.PoolManager()
+    r = http.request('GET', 'httpbin.org/foo')
+
+    assert r.status == 204
+
+    # py2 returns decoded chunks, while py3 does not
+    chunks = list(r.read_chunked())
+    chunks = [c.decode() if isinstance(c, bytes) else c for c in chunks]
+    assert chunks == expected
+
+
 def test_chunked_response_list():
-    (pook.get('httpbin.org/foo')
-        .reply(204)
-        .body(['a', 'b', 'c'], chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
-
-    assert r.status == 204
-    assert list(r.read_chunked()) == ['a', 'b', 'c']
+    assert_chunked_response(['a', 'b', 'c'], ['a', 'b', 'c'])
 
 
-@pook.on
 def test_chunked_response_str():
-    (pook.get('httpbin.org/foo')
-        .reply(204)
-        .body('text', chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
-
-    assert r.status == 204
-    assert list(r.read_chunked()) == ['text']
+    assert_chunked_response('text', ['text'])
 
 
-@pook.on
 def test_chunked_response_byte():
-    (pook.get('httpbin.org/foo')
-        .reply(204)
-        .body(b'byteman', chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
-
-    assert r.status == 204
-    assert list(r.read_chunked()) == ['byteman']
+    assert_chunked_response(b'byteman', ['byteman'])
 
 
-@pook.on
 def test_chunked_response_empty():
-    (pook.get('httpbin.org/foo')
-        .reply(204)
-        .body('', chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
-
-    assert r.status == 204
-    assert list(r.read_chunked()) == []
+    assert_chunked_response('', [])
 
 
-@pook.on
 def test_chunked_response_contains_newline():
-    (pook.get('httpbin.org/foo')
-        .reply(204)
-        .body('newline\r\n', chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
-
-    assert r.status == 204
-    assert list(r.read_chunked()) == ['newline\r\n']
+    assert_chunked_response('newline\r\n', ['newline\r\n'])
