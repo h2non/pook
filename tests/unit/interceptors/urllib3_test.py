@@ -8,8 +8,7 @@ import pook
 def test_chunked_response_list():
     (pook.get('httpbin.org/foo')
         .reply(204)
-        .header('Transfer-Encoding', 'chunked')
-        .body(['a', 'b', 'c']))
+        .body(['a', 'b', 'c'], chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request('GET', 'httpbin.org/foo')
@@ -22,8 +21,7 @@ def test_chunked_response_list():
 def test_chunked_response_str():
     (pook.get('httpbin.org/foo')
         .reply(204)
-        .header('Transfer-Encoding', 'chunked')
-        .body('text'))
+        .body('text', chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request('GET', 'httpbin.org/foo')
@@ -36,8 +34,7 @@ def test_chunked_response_str():
 def test_chunked_response_byte():
     (pook.get('httpbin.org/foo')
         .reply(204)
-        .header('Transfer-Encoding', 'chunked')
-        .body(b'byteman'))
+        .body(b'byteman', chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request('GET', 'httpbin.org/foo')
@@ -50,11 +47,23 @@ def test_chunked_response_byte():
 def test_chunked_response_empty():
     (pook.get('httpbin.org/foo')
         .reply(204)
-        .header('Transfer-Encoding', 'chunked')
-        .body(''))
+        .body('', chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request('GET', 'httpbin.org/foo')
 
     assert r.status == 204
     assert list(r.read_chunked()) == []
+
+
+@pook.on
+def test_chunked_response_contains_newline():
+    (pook.get('httpbin.org/foo')
+        .reply(204)
+        .body('newline\r\n', chunked=True))
+
+    http = urllib3.PoolManager()
+    r = http.request('GET', 'httpbin.org/foo')
+
+    assert r.status == 204
+    assert list(r.read_chunked()) == ['newline\r\n']
