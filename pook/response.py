@@ -145,12 +145,13 @@ class Response(object):
         self._headers['Content-Type'] = TYPES.get(name, name)
 
     @fluent
-    def body(self, body):
+    def body(self, body, chunked=False):
         """
         Defines response body data.
 
         Arguments:
-            body (str|bytes): response body to use.
+            body (str|bytes|list): response body to use.
+            chunked (bool): return a chunked response.
 
         Returns:
             self: ``pook.Response`` current instance.
@@ -159,6 +160,9 @@ class Response(object):
             body = body.decode('utf-8')
 
         self._body = body
+
+        if chunked:
+            self.header('Transfer-Encoding', 'chunked')
 
     @fluent
     def json(self, data):

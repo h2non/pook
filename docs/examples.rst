@@ -116,6 +116,13 @@ Using ``urllib3`` as HTTP client
 
 
 
+Using ``urllib3`` to return a chunked response
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../examples/urllib3_chunked_response.py
+
+
+
 Asynchronous HTTP request using ``aiohttp``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

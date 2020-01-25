@@ -11,9 +11,15 @@ except Exception:
     from unittest import mock
 
 if sys.version_info < (3,):     # Python 2
-    from httplib import responses as http_reasons
+    from httplib import (
+        responses as http_reasons,
+        HTTPResponse as ClientHTTPResponse,
+    )
 else:                           # Python 3
-    from http.client import responses as http_reasons
+    from http.client import (
+        responses as http_reasons,
+        HTTPResponse as ClientHTTPResponse,
+    )
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
@@ -48,6 +54,17 @@ def body_io(string, encoding='utf-8'):
     return io.BytesIO(string)
 
 
+def is_chunked_response(headers):
+    tencoding = dict(headers).get("Transfer-Encoding", "").lower()
+    return "chunked" in tencoding.split(",")
+
+
+class MockSock(object):
+    @classmethod
+    def makefile(cls, *args, **kwargs):
+        return
+
+
 class FakeHeaders(list):
     def get_all(self, key, default=None):
         key = key.lower()
@@ -56,11 +73,53 @@ class FakeHeaders(list):
 
 
 class FakeResponse(object):
-    def __init__(self, headers):
+    def __init__(self, method, headers):
+        self._method = method  # name expected by urllib3
         self.msg = FakeHeaders(headers)
+        self.closed = False
+
+    def close(self):
+        self.closed = True
 
     def isclosed(self):
-        return False
+        return self.closed
+
+
+class FakeChunkedResponseBody(object):
+    def __init__(self, chunks):
+        # append a terminating chunk
+        chunks.append(b'')
+
+        self.position = 0
+        self.stream = b''.join([self._encode(c) for c in chunks])
+        self.closed = False
+
+    def _encode(self, chunk):
+        length = '%X\r\n' % len(chunk)
+        return length.encode() + chunk + b'\r\n'
+
+    def read_chunk(self, amt=-1, whole=False):
+        if whole or amt == -1:
+            end_idx = self.stream.index(b'\r\n', self.position) + 2
+        else:
+            end_idx = self.position + amt
+
+        chunk = self.stream[self.position:end_idx]
+        self.position = end_idx
+
+        return chunk
+
+    def readline(self):
+        return self.read_chunk(whole=True)
+
+    def read(self, amt=-1):
+        return self.read_chunk(amt)
+
+    def flush(self):
+        pass
+
+    def close(self):
+        self.closed = True
 
 
 class Urllib3Interceptor(BaseInterceptor):
@@ -96,23 +155,34 @@ class Urllib3Interceptor(BaseInterceptor):
         if not mock:
             return urlopen(pool, method, url, body=body, headers=headers, **kw)
 
-        # Shortcut to mock response
+        # Shortcut to mock response and response body
         res = mock._response
+        body = res._body
 
         # Aggregate headers as list of tuples for interface compatibility
         headers = []
         for key in res._headers:
             headers.append((key, res._headers[key]))
 
+        if is_chunked_response(headers):
+            body_chunks = body if isinstance(body, list) else [body]
+            body_chunks = [chunk.encode() for chunk in body_chunks]
+
+            body = ClientHTTPResponse(MockSock)
+            body.fp = FakeChunkedResponseBody(body_chunks)
+        else:
+            # Assume that the body is a bytes-like object
+            body = body_io(body)
+
         # Return mocked HTTP response
         return HTTPResponse(
             path,
-            body=body_io(res._body),
+            body=body,
             status=res._status,
             headers=headers,
             preload_content=False,
             reason=http_reasons.get(res._status),
-            original_response=FakeResponse(headers),
+            original_response=FakeResponse(method, headers),
         )
 
     def _patch(self, path):
