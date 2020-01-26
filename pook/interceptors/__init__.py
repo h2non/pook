@@ -24,14 +24,14 @@ if sys.version_info >= (3, 4, 2):
     interceptors.append(AIOHTTPInterceptor)
 
 
-def add(*interceptors):
+def add(*custom_interceptors):
     """
     Registers a new HTTP client interceptor.
 
     Arguments:
-        *interceptors (interceptor): interceptor(s) to be added.
+        *custom_interceptors (interceptor): interceptor(s) to be added.
     """
-    interceptors.append(*interceptors)
+    interceptors.append(*custom_interceptors)
 
 
 def get(name):
