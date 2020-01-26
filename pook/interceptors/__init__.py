@@ -1,4 +1,5 @@
 import sys
+from .websocket import WebSocketInterceptor
 from .urllib3 import Urllib3Interceptor
 from .http import HTTPClientInterceptor
 from .base import BaseInterceptor
@@ -7,6 +8,7 @@ from .base import BaseInterceptor
 __all__ = (
     'interceptors', 'add', 'get',
     'BaseInterceptor',
+    'WebSocketInterceptor',
     'Urllib3Interceptor',
     'HTTPClientInterceptor',
     'AIOHTTPInterceptor',
@@ -15,7 +17,8 @@ __all__ = (
 # Store built-in interceptors in pook.
 interceptors = [
     Urllib3Interceptor,
-    HTTPClientInterceptor
+    HTTPClientInterceptor,
+    WebSocketInterceptor
 ]
 
 # Import aiohttp in modern Python runtimes
