@@ -1,3 +1,4 @@
+import tempfile
 from ..request import Request
 from .base import BaseInterceptor
 
@@ -13,14 +14,6 @@ class MockFrame(object):
         self.opcode = opcode
         self.data = data
         self.fin = fin
-
-
-class MockSocket(object):
-    def fileno(self):
-        return 0
-
-    def gettimeout(self):
-        return 0
 
 
 class MockHandshakeResponse(object):
@@ -54,7 +47,9 @@ class WebSocketInterceptor(BaseInterceptor):
         if not isinstance(body, list):
             self._mock._response._body = [body]
 
-        sock = MockSocket()
+        # We have to return a valid file descriptor, not just a random integer.
+        # Source: https://docs.python.org/3/library/select.html#select.select
+        sock = tempfile.TemporaryFile()
         addr = ("hostname", "port", "resource")
 
         return sock, addr
