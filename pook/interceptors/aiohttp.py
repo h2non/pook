@@ -1,8 +1,6 @@
 import sys
 from ..request import Request
 from .base import BaseInterceptor
-from aiohttp.helpers import TimerNoop
-from aiohttp.streams import EmptyStreamReader
 
 # Support Python 2/3
 try:
@@ -19,8 +17,12 @@ else:                           # Python 3
 
 if sys.version_info >= (3, 4, 2):  # Python 3.4.2+
     import asyncio
+    from aiohttp.helpers import TimerNoop
+    from aiohttp.streams import EmptyStreamReader
 else:
     asyncio = None
+    TimerNoop = None
+    EmptyStreamReader = None
 
 # Try to load yarl URL parser package used by aiohttp
 try:
