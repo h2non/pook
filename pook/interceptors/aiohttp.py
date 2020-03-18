@@ -9,16 +9,20 @@ except Exception:
     from unittest import mock
 
 if sys.version_info < (3,):     # Python 2
-    from urlparse import urlunparse
+    from urlparse import urlunparse, urlencode
     from httplib import responses as http_reasons
 else:                           # Python 3
-    from urllib.parse import urlunparse
+    from urllib.parse import urlunparse, urlencode
     from http.client import responses as http_reasons
 
 if sys.version_info >= (3, 4, 2):  # Python 3.4.2+
     import asyncio
+    from aiohttp.helpers import TimerNoop
+    from aiohttp.streams import EmptyStreamReader
 else:
     asyncio = None
+    TimerNoop = None
+    EmptyStreamReader = None
 
 # Try to load yarl URL parser package used by aiohttp
 try:
@@ -35,13 +39,33 @@ RESPONSE_CLASS = 'ClientResponse'
 RESPONSE_PATH = 'aiohttp.client_reqrep'
 
 
+class SimpleContent(EmptyStreamReader):
+    def __init__(self, content, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.content = content
+
+    @asyncio.coroutine
+    def read(self, n=-1):
+        return self.content
+
+
 def HTTPResponse(*args, **kw):
     # Dynamically load package
     module = __import__(RESPONSE_PATH, fromlist=(RESPONSE_CLASS,))
     ClientResponse = getattr(module, RESPONSE_CLASS)
 
     # Return response instance
-    return ClientResponse(*args, **kw)
+    return ClientResponse(
+        *args,
+        request_info=mock.Mock(),
+        writer=mock.Mock(),
+        continue100=None,
+        timer=TimerNoop(),
+        traces=[],
+        loop=mock.Mock(),
+        session=mock.Mock(),
+        **kw
+    )
 
 
 class AIOHTTPInterceptor(BaseInterceptor):
@@ -64,7 +88,12 @@ class AIOHTTPInterceptor(BaseInterceptor):
         req.extra = kw
 
         # Compose URL
-        req.url = str(url)
+        if not kw.get('params'):
+            req.url = str(url)
+        else:
+            req.url = str(url) + '?' + urlencode(
+                [(x, y) for x, y in kw['params'].items()]
+            )
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
@@ -98,16 +127,19 @@ class AIOHTTPInterceptor(BaseInterceptor):
         _res._should_close = False
 
         # Add response headers
-        _res.raw_headers = tuple(headers)
-        _res.headers = multidict.CIMultiDictProxy(
+        _res._raw_headers = tuple(headers)
+        _res._headers = multidict.CIMultiDictProxy(
             multidict.CIMultiDict(headers)
         )
 
-        # Define `_content` attribute with an empty string to
-        # force do not read from stream (which won't exists)
-        _res._content = ''
         if res._body:
-            _res._content = res._body.encode('utf-8', errors='replace')
+            _res.content = SimpleContent(
+                res._body.encode('utf-8', errors='replace'),
+            )
+        else:
+            # Define `_content` attribute with an empty string to
+            # force do not read from stream (which won't exists)
+            _res.content = EmptyStreamReader()
 
         # Return response based on mock definition
         return _res
