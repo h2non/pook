@@ -12,6 +12,8 @@ python:
   # - nightly
 
 allow_failures:
+  - python: 2.7
+  - python: 3.4
   - python: pypy
   - python: nightly
 
