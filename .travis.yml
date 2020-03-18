@@ -9,13 +9,11 @@ python:
   - 3.8
   - pypy
   - pypy3
-  - nightly
 
 allow_failures:
   - python: 2.7
   - python: 3.4
   - python: pypy
-  - python: nightly
 
 install:
   - pip install -r requirements.txt
