@@ -19,7 +19,7 @@ interceptors = [
 ]
 
 # Import aiohttp in modern Python runtimes
-if sys.version_info >= (3, 4, 2):
+if sys.version_info >= (3, 5, 0):
     from .aiohttp import AIOHTTPInterceptor
     interceptors.append(AIOHTTPInterceptor)
 
