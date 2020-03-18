@@ -42,7 +42,8 @@ class SimpleContent(EmptyStreamReader):
         super().__init__(*args, **kwargs)
         self.content = content
 
-    async def read(self, n=-1):
+    @asyncio.coroutine
+    def read(self, n=-1):
         return self.content
 
 
