@@ -2,6 +2,11 @@
 History
 =======
 
+v1.0.0 / 2020-03-18
+-------------------
+
+  * fix(aiohttp): use latest version, allow Python 3.5+ for async http client
+
 v0.2.8 / 2019-10-31
 -------------------
 
