@@ -15,7 +15,7 @@ else:                           # Python 3
     from urllib.parse import urlunparse, urlencode
     from http.client import responses as http_reasons
 
-if sys.version_info >= (3, 4, 2):  # Python 3.4.2+
+if sys.version_info >= (3, 5, 0):  # Python 3.5+
     import asyncio
     from aiohttp.helpers import TimerNoop
     from aiohttp.streams import EmptyStreamReader
