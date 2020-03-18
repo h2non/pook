@@ -62,7 +62,7 @@ def HTTPResponse(*args, **kw):
         traces=[],
         loop=mock.Mock(),
         session=mock.Mock(),
-        **kw,
+        **kw
     )
 
 
