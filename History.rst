@@ -2,6 +2,12 @@
 History
 =======
 
+v1.0.1 / 2020-03-24
+------------------
+
+  * fix(aiohttp): compatible with non aiohttp projects (#67)
+  * feat(History): add release changes
+
 v1.0.0 / 2020-03-18
 -------------------
 
