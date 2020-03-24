@@ -72,6 +72,7 @@ setup(
     url='https://github.com/h2non/pook',
     license='MIT',
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/x-rst',
     py_modules=['pook'],
     zip_safe=False,
     install_requires=install_requires,
