@@ -20,8 +20,12 @@ interceptors = [
 
 # Import aiohttp in modern Python runtimes
 if sys.version_info >= (3, 5, 0):
-    from .aiohttp import AIOHTTPInterceptor
-    interceptors.append(AIOHTTPInterceptor)
+    try:
+        import aiohttp # noqa
+        from .aiohttp import AIOHTTPInterceptor
+        interceptors.append(AIOHTTPInterceptor)
+    except ImportError:
+        pass
 
 
 def add(*custom_interceptors):
