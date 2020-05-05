@@ -33,7 +33,7 @@ def test_base_matcher_exceptions():
     assert _BaseMatcher('foo').match(None) is None
 
     with pytest.raises(ValueError,
-                       message='expectation argument cannot be empty'):
+                       match='expectation argument cannot be empty'):
         _BaseMatcher(None)
 
 
