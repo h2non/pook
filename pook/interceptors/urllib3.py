@@ -127,6 +127,8 @@ class Urllib3Interceptor(BaseInterceptor):
     Urllib3 HTTP traffic interceptor.
     """
 
+    PATCHES = PATCHES
+
     def _on_request(self, urlopen, path, pool, method, url,
                     body=None, headers=None, **kw):
         # Remove bypass headers
@@ -185,42 +187,11 @@ class Urllib3Interceptor(BaseInterceptor):
             original_response=FakeResponse(method, headers),
         )
 
-    def _patch(self, path):
-        def handler(conn, method, url, body=None, headers=None, **kw):
-            # Flag that the current request as urllib3 intercepted
-            headers = headers or {}
-            headers[URLLIB3_BYPASS] = True
+    def _patch_handler(self, urlopen, path, conn, method, url, body=None, headers=None, **kw):
+        # Flag that the current request as urllib3 intercepted
+        headers = headers or {}
+        headers[URLLIB3_BYPASS] = True
 
-            # Call request interceptor
-            return self._on_request(urlopen, path, conn, method, url,
-                                    body=body, headers=headers, **kw)
-
-        try:
-            # Create a new patcher for Urllib3 urlopen function
-            # used as entry point for all the HTTP communications
-            patcher = mock.patch(path, handler)
-            # Retrieve original patched function that we might need for real
-            # networking
-            urlopen = patcher.get_original()[0]
-            # Start patching function calls
-            patcher.start()
-        except Exception:
-            # Exceptions may accur due to missing package
-            # Ignore all the exceptions for now
-            pass
-        else:
-            self.patchers.append(patcher)
-
-    def activate(self):
-        """
-        Activates the traffic interceptor.
-        This method must be implemented by any interceptor.
-        """
-        [self._patch(path) for path in PATCHES]
-
-    def disable(self):
-        """
-        Disables the traffic interceptor.
-        This method must be implemented by any interceptor.
-        """
-        [patch.stop() for patch in self.patchers]
+        # Call request interceptor
+        return self._on_request(urlopen, path, conn, method, url,
+                                body=body, headers=headers, **kw)

@@ -73,6 +73,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
     aiohttp HTTP client traffic interceptor.
     """
 
+    PATCHES = PATCHES
+
     def _url(self, url):
         return yarl.URL(url) if yarl else None
 
@@ -144,44 +146,10 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # Return response based on mock definition
         return _res
 
-    def _patch(self, path):
-        # If not modern Python, just ignore patch
-        if not asyncio:
-            return None
-
-        @asyncio.coroutine
-        def handler(session, method, url, data=None, headers=None, **kw):
-            return (yield from self._on_request(
-                _request, session, method, url,
-                data=data, headers=headers, **kw)
-            )
-
-        try:
-            # Create a new patcher for Urllib3 urlopen function
-            # used as entry point for all the HTTP communications
-            patcher = mock.patch(path, handler)
-            # Retrieve original patched function that we might need for real
-            # networking
-            _request = patcher.get_original()[0]
-            # Start patching function calls
-            patcher.start()
-        except Exception:
-            # Exceptions may accur due to missing package
-            # Ignore all the exceptions for now
-            pass
-        else:
-            self.patchers.append(patcher)
-
-    def activate(self):
-        """
-        Activates the traffic interceptor.
-        This method must be implemented by any interceptor.
-        """
-        [self._patch(path) for path in PATCHES]
-
-    def disable(self):
-        """
-        Disables the traffic interceptor.
-        This method must be implemented by any interceptor.
-        """
-        [patch.stop() for patch in self.patchers]
+    # TODO: return asyncio availability check
+    @asyncio.coroutine
+    def handler(self, _request, path, session, method, url, data=None, headers=None, **kw):
+        return (yield from self._on_request(
+            _request, session, method, url,
+            data=data, headers=headers, **kw)
+                )
