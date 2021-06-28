@@ -3,7 +3,6 @@ import functools
 from furl import furl
 from inspect import isfunction, ismethod
 
-from .decorators import fluent
 from .response import Response
 from .constants import TYPES
 from .request import Request
@@ -134,7 +133,6 @@ class Mock(object):
         if request:
             _trigger_request(self, request)
 
-    @fluent
     def url(self, url):
         """
         Defines the mock URL to match.
@@ -150,8 +148,8 @@ class Mock(object):
         """
         self._request.url = url
         self.add_matcher(matcher('URLMatcher', url))
+        return self
 
-    @fluent
     def method(self, method):
         """
         Defines the HTTP method to match.
@@ -165,8 +163,8 @@ class Mock(object):
         """
         self._request.method = method
         self.add_matcher(matcher('MethodMatcher', method))
+        return self
 
-    @fluent
     def path(self, path):
         """
         Defines a URL path to match.
@@ -183,8 +181,8 @@ class Mock(object):
         url.path = path
         self._request.url = url.url
         self.add_matcher(matcher('PathMatcher', path))
+        return self
 
-    @fluent
     def header(self, name, value):
         """
         Defines a URL path to match.
@@ -200,8 +198,8 @@ class Mock(object):
         headers = {name: value}
         self._request.headers = headers
         self.add_matcher(matcher('HeadersMatcher', headers))
+        return self
 
-    @fluent
     def headers(self, headers=None, **kw):
         """
         Defines a dictionary of arguments.
@@ -218,8 +216,8 @@ class Mock(object):
         headers = kw if kw else headers
         self._request.headers = headers
         self.add_matcher(matcher('HeadersMatcher', headers))
+        return self
 
-    @fluent
     def header_present(self, *names):
         """
         Defines a new header matcher expectation that must be present in the
@@ -242,8 +240,8 @@ class Mock(object):
         for name in names:
             headers = {name: re.compile('(.*)')}
             self.add_matcher(matcher('HeadersMatcher', headers))
+        return self
 
-    @fluent
     def headers_present(self, headers):
         """
         Defines a list of headers that must be present in the
@@ -265,8 +263,8 @@ class Mock(object):
         """
         headers = {name: re.compile('(.*)') for name in headers}
         self.add_matcher(matcher('HeadersMatcher', headers))
+        return self
 
-    @fluent
     def type(self, value):
         """
         Defines the request ``Content-Type`` header to match.
@@ -289,8 +287,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self.content(value)
+        return self
 
-    @fluent
     def content(self, value):
         """
         Defines the ``Content-Type`` outgoing header value to match.
@@ -315,8 +313,8 @@ class Mock(object):
         header = {'Content-Type': TYPES.get(value, value)}
         self._request.headers = header
         self.add_matcher(matcher('HeadersMatcher', header))
+        return self
 
-    @fluent
     def param(self, name, value):
         """
         Defines an URL param key and value to match.
@@ -329,8 +327,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self.params({name: value})
+        return self
 
-    @fluent
     def param_exists(self, name):
         """
         Checks if a given URL param name is present in the URL.
@@ -342,8 +340,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self.params({name: re.compile('(.*)')})
+        return self
 
-    @fluent
     def params(self, params):
         """
         Defines a set of URL query params to match.
@@ -358,8 +356,8 @@ class Mock(object):
         url = url.add(params)
         self._request.url = url.url
         self.add_matcher(matcher('QueryMatcher', params))
+        return self
 
-    @fluent
     def body(self, body):
         """
         Defines the body data to match.
@@ -374,8 +372,8 @@ class Mock(object):
         """
         self._request.body = body
         self.add_matcher(matcher('BodyMatcher', body))
+        return self
 
-    @fluent
     def json(self, json):
         """
         Defines the JSON body to match.
@@ -392,8 +390,8 @@ class Mock(object):
         """
         self._request.json = json
         self.add_matcher(matcher('JSONMatcher', json))
+        return self
 
-    @fluent
     def jsonschema(self, schema):
         """
         Defines a JSONSchema representation to be used for body matching.
@@ -405,8 +403,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self.add_matcher(matcher('JSONSchemaMatcher', schema))
+        return self
 
-    @fluent
     def xml(self, xml):
         """
         Defines a XML body value to match.
@@ -419,8 +417,8 @@ class Mock(object):
         """
         self._request.xml = xml
         self.add_matcher(matcher('XMLMatcher', xml))
+        return self
 
-    @fluent
     def file(self, path):
         """
         Reads the body to match from a disk file.
@@ -433,8 +431,8 @@ class Mock(object):
         """
         with open(path, 'r') as f:
             self.body(str(f.read()))
+        return self
 
-    @fluent
     def add_matcher(self, matcher):
         """
         Adds one or multiple custom matchers instances.
@@ -454,8 +452,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self.matchers.add(matcher)
+        return self
 
-    @fluent
     def use(self, *matchers):
         """
         Adds one or multiple custom matchers instances.
@@ -475,8 +473,8 @@ class Mock(object):
             self: current Mock instance.
         """
         [self.add_matcher(matcher) for matcher in matchers]
+        return self
 
-    @fluent
     def times(self, times=1):
         """
         Defines the TTL limit for the current mock.
@@ -491,8 +489,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self._times = times
+        return self
 
-    @fluent
     def persist(self, status=None):
         """
         Enables persistent mode for the current mock.
@@ -501,8 +499,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self._persist = status if type(status) is bool else True
+        return self
 
-    @fluent
     def filter(self, *filters):
         """
         Registers one o multiple request filters used during the matching
@@ -515,8 +513,8 @@ class Mock(object):
             self: current Mock instance.
         """
         _append_funcs(self.filters, filters)
+        return self
 
-    @fluent
     def map(self, *mappers):
         """
         Registers one o multiple request mappers used during the mapping
@@ -529,8 +527,8 @@ class Mock(object):
             self: current Mock instance.
         """
         _append_funcs(self.mappers, mappers)
+        return self
 
-    @fluent
     def callback(self, *callbacks):
         """
         Registers one or multiple callback that will be called every time the
@@ -543,8 +541,8 @@ class Mock(object):
             self: current Mock instance.
         """
         _append_funcs(self.callbacks, callbacks)
+        return self
 
-    @fluent
     def delay(self, delay=1000):
         """
         Delay network response with certain milliseconds.
@@ -557,8 +555,8 @@ class Mock(object):
             self: current Mock instance.
         """
         self._delay = int(delay)
+        return self
 
-    @fluent
     def error(self, error):
         """
         Defines a simulated exception error that will be raised.
@@ -570,6 +568,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._error = RuntimeError(error) if isinstance(error, str) else error
+        return self
 
     def reply(self, status=200, new_response=False, **kw):
         """
