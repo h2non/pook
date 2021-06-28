@@ -205,7 +205,7 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         with open(path, 'r') as f:
-            self.body = str(f.read())
+            self._body = str(f.read())
         return self
 
     @property
