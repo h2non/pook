@@ -1,5 +1,4 @@
 import json
-from .decorators import fluent
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 from .constants import TYPES
@@ -33,7 +32,6 @@ class Response(object):
         # Trigger response method based on input arguments
         trigger_methods(self, kw)
 
-    @fluent
     def status(self, code=200):
         """
         Defines the response status code.
@@ -45,8 +43,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self._status = int(code)
+        return self
 
-    @fluent
     def header(self, key, value):
         """
         Defines a new response header.
@@ -64,8 +62,8 @@ class Response(object):
 
         headers = {key: value}
         self._headers.extend(headers)
+        return self
 
-    @fluent
     def headers(self, headers):
         """
         Defines a new response header.
@@ -79,8 +77,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self._headers.extend(headers)
+        return self
 
-    @fluent
     def set(self, header, value):
         """
         Defines a new response header.
@@ -94,8 +92,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self._headers[header] = value
+        return self
 
-    @fluent
     def type(self, name):
         """
         Defines the response ``Content-Type`` header.
@@ -119,8 +117,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self.content(name)
+        return self
 
-    @fluent
     def content(self, name):
         """
         Defines the response ``Content-Type`` header.
@@ -143,8 +141,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self._headers['Content-Type'] = TYPES.get(name, name)
+        return self
 
-    @fluent
     def body(self, body, chunked=False):
         """
         Defines response body data.
@@ -163,8 +161,8 @@ class Response(object):
 
         if chunked:
             self.header('Transfer-Encoding', 'chunked')
+        return self
 
-    @fluent
     def json(self, data):
         """
         Defines the mock response JSON body.
@@ -179,8 +177,8 @@ class Response(object):
         if not isinstance(data, str):
             data = json.dumps(data, indent=4)
         self._body = data
+        return self
 
-    @fluent
     def xml(self, xml):
         """
         Defines the mock response XML body.
@@ -194,8 +192,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         self.body(xml)
+        return self
 
-    @fluent
     def file(self, path):
         """
         Defines the response body from file contents.
@@ -207,7 +205,8 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         with open(path, 'r') as f:
-            self.body = str(f.read())
+            self._body = str(f.read())
+        return self
 
     @property
     def mock(self):
