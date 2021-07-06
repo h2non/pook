@@ -49,6 +49,16 @@ class HTTPClientInterceptor(BaseInterceptor):
     urllib / http.client HTTP traffic interceptor.
     """
 
+    @staticmethod
+    def _ensure_binary(func):
+        def wrapper():
+            data = func()
+            try:
+                return data.encode()
+            except AttributeError:
+                return data
+        return wrapper
+
     def _on_request(self, _request, conn, method, url,
                     body=None, headers=None, **kw):
         # Create request contract based on incoming params
@@ -93,7 +103,8 @@ class HTTPClientInterceptor(BaseInterceptor):
         # Path reader
         def read():
             return res._body or ''
-        mockres.read = read
+        mockres.read = self._ensure_binary(read)
+        mockres.code = mockres.status
 
         return mockres
 
