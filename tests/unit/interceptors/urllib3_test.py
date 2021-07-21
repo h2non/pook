@@ -39,3 +39,13 @@ def test_chunked_response_empty():
 
 def test_chunked_response_contains_newline():
     assert_chunked_response('newline\r\n', ['newline\r\n'])
+
+
+def test_activate_disable():
+    original = urllib3.connectionpool.HTTPConnectionPool.urlopen
+
+    interceptor = pook.interceptors.Urllib3Interceptor(pook.MockEngine)
+    interceptor.activate()
+    interceptor.disable()
+
+    assert urllib3.connectionpool.HTTPConnectionPool.urlopen == original

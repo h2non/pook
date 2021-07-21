@@ -223,4 +223,5 @@ class Urllib3Interceptor(BaseInterceptor):
         Disables the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        [patch.stop() for patch in self.patchers]
+        patchers_reversed = self.patchers[::-1]
+        [patch.stop() for patch in patchers_reversed]
