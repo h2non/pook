@@ -1,5 +1,11 @@
-History
-=======
+
+v1.0.2 / 2021-09-10
+===================
+
+  * fix(urllib3): interceptor is never really disabled (#68)
+  * Closes #75 Re consider @fluent decorator (#76)
+  * fix(#69): use match keyword in pytest.raises
+  * fix(History): invalid rst syntax
 
 v1.0.1 / 2020-03-24
 -------------------
