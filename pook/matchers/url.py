@@ -10,8 +10,8 @@ if sys.version_info < (3,):     # Python 2
 else:                           # Python 3
     from urllib.parse import urlparse
 
-# URI protocol test regular expression
-protoregex = re.compile('^http[s]?://', re.IGNORECASE)
+# URI protocol test regular expression (without group capture)
+protoregex = re.compile('^(?:ws|http)[s]?://', re.IGNORECASE)
 
 
 class URLMatcher(BaseMatcher):

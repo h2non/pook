@@ -32,6 +32,8 @@ def test_url_matcher_urlparse():
         ('http://foo.com/foo/bar', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/foo/bar/baz', True),
         ('http://foo.com/foo?x=y&z=w', 'http://foo.com/foo?x=y&z=w', True),
+        ('ws://foo.com', 'ws://foo.com', True),
+        ('wss://foo.com', 'wss://foo.com', True),
 
         # Invalid cases
         ('http://foo.com', 'http://bar.com', False),
@@ -41,6 +43,7 @@ def test_url_matcher_urlparse():
         ('http://foo.com/foo/bar', 'http://foo.com/bar/foo', False),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/baz/bar/foo', False),
         ('http://foo.com/foo?x=y&z=w', 'http://foo.com/foo?x=x&y=y', False),
+        ('ws://foo.com', 'wss://foo.com', False),
     ))
 
 
