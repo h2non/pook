@@ -1,10 +1,6 @@
-import sys
 from .base import BaseMatcher
 
-if sys.version_info < (3,):     # Python 2
-    from urlparse import parse_qs
-else:                           # Python 3
-    from urllib.parse import parse_qs
+from urllib.parse import parse_qs
 
 
 class QueryMatcher(BaseMatcher):

@@ -1,28 +1,14 @@
-import sys
 from ..request import Request
 from .base import BaseInterceptor
 
-# Support Python 2/3
-try:
-    import mock
-except Exception:
-    from unittest import mock
+from unittest import mock
 
-if sys.version_info < (3,):     # Python 2
-    from urlparse import urlunparse, urlencode
-    from httplib import responses as http_reasons
-else:                           # Python 3
-    from urllib.parse import urlunparse, urlencode
-    from http.client import responses as http_reasons
+from urllib.parse import urlunparse, urlencode
+from http.client import responses as http_reasons
 
-if sys.version_info >= (3, 5, 0):  # Python 3.5+
-    import asyncio
-    from aiohttp.helpers import TimerNoop
-    from aiohttp.streams import EmptyStreamReader
-else:
-    asyncio = None
-    TimerNoop = None
-    EmptyStreamReader = None
+import asyncio
+from aiohttp.helpers import TimerNoop
+from aiohttp.streams import EmptyStreamReader
 
 # Try to load yarl URL parser package used by aiohttp
 try:
@@ -44,8 +30,7 @@ class SimpleContent(EmptyStreamReader):
         super().__init__(*args, **kwargs)
         self.content = content
 
-    @asyncio.coroutine
-    def read(self, n=-1):
+    async def read(self, n=-1):
         return self.content
 
 
@@ -76,9 +61,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
     def _url(self, url):
         return yarl.URL(url) if yarl else None
 
-    @asyncio.coroutine
-    def _on_request(self, _request, session, method, url,
-                    data=None, headers=None, **kw):
+    async def _on_request(self, _request, session, method, url,
+                          data=None, headers=None, **kw):
         # Create request contract based on incoming params
         req = Request(method)
         req.headers = headers or {}
@@ -102,12 +86,12 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # or silent model are enabled, otherwise this statement won't
         # be reached (an exception will be raised before).
         if not mock:
-            return _request(session, method, url,
-                            data=data, headers=headers, **kw)
+            return await _request(session, method, url,
+                                  data=data, headers=headers, **kw)
 
         # Simulate network delay
         if mock._delay:
-            yield from asyncio.sleep(mock._delay / 1000)  # noqa
+            await asyncio.sleep(mock._delay / 1000)  # noqa
 
         # Shortcut to mock response
         res = mock._response
@@ -145,16 +129,14 @@ class AIOHTTPInterceptor(BaseInterceptor):
         return _res
 
     def _patch(self, path):
-        # If not modern Python, just ignore patch
-        if not asyncio:
+        # If not able to import aiohttp dependencies, skip
+        if not yarl or not multidict:
             return None
 
-        @asyncio.coroutine
-        def handler(session, method, url, data=None, headers=None, **kw):
-            return (yield from self._on_request(
+        async def handler(session, method, url, data=None, headers=None, **kw):
+            return await self._on_request(
                 _request, session, method, url,
                 data=data, headers=headers, **kw)
-            )
 
         try:
             # Create a new patcher for Urllib3 urlopen function

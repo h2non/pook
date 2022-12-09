@@ -1,4 +1,3 @@
-import sys
 import json as _json
 
 from .regex import isregex
@@ -6,10 +5,7 @@ from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 from .matchers.url import protoregex
 
-if sys.version_info < (3,):     # Python 2
-    from urlparse import urlparse, parse_qs, urlunparse
-else:                           # Python 3
-    from urllib.parse import urlparse, parse_qs, urlunparse
+from urllib.parse import urlparse, parse_qs, urlunparse
 
 
 class Request(object):

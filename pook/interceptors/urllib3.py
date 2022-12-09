@@ -1,25 +1,14 @@
 import io
-import sys
 from ..request import Request
 from .base import BaseInterceptor
 from .http import URLLIB3_BYPASS
 
-# Support Python 2/3
-try:
-    import mock
-except Exception:
-    from unittest import mock
+from unittest import mock
 
-if sys.version_info < (3,):     # Python 2
-    from httplib import (
-        responses as http_reasons,
-        HTTPResponse as ClientHTTPResponse,
-    )
-else:                           # Python 3
-    from http.client import (
-        responses as http_reasons,
-        HTTPResponse as ClientHTTPResponse,
-    )
+from http.client import (
+    responses as http_reasons,
+    HTTPResponse as ClientHTTPResponse,
+)
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
