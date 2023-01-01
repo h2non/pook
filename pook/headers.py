@@ -1,10 +1,7 @@
-import sys
 try:
     from collections.abc import Mapping, MutableMapping
 except ImportError:
     from collections import Mapping, MutableMapping
-
-PY3 = sys.version_info >= (3, 0)
 
 
 class HTTPHeaderDict(MutableMapping):
@@ -74,10 +71,6 @@ class HTTPHeaderDict(MutableMapping):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    if not PY3:  # Python 2
-        iterkeys = MutableMapping.iterkeys
-        itervalues = MutableMapping.itervalues
 
     __marker = object()
 
@@ -245,24 +238,3 @@ class HTTPHeaderDict(MutableMapping):
 
     def to_dict(self):
         return {key: values for key, values in self.items()}
-
-    @classmethod
-    def from_httplib(cls, message):  # Python 2
-        """
-        Read headers from a Python 2 httplib message object.
-        """
-        # python2.7 does not expose a proper API for exporting multiheaders
-        # efficiently. This function re-reads raw lines from the message
-        # object and extracts the multiheaders properly.
-        headers = []
-
-        for line in message.headers:
-            if line.startswith((' ', '\t')):
-                key, value = headers[-1]
-                headers[-1] = (key, value + '\r\n' + line.rstrip())
-                continue
-
-            key, value = line.split(':', 1)
-            headers.append((key, value.strip()))
-
-        return cls(headers)

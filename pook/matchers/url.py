@@ -1,14 +1,10 @@
 import re
-import sys
 from .base import BaseMatcher
 from .path import PathMatcher
 from .query import QueryMatcher
 from ..regex import isregex
 
-if sys.version_info < (3,):     # Python 2
-    from urlparse import urlparse
-else:                           # Python 3
-    from urllib.parse import urlparse
+from urllib.parse import urlparse
 
 # URI protocol test regular expression
 protoregex = re.compile('^http[s]?://', re.IGNORECASE)

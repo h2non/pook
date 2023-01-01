@@ -15,7 +15,6 @@ def assert_chunked_response(input_data, expected):
 
     assert r.status == 204
 
-    # py2 returns decoded chunks, while py3 does not
     chunks = list(r.read_chunked())
     chunks = [c.decode() if isinstance(c, bytes) else c for c in chunks]
     assert chunks == expected
