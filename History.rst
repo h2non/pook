@@ -1,4 +1,11 @@
 
+v1.1.0 / 2023-01-01
+===================
+
+  * chore(version): bump minor v1.1.0
+  * Switch to Python >= 3.5 and fix latest aiohttp compatability (#83)
+  * fix: remove print call (#81)
+
 v1.0.2 / 2021-09-10
 ===================
 
