@@ -19,4 +19,4 @@ def test_mock_url(mock):
 
 
 def test_new_response(mock):
-    assert(mock.reply() != mock.reply(new_response=True, json={}))
+    assert mock.reply() != mock.reply(new_response=True, json={})
