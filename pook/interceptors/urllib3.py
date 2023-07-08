@@ -181,7 +181,7 @@ class Urllib3Interceptor(BaseInterceptor):
         def handler(conn, method, url, body=None, headers=None, **kw):
             # Flag that the current request as urllib3 intercepted
             headers = headers or {}
-            headers[URLLIB3_BYPASS] = True
+            headers[URLLIB3_BYPASS] = "1"
 
             # Call request interceptor
             return self._on_request(urlopen, path, conn, method, url,

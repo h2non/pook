@@ -82,3 +82,11 @@ def test_binary_body_chunked():
     r = http.request('GET', URL)
 
     assert list(r.read_chunked()) == [binary_file]
+
+
+def test_post_with_headers():
+    # this test failed with urllib3 v2.0.3
+    pook.post('https://example.org').reply(200)
+    http = urllib3.PoolManager(headers={'k': 'v'})
+    resp = http.request('POST', 'https://example.org')
+    assert resp.status == 200
