@@ -27,6 +27,7 @@ class Response(object):
         self._status = 200
         self._mock = None
         self._body = None
+        self._binary = None
         self._headers = HTTPHeaderDict()
 
         # Trigger response method based on input arguments
@@ -143,21 +144,23 @@ class Response(object):
         self._headers['Content-Type'] = TYPES.get(name, name)
         return self
 
-    def body(self, body, chunked=False):
+    def body(self, body, binary=False, chunked=False):
         """
         Defines response body data.
 
         Arguments:
             body (str|bytes|list): response body to use.
+            binary (bool): prevent decoding the body as text when True.
             chunked (bool): return a chunked response.
 
         Returns:
             self: ``pook.Response`` current instance.
         """
-        if isinstance(body, bytes):
+        if isinstance(body, bytes) and not binary:
             body = body.decode('utf-8')
 
         self._body = body
+        self._binary = binary
 
         if chunked:
             self.header('Transfer-Encoding', 'chunked')

@@ -118,7 +118,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
         if res._body:
             _res.content = SimpleContent(
-                res._body.encode('utf-8', errors='replace'),
+                res._body if res._binary
+                else res._body.encode('utf-8', errors='replace'),
             )
         else:
             # Define `_content` attribute with an empty string to
