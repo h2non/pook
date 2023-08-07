@@ -20,7 +20,7 @@ install:
 
 lint:
 	@echo "$(OK_COLOR)==> Linting code ...$(NO_COLOR)"
-	@flake8 .
+	@flake8 pook tests
 
 test: clean lint
 	@echo "$(OK_COLOR)==> Runnings tests ...$(NO_COLOR)"
