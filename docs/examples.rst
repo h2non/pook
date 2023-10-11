@@ -59,6 +59,11 @@ JSONSchema based body matching
 .. literalinclude:: ../examples/json_schema.py
 
 
+Request Query Params matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. literalinclude:: ../examples/query_params_matching.py
+
 
 Enable real networking mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
