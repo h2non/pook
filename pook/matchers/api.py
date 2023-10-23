@@ -70,7 +70,7 @@ def get(name):
             return matcher
 
 
-def init(name, *args):
+def init(name, *args, **kwargs):
     """
     Initializes a matcher instance passing variadic arguments to
     its constructor. Acts as a delegator proxy.
@@ -78,6 +78,7 @@ def init(name, *args):
     Arguments:
         name (str): matcher class name or alias to execute.
         *args (mixed): variadic argument
+        **kwargs (dict): key word arguments
 
     Returns:
         matcher: matcher instance.
@@ -88,4 +89,4 @@ def init(name, *args):
     matcher = get(name)
     if not matcher:
         raise ValueError('Cannot find matcher: {}'.format(name))
-    return matcher(*args)
+    return matcher(*args, **kwargs)

@@ -358,7 +358,7 @@ class Mock(object):
         self.add_matcher(matcher('QueryMatcher', params))
         return self
 
-    def body(self, body):
+    def body(self, body, binary=False):
         """
         Defines the body data to match.
 
@@ -366,12 +366,13 @@ class Mock(object):
 
         Arguments:
             body (str|binary|regex): body data to match.
+            binary (bool): prevent decoding body as text when True.
 
         Returns:
             self: current Mock instance.
         """
         self._request.body = body
-        self.add_matcher(matcher('BodyMatcher', body))
+        self.add_matcher(matcher('BodyMatcher', body, binary=False))
         return self
 
     def json(self, json):

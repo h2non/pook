@@ -3,15 +3,25 @@
 import urllib3
 import pook
 
+from pathlib import Path
+
+
+binary_file = (
+    Path(__file__).parents[1] / "fixtures" / "nothing.bin"
+).read_bytes()
+
+
+URL = 'httpbin.org/foo'
+
 
 @pook.on
 def assert_chunked_response(input_data, expected):
-    (pook.get('httpbin.org/foo')
+    (pook.get(URL)
         .reply(204)
         .body(input_data, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request('GET', 'httpbin.org/foo')
+    r = http.request('GET', URL)
 
     assert r.status == 204
 
@@ -48,3 +58,27 @@ def test_activate_disable():
     interceptor.disable()
 
     assert urllib3.connectionpool.HTTPConnectionPool.urlopen == original
+
+
+@pook.on
+def test_binary_body():
+    (pook.get(URL)
+        .reply(200)
+        .body(binary_file, binary=True))
+
+    http = urllib3.PoolManager()
+    r = http.request('GET', URL)
+
+    assert r.read() == binary_file
+
+
+@pook.on
+def test_binary_body_chunked():
+    (pook.get(URL)
+        .reply(200)
+        .body(binary_file, binary=True, chunked=True))
+
+    http = urllib3.PoolManager()
+    r = http.request('GET', URL)
+
+    assert list(r.read_chunked()) == [binary_file]
