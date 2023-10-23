@@ -32,3 +32,17 @@ def test_requests_match_url(mock):
     assert res.headers == {'Content-Type': 'application/json'}
     assert res.json() == body
     assert pook.isdone() is True
+
+
+def test_requests_match_query_params(mock):
+    body = {'foo': 'bar'}
+    (mock.get('http://foo.com')
+        .params({'foo': 'bar'})
+        .reply(200)
+        .json(body))
+
+    res = requests.get('http://foo.com', params={'foo': 'bar'})
+    assert res.status_code == 200
+    assert res.headers == {'Content-Type': 'application/json'}
+    assert res.json() == body
+    assert pook.isdone() is True
