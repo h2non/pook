@@ -11,7 +11,7 @@ binary_file = (
 ).read_bytes()
 
 
-URL = 'httpbin.org/foo'
+URL = 'https://httpbin.org/foo'
 
 
 @pook.on
