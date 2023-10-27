@@ -3,6 +3,8 @@ try:
 except ImportError:
     from collections import Mapping, MutableMapping
 
+from base64 import b64encode
+
 
 class HTTPHeaderDict(MutableMapping):
     """
@@ -53,7 +55,7 @@ class HTTPHeaderDict(MutableMapping):
 
     def __getitem__(self, key):
         val = self._container[key.lower()]
-        return ', '.join(val[1:])
+        return ', '.join([to_string_value(v) for v in val[1:]])
 
     def __delitem__(self, key):
         del self._container[key.lower()]
@@ -153,28 +155,23 @@ class HTTPHeaderDict(MutableMapping):
         if new_vals is not vals:
             self._container[key_lower] = [vals[0], vals[1], val]
 
-    def extend(self, *args, **kwargs):
+    def extend(self, mapping, **kwargs):
         """
         Generic import function for any type of header-like object.
         Adapted version of MutableMapping.update in order to insert items
         with self.add instead of self.__setitem__
         """
-        if len(args) > 1:
-            raise TypeError("extend() takes at most 1 positional "
-                            "arguments ({0} given)".format(len(args)))
-        other = args[0] if len(args) >= 1 else ()
-
-        if isinstance(other, HTTPHeaderDict):
-            for key, val in other.iteritems():
+        if isinstance(mapping, HTTPHeaderDict):
+            for key, val in mapping.iteritems():
                 self.add(key, val)
-        elif isinstance(other, Mapping):
-            for key in other:
-                self.add(key, other[key])
-        elif hasattr(other, "keys"):
-            for key in other.keys():
-                self.add(key, other[key])
+        elif isinstance(mapping, Mapping):
+            for key in mapping:
+                self.add(key, mapping[key])
+        elif hasattr(mapping, "keys"):
+            for key in mapping.keys():
+                self.add(key, mapping[key])
         else:
-            for key, value in other:
+            for key, value in mapping:
                 self.add(key, value)
 
         for key, value in kwargs.items():
@@ -231,10 +228,36 @@ class HTTPHeaderDict(MutableMapping):
         """
         for key in self:
             val = self._container[key.lower()]
-            yield val[0], ', '.join(val[1:])
+            yield val[0], ', '.join([to_string_value(v) for v in val[1:]])
 
     def items(self):
         return list(self.iteritems())
 
     def to_dict(self):
         return {key: values for key, values in self.items()}
+
+
+def to_string_value(value):
+    """
+    Retrieve a string value for arbitrary header field value.
+
+    HTTP header values are specified as ASCII strings. However,
+    the specificiation also states that non-ASCII bytes should be
+    treated as arbitrary data. In that case, we just rely on unicode
+    escaping to return a value that at least somewhat resembles the
+    inputs (at least moreso than other encodings that would significantly
+    obscure the input, like base 64).
+
+    Arguments::
+        value (str|bytes):
+            The value to cast to ``str``.
+
+    Returns::
+        str:
+            Unicode escaped ``value`` if it was ``bytes``; otherwise,
+            ``value`` is returned.
+    """
+    if isinstance(value, str):
+        return value
+
+    return value.decode('unicode_escape')
