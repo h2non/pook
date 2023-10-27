@@ -1,4 +1,5 @@
 from .base import BaseMatcher
+from ..headers import to_string_value
 
 
 class HeadersMatcher(BaseMatcher):
@@ -15,7 +16,9 @@ class HeadersMatcher(BaseMatcher):
     def match(self, req):
         for key in self.expectation:
             # Retrieve value to match
-            value = self.expectation[key]
+            # Cast it to a string that can be compared
+            # If it is already a string ``to_string_value`` is a noop
+            value = to_string_value(self.expectation[key])
 
             # Retrieve header value by key
             header = req.headers.get(key)
