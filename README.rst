@@ -32,7 +32,7 @@ Features
 -  Fits good for painless test doubles.
 -  Does not support WebSocket traffic mocking.
 -  Works with +3.5 (including PyPy).
--  Dependency-less: just 2 small dependencies for JSONSchema and XML tree comparison.
+-  Dependency-less: just 3 small dependencies for JSONSchema, XML tree comparison, and URL parsing.
 
 
 Supported HTTP clients
