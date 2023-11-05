@@ -19,14 +19,6 @@ binary_file = (
 ).read_bytes()
 
 
-@pytest.fixture
-def pook_on():
-    # Cannot use `@pook.on` with pytest marks
-    pook.on()
-    yield
-    pook.off()
-
-
 def _pook_url():
     return pook.head(URL).reply(200).mock
 
