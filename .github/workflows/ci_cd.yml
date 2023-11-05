@@ -57,8 +57,6 @@ jobs:
             os: "ubuntu-20.04"
           - py: "3.6"
             os: "ubuntu-20.04"
-          - py: "3.5"
-            os: "ubuntu-20.04"
           - py: "pypy3.10"
             os: "ubuntu-22.04"
 
