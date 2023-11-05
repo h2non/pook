@@ -37,8 +37,8 @@ jobs:
       - name: Lint
         run: flake8 pook tests
 
-  tox:
-    name: test with ${{ matrix.config.py }}
+  test:
+    name: test on ${{ matrix.config.py }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -59,7 +59,7 @@ jobs:
             os: "ubuntu-20.04"
           - py: "3.5"
             os: "ubuntu-20.04"
-          - py: "pypy3.11"
+          - py: "pypy3.10"
             os: "ubuntu-22.04"
 
     steps:
@@ -75,10 +75,7 @@ jobs:
           cache: pip
 
       - name: Install tox
-        run: python -m pip install tox-gh>=1.2
-
-      - name: Setup test suite
-        run: tox -vv --notest
+        run: python -m pip install tox
 
       - name: Run test suite
-        run: tox --skip-pkg-install
+        run: tox run -e py

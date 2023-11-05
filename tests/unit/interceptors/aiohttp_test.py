@@ -1,4 +1,8 @@
-import aiohttp
+import sys
+if sys.version_info >= (3, 7):
+    # Prevents import error when testing Python < 3.7
+    import aiohttp
+
 import pook
 import pytest
 

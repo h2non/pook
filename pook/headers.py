@@ -3,8 +3,6 @@ try:
 except ImportError:
     from collections import Mapping, MutableMapping
 
-from base64 import b64encode
-
 
 class HTTPHeaderDict(MutableMapping):
     """
