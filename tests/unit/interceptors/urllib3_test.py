@@ -2,6 +2,8 @@
 
 import urllib3
 import pook
+import pytest
+import sys
 
 from pathlib import Path
 
@@ -84,9 +86,16 @@ def test_binary_body_chunked():
     assert list(r.read_chunked()) == [binary_file]
 
 
-def test_post_with_headers():
-    # this test failed with urllib3 v2.0.3
-    pook.post('https://example.org').reply(200)
+@pytest.mark.xfail(
+    condition=sys.version_info < (3, 7),
+    reason=(
+        "urllib3 converts https to http with "
+        "port 443 and fails on header parsing"
+    )
+)
+def test_post_with_headers(pook_on):
+    mock = pook.post('https://example.com').header('k', 'v').reply(200).mock
     http = urllib3.PoolManager(headers={'k': 'v'})
-    resp = http.request('POST', 'https://example.org')
+    resp = http.request('POST', 'https://example.com', headers={'k': 'v'})
     assert resp.status == 200
+    assert len(mock.matches) == 1

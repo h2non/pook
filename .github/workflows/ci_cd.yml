@@ -1,0 +1,79 @@
+name: "CI/CD"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Don't continue building images for a PR if the PR is updated quickly
+  # For other workflows, allow them to complete and just block on them. This
+  # ensures deployments in particular to happen in series rather than parallel.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  flake8:
+    name: flake8
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      
+      - name: Lint
+        run: flake8 pook tests
+
+  test:
+    name: test on ${{ matrix.config.py }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - py: "3.11"
+            os: "ubuntu-22.04"
+          - py: "3.10"
+            os: "ubuntu-22.04"
+          - py: "3.9"
+            os: "ubuntu-22.04"
+          - py: "3.8"
+            os: "ubuntu-22.04"
+            # <3.8 are not available on ubuntu-latest (22.04)
+          - py: "3.7"
+            os: "ubuntu-20.04"
+          - py: "3.6"
+            os: "ubuntu-20.04"
+          - py: "pypy3.10"
+            os: "ubuntu-22.04"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python for test ${{ matrix.config.py }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.config.py }}
+          cache: pip
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run test suite
+        run: tox run -e py

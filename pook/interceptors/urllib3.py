@@ -12,7 +12,7 @@ from http.client import (
 
 PATCHES = (
     'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
-    'urllib3.connectionpool.HTTPConnectionPool.urlopen'
+    'urllib3.connectionpool.HTTPConnectionPool.urlopen',
 )
 
 RESPONSE_CLASS = 'HTTPResponse'

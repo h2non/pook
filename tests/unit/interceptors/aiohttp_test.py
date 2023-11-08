@@ -1,4 +1,8 @@
-import aiohttp
+import sys
+if sys.version_info >= (3, 7):
+    # Prevents import error when testing Python < 3.7
+    import aiohttp
+
 import pook
 import pytest
 
@@ -13,14 +17,6 @@ URL = "https://httpbin.org/status/404"
 binary_file = (
     Path(__file__).parents[1] / "fixtures" / "nothing.bin"
 ).read_bytes()
-
-
-@pytest.fixture
-def pook_on():
-    # Cannot use `@pook.on` with pytest marks
-    pook.on()
-    yield
-    pook.off()
 
 
 def _pook_url():
