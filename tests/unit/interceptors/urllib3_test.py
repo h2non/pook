@@ -94,8 +94,8 @@ def test_binary_body_chunked():
     )
 )
 def test_post_with_headers(pook_on):
-    mock = pook.post('https://example.com').header('k', 'v').reply(200).mock
+    mock = pook.post(URL).header('k', 'v').reply(200).mock
     http = urllib3.PoolManager(headers={'k': 'v'})
-    resp = http.request('POST', 'https://example.com', headers={'k': 'v'})
+    resp = http.request('POST', URL)
     assert resp.status == 200
     assert len(mock.matches) == 1
