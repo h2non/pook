@@ -1,4 +1,11 @@
 
+v1.2.0 / 2023-12-17
+===================
+
+  * feat(api): add support for binary bodies (#88)
+  * fix(urllib3): don't put non-strings into HTTP header dict (#87)
+  * refactor: drop Python 3.5 support (#92). Note: Python 3.5 had been supported for some time. The change here only makes the documentation accurately reflect that 3.5 is not supported.
+
 v1.1.0 / 2023-01-01
 ===================
 
@@ -28,7 +35,7 @@ v1.0.0 / 2020-03-18
 v0.2.8 / 2019-10-31
 -------------------
 
-  * fix collections import warning (#61) 
+  * fix collections import warning (#61)
 
 v0.2.7 / 2019-10-21
 -------------------
@@ -38,7 +45,7 @@ v0.2.7 / 2019-10-21
 v0.2.6 / 2019-02-01
 -------------------
 
-  * Add mock.reply(new_response=True) to reset response definition object  
+  * Add mock.reply(new_response=True) to reset response definition object
 
 v0.2.5 / 2017-10-19
 -------------------
