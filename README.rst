@@ -1,5 +1,5 @@
-pook |Build Status| |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
-====================================================================================================
+pook |PyPI| |Coverage Status| |Documentation Status| |Stability| |Quality| |Versions|
+=====================================================================================
 
 Versatile, expressive and hackable utility library for HTTP traffic mocking
 and expectations made easy in `Python`_. Heavily inspired by `gock`_.
@@ -307,8 +307,6 @@ MIT - Tomas Aparicio
 .. _how it works: http://pook.readthedocs.io/en/latest/how_it_works.html
 .. _mocket: https://github.com/mindflayer/python-mocket
 
-.. |Build Status| image:: https://travis-ci.org/h2non/pook.svg?branch=master
-   :target: https://travis-ci.org/h2non/pook
 .. |PyPI| image:: https://img.shields.io/pypi/v/pook.svg?maxAge=2592000?style=flat-square
    :target: https://pypi.python.org/pypi/pook
 .. |Coverage Status| image:: https://coveralls.io/repos/github/h2non/pook/badge.svg?branch=master
