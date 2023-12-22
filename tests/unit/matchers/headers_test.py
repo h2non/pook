@@ -1,15 +1,15 @@
 import pytest
+import re
 
 import pook
 
 
 @pytest.mark.parametrize(
-    ('expected', 'requested', 'should_match'),
+    ('expected', 'requested'),
     (
         pytest.param(
             {'Content-Type': b'application/pdf'},
             {'Content-Type': b'application/pdf'},
-            True,
             id='Matching binary headers'
         ),
         pytest.param(
@@ -21,13 +21,11 @@ import pook
                 'Content-Type': b'application/pdf',
                 'Authentication': 'Bearer 123abc',
             },
-            True,
             id='Matching mixed headers'
         ),
         pytest.param(
             {'Authentication': 'Bearer 123abc'},
             {'Authentication': 'Bearer 123abc'},
-            True,
             id='Matching string headers'
         ),
         pytest.param(
@@ -36,54 +34,46 @@ import pook
                 'Content-Type': b'application/pdf',
                 'Authentication': 'Bearer 123abc',
             },
-            True,
             id='Non-matching asymetric mixed headers'
         ),
         pytest.param(
             {'Content-Type': b'application/pdf'},
             {'Content-Type': 'application/pdf'},
-            True,
             id='Non-matching header types (matcher binary, request string)'
         ),
         pytest.param(
             {'Content-Type': 'application/pdf'},
             {'Content-Type': b'application/pdf'},
-            True,
             id='Non-matching header types (matcher string, request binary)'
-        ),
-        pytest.param(
-            {'Content-Type': 'application/pdf'},
-            {'Content-Type': 'application/xml'},
-            False,
-            id='Non-matching values'
         ),
         pytest.param(
             {'content-type': 'application/pdf'},
             {'Content-Type': 'application/pdf'},
-            True,
             id='Non-matching field name casing'
         ),
         pytest.param(
             {},
             {'Content-Type': 'application/pdf'},
-            True,
             id='Missing matcher header'
         ),
         pytest.param(
-            {'Content-Type': 'application/pdf'},
-            {},
-            False,
-            id='Missing request header'
-        ),
-        pytest.param(
             {'Content-Type': 'application/pdf'.encode('utf-16')},
             {'Content-Type': 'application/pdf'.encode('utf-16')},
-            True,
             id='Arbitrary field value encoding'
         ),
+        pytest.param(
+            {'Content-Type': 're/json/'},
+            {'Content-Type': 'application/json'},
+            id="Regex-format str expectation"
+        ),
+        pytest.param(
+            {'Content-Type': re.compile("json", re.I)},
+            {'Content-Type': 'APPLICATION/JSON'},
+            id="Regex pattern expectation",
+        )
     )
 )
-def test_headers_matcher(expected, requested, should_match):
+def test_headers_matcher_matching(expected, requested):
     mock = pook.get('https://example.com')
     if expected:
         mock.headers(expected)
@@ -94,7 +84,63 @@ def test_headers_matcher(expected, requested, should_match):
         request.headers = requested
 
     matched, explanation = mock.match(request)
-    assert matched == should_match, explanation
+    assert matched, explanation
+
+
+@pytest.mark.parametrize(
+    ("expected", "requested", "explanation"),
+    (
+        pytest.param(
+            {'Content-Type': 'application/pdf'},
+            {},
+            ["HeadersMatcher: Header 'Content-Type' not present"],
+            id='Missing request header str expectation',
+        ),
+        pytest.param(
+            {'Content-Type': b'application/pdf'},
+            {},
+            ["HeadersMatcher: Header 'Content-Type' not present"],
+            id='Missing request header bytes expectation',
+        ),
+        pytest.param(
+            {'Content-Type': 'application/pdf'},
+            {'Content-Type': 'application/xml'},
+            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            id='Non-matching values, matching types',
+        ),
+        pytest.param(
+            {'Content-Type': 'application/pdf'},
+            {'Content-Type': b'application/xml'},
+            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            id='Non-matching values, str expectation byte actual',
+        ),
+        pytest.param(
+            {'Content-Type': b'application/pdf'},
+            {'Content-Type': 'application/xml'},
+            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            id='Non-matching values, bytes expectation str actual',
+        ),
+        pytest.param(
+            {'Content-Type': "re/json/"},
+            {'Content-Type': b"application/xml"},
+            ["HeadersMatcher: Regex didn't match: 'json' not found in 'application/xml'"],
+            id='Non-matching values, re-format str expectation',
+        )
+    )
+)
+def test_headers_not_matching(expected, requested, explanation):
+    mock = pook.get('https://example.com')
+    if expected:
+        mock.headers(expected)
+
+    request = pook.Request()
+    request.url = 'https://example.com'
+    if requested:
+        request.headers = requested
+
+    matched, actual_explanation = mock.match(request)
+    assert not matched
+    assert explanation == actual_explanation
 
 
 @pytest.mark.parametrize(
