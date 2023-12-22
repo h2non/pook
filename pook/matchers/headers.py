@@ -17,13 +17,20 @@ class HeadersMatcher(BaseMatcher):
     @BaseMatcher.matcher
     def match(self, req):
         for key in self.expectation:
-            value = self.to_comparable_value(self.expectation[key])
+            assert key in req.headers, f"Header '{key}' not present"
+
+            expected_value = self.to_comparable_value(self.expectation[key])
 
             # Retrieve header value by key
-            header = req.headers.get(key)
+            actual_value = req.headers.get(key)
+
+            assert not all([
+                expected_value is not None,
+                actual_value is None,
+            ]), f"Expected a value `{expected_value}` for '{key}' but found `None`"
 
             # Compare header value
-            if not self.compare(value, header, regex_expr=True):
+            if not self.compare(expected_value, actual_value, regex_expr=True):
                 return False
 
         return True
