@@ -30,8 +30,6 @@ def equal(x, y):
     """
     return test_case().assertEqual(x, y) or True
 
-    assert x == y
-
 
 def matches(x, y, regex_expr=False):
     """
@@ -52,9 +50,6 @@ def matches(x, y, regex_expr=False):
     # Parse regex expression, if needed
     x = strip_regex(x) if regex_expr and isregex_expr(x) else x
 
-    # Run regex assertion
-    # Retrieve original regex pattern
-    x = x.pattern if isregex(x) else x
     # Assert regular expression via unittest matchers
     return test_case().assertRegex(y, x) or True
 

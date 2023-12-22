@@ -52,4 +52,4 @@ def strip_regex(expr):
     Returns:
         str
     """
-    return expr.replace[3:-1] if isregex_expr(expr) else expr
+    return expr[3:-1] if isregex_expr(expr) else expr
