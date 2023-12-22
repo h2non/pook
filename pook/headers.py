@@ -237,7 +237,7 @@ class HTTPHeaderDict(MutableMapping):
 
 def to_string_value(value):
     """
-    Retrieve a string value for arbitrary header field value.
+    Retrieve a string value for an arbitrary value.
 
     HTTP header values are specified as ASCII strings. However,
     the specificiation also states that non-ASCII bytes should be
@@ -247,15 +247,15 @@ def to_string_value(value):
     obscure the input, like base 64).
 
     Arguments::
-        value (str|bytes):
+        value (mixed):
             The value to cast to ``str``.
 
     Returns::
         str:
             Unicode escaped ``value`` if it was ``bytes``; otherwise,
-            ``value`` is returned.
+            ``value`` is returned, cast through ``str``.
     """
-    if isinstance(value, str):
-        return value
+    if hasattr(value, "decode"):
+        return value.decode("unicode_escape")
 
-    return value.decode('unicode_escape')
+    return str(value)
