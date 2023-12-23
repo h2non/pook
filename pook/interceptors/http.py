@@ -4,7 +4,11 @@ from .base import BaseInterceptor
 
 from unittest import mock
 
-from http.client import responses as http_reasons, _CS_REQ_SENT, HTTPSConnection
+from http.client import (
+    responses as http_reasons,
+    _CS_REQ_SENT,
+    HTTPSConnection,
+)
 
 PATCHES = (
     'http.client.HTTPConnection.request',
