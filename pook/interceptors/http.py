@@ -4,7 +4,7 @@ from .base import BaseInterceptor
 
 from unittest import mock
 
-from http.client import responses as http_reasons, _CS_REQ_SENT
+from http.client import responses as http_reasons, _CS_REQ_SENT, HTTPSConnection
 
 PATCHES = (
     'http.client.HTTPConnection.request',
@@ -48,8 +48,13 @@ class HTTPClientInterceptor(BaseInterceptor):
         req.headers = headers or {}
         req.body = body
 
+        if isinstance(conn, HTTPSConnection):
+            schema = "https"
+        else:
+            schema = "http"
+
         # Compose URL
-        req.url = 'http://{}:{}{}'.format(conn.host, conn.port, url)
+        req.url = '{}://{}:{}{}'.format(schema, conn.host, conn.port, url)
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
@@ -72,6 +77,8 @@ class HTTPClientInterceptor(BaseInterceptor):
         mockres = HTTPResponse(SocketMock(), method=method, url=url)
         mockres.version = (1, 1)
         mockres.status = res._status
+        # urllib requires `code` to be set, rather than `status`
+        mockres.code = res._status
         mockres.reason = http_reasons.get(res._status)
         mockres.headers = res._headers.to_dict()
 
