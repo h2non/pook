@@ -205,7 +205,7 @@ def use(network=False):
     _engine = Engine(network=network)
     _engine.activate()
 
-    # Yield enfine to be used by the context manager
+    # Yield engine to be used by the context manager
     yield _engine
 
     # Restore engine state
@@ -492,7 +492,7 @@ def isactive():
     Otherwise ``False``.
 
     Returns:
-        bool: True is all the registered mocks are gone, otherwise False.
+        bool: True if pook is active, otherwise False.
     """
     return _engine.isactive()
 
@@ -502,7 +502,7 @@ def isdone():
     Returns True if all the registered mocks has been triggered.
 
     Returns:
-        bool: True is all the registered mocks are gone, otherwise False.
+        bool: True if all the registered mocks are gone, otherwise False.
     """
     return _engine.isdone()
 
