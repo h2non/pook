@@ -1,4 +1,10 @@
 
+v1.2.1 / 2023-12-23
+===================
+
+  * Fix usage of regex values in header matchers (#97)
+  * Fix urllib SSL handling (#98)
+
 v1.2.0 / 2023-12-17
 ===================
 
