@@ -1,7 +1,6 @@
-import re
-
 from .base import BaseMatcher
 from ..headers import to_string_value
+from ..regex import Pattern
 
 
 class HeadersMatcher(BaseMatcher):
@@ -48,7 +47,7 @@ class HeadersMatcher(BaseMatcher):
         Returns:
             str|re.Pattern|None
         """
-        if isinstance(value, (str, re.Pattern)):
+        if isinstance(value, (str, Pattern)):
             return value
 
         if value is None:

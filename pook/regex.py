@@ -1,7 +1,10 @@
 import re
+import sys
 
-# Little hack to extra the regexp object type at runtime
-retype = type(re.compile(''))
+if sys.version_info < (3, 7):
+    Pattern = type(re.compile(''))
+else:
+    Pattern = re.Pattern
 
 
 def isregex_expr(expr):
@@ -38,7 +41,7 @@ def isregex(value):
     """
     if not value:
         return False
-    return any((isregex_expr(value), isinstance(value, retype)))
+    return any((isregex_expr(value), isinstance(value, Pattern)))
 
 
 def strip_regex(expr):
