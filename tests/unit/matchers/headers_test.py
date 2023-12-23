@@ -105,25 +105,54 @@ def test_headers_matcher_matching(expected, requested):
         pytest.param(
             {'Content-Type': 'application/pdf'},
             {'Content-Type': 'application/xml'},
-            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            [
+                (
+                    "HeadersMatcher: 'application/pdf' != 'application/xml'\n"
+                    "- application/pdf\n"
+                    "?             ^^^\n"
+                    "+ application/xml\n"
+                    "?             ^^^\n"
+                )
+            ],
             id='Non-matching values, matching types',
         ),
         pytest.param(
             {'Content-Type': 'application/pdf'},
             {'Content-Type': b'application/xml'},
-            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            [
+                (
+                    "HeadersMatcher: 'application/pdf' != 'application/xml'\n"
+                    "- application/pdf\n"
+                    "?             ^^^\n"
+                    "+ application/xml\n"
+                    "?             ^^^\n"
+                )
+            ],
             id='Non-matching values, str expectation byte actual',
         ),
         pytest.param(
             {'Content-Type': b'application/pdf'},
             {'Content-Type': 'application/xml'},
-            ["HeadersMatcher: 'application/pdf' != 'application/xml'\n- application/pdf\n?             ^^^\n+ application/xml\n?             ^^^\n"],
+            [
+                (
+                    "HeadersMatcher: 'application/pdf' != 'application/xml'\n"
+                    "- application/pdf\n"
+                    "?             ^^^\n"
+                    "+ application/xml\n"
+                    "?             ^^^\n"
+                )
+            ],
             id='Non-matching values, bytes expectation str actual',
         ),
         pytest.param(
             {'Content-Type': "re/json/"},
             {'Content-Type': b"application/xml"},
-            ["HeadersMatcher: Regex didn't match: 'json' not found in 'application/xml'"],
+            [
+                (
+                    "HeadersMatcher: Regex didn't match: 'json' not found in "
+                    "'application/xml'"
+                )
+            ],
             id='Non-matching values, re-format str expectation',
         )
     )
