@@ -27,7 +27,10 @@ class HeadersMatcher(BaseMatcher):
             assert not all([
                 expected_value is not None,
                 actual_value is None,
-            ]), f"Expected a value `{expected_value}` for '{key}' but found `None`"
+            ]), (
+                f"Expected a value `{expected_value}` "
+                f"for '{key}' but found `None`"
+            )
 
             # Compare header value
             if not self.compare(expected_value, actual_value, regex_expr=True):
