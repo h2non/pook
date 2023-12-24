@@ -62,4 +62,4 @@ Can I use ``pook`` with any test framework?
 -------------------------------------------
 
 Yes. ``pook`` is test framework agnostic.
-You can use it within ``unittest``, ``nosetests``, ``pytest`` or others.
+You can use it within ``unittest``, ``pytest`` or others.

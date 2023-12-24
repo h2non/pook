@@ -1,6 +1,0 @@
-include README.rst LICENSE History.rst
-
-include requirements.txt
-include requirements-dev.txt
-
-prune docs/_build

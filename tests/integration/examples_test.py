@@ -1,26 +1,27 @@
-# -*- coding: utf-8 -*-
-
-import re
-import os
+import sys
 import subprocess
-
-# Regular expression used to match Python files
-pyfile = re.compile('.py$')
-
-# List of allowed example to fail
-allowed_errors = (
-    'simulated_error.py'
-)
+import pytest
+from pathlib import Path
+import platform
 
 
-def test_examples():
-    # List of file examples
-    examples = [f for f in os.listdir('examples') if pyfile.match(f)]
+examples_dir = Path(__file__).parents[2] / "examples"
 
-    # Test file example
-    for example in examples:
-        code = subprocess.call(['python', 'examples/{}'.format(example)])
+examples = [f.name for f in examples_dir.glob("*.py")]
 
-        expected = 1 if example in allowed_errors else 0
-        if code != expected:
-            raise AssertionError('invalid exit code: {}'.format(example))
+if sys.version_info >= (3, 11) or platform.python_implementation() == "PyPy":
+    # See pyproject.toml note on mocket dependency
+    examples.remove("mocket_example.py")
+
+
+if sys.version_info >= (3, 12):
+    # See pyproject.toml note on aiohttp dependency
+    examples.remove("aiohttp_client.py")
+    examples.remove("decorator_activate_async.py")
+
+
+@pytest.mark.parametrize("example", examples)
+def test_examples(example):
+    result = subprocess.run(["python", "examples/{}".format(example)])
+
+    assert 0 == result.returncode, result.stdout

@@ -16,7 +16,7 @@ Features
 -  Full regular expressions capable mock expectations matching.
 -  Supports most popular HTTP clients via interceptor adapters.
 -  Configurable volatile, persistent or TTL limited mocks.
--  Works with any testing framework/engine (unittest, pytest, nosetests...).
+-  Works with unittest and pytest.
 -  First-class JSON & XML support matching and responses.
 -  Supports JSON Schema body matching.
 -  Works in both runtime and testing environments.
@@ -31,7 +31,7 @@ Features
 -  Supports third-party mocking engines, such as `mocket`_.
 -  Fits good for painless test doubles.
 -  Does not support WebSocket traffic mocking.
--  Works with +3.6 (including PyPy).
+-  Works with +3.8 (including PyPy).
 -  Dependency-less: just 3 small dependencies for JSONSchema, XML tree comparison, and URL parsing.
 
 
@@ -44,9 +44,8 @@ the following HTTP clients:
 
 -  ✔  `urllib3`_ v1+
 -  ✔  `requests`_ v2+
--  ✔  `aiohttp`_ v1+ - v2+
--  ✔  `urllib`_ / `http.client`_ v2/3
--  ✘  `pycurl`_ (see `#16`_)
+-  ✔  `aiohttp`_ v3+
+-  ✔  `urllib`_ / `http.client`_
 
 More HTTP clients can be supported progressively.
 
@@ -294,14 +293,12 @@ MIT - Tomas Aparicio
 .. _Python: http://python.org
 .. _gock: https://github.com/h2non/gock
 .. _annotated API reference: http://pook.readthedocs.io/en/latest/api.html
-.. _#16: https://github.com/h2non/pook/issues/16
 .. _examples: http://pook.readthedocs.io/en/latest/examples.html
 .. _aiohttp: https://github.com/KeepSafe/aiohttp
 .. _requests: http://docs.python-requests.org/en/master/
 .. _urllib3: https://github.com/shazow/urllib3
 .. _urllib: https://docs.python.org/3/library/urllib.html
 .. _http.client: https://docs.python.org/3/library/http.client.html
-.. _pycurl: http://pycurl.io
 .. _documentation: http://pook.readthedocs.io/en/latest/
 .. _FAQ: http://pook.readthedocs.io/en/latest/faq.html
 .. _how it works: http://pook.readthedocs.io/en/latest/how_it_works.html

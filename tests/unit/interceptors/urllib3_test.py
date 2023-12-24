@@ -1,29 +1,22 @@
-# -*- coding: utf-8 -*-
-
 import urllib3
 import pook
 import pytest
-import sys
 
 from pathlib import Path
 
 
-binary_file = (
-    Path(__file__).parents[1] / "fixtures" / "nothing.bin"
-).read_bytes()
+binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
 
 
-URL = 'https://httpbin.org/foo'
+URL = "https://httpbin.org/foo"
 
 
 @pook.on
 def assert_chunked_response(input_data, expected):
-    (pook.get(URL)
-        .reply(204)
-        .body(input_data, chunked=True))
+    (pook.get(URL).reply(204).body(input_data, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request('GET', URL)
+    r = http.request("GET", URL)
 
     assert r.status == 204
 
@@ -33,23 +26,23 @@ def assert_chunked_response(input_data, expected):
 
 
 def test_chunked_response_list():
-    assert_chunked_response(['a', 'b', 'c'], ['a', 'b', 'c'])
+    assert_chunked_response(["a", "b", "c"], ["a", "b", "c"])
 
 
 def test_chunked_response_str():
-    assert_chunked_response('text', ['text'])
+    assert_chunked_response("text", ["text"])
 
 
 def test_chunked_response_byte():
-    assert_chunked_response(b'byteman', ['byteman'])
+    assert_chunked_response(b"byteman", ["byteman"])
 
 
 def test_chunked_response_empty():
-    assert_chunked_response('', [])
+    assert_chunked_response("", [])
 
 
 def test_chunked_response_contains_newline():
-    assert_chunked_response('newline\r\n', ['newline\r\n'])
+    assert_chunked_response("newline\r\n", ["newline\r\n"])
 
 
 def test_activate_disable():
@@ -64,38 +57,28 @@ def test_activate_disable():
 
 @pook.on
 def test_binary_body():
-    (pook.get(URL)
-        .reply(200)
-        .body(binary_file, binary=True))
+    (pook.get(URL).reply(200).body(binary_file, binary=True))
 
     http = urllib3.PoolManager()
-    r = http.request('GET', URL)
+    r = http.request("GET", URL)
 
     assert r.read() == binary_file
 
 
 @pook.on
 def test_binary_body_chunked():
-    (pook.get(URL)
-        .reply(200)
-        .body(binary_file, binary=True, chunked=True))
+    (pook.get(URL).reply(200).body(binary_file, binary=True, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request('GET', URL)
+    r = http.request("GET", URL)
 
     assert list(r.read_chunked()) == [binary_file]
 
 
-@pytest.mark.xfail(
-    condition=sys.version_info < (3, 7),
-    reason=(
-        "urllib3 converts https to http with "
-        "port 443 and fails on header parsing"
-    )
-)
-def test_post_with_headers(pook_on):
-    mock = pook.post(URL).header('k', 'v').reply(200).mock
-    http = urllib3.PoolManager(headers={'k': 'v'})
-    resp = http.request('POST', URL)
+@pytest.mark.pook
+def test_post_with_headers():
+    mock = pook.post(URL).header("k", "v").reply(200).mock
+    http = urllib3.PoolManager(headers={"k": "v"})
+    resp = http.request("POST", URL)
     assert resp.status == 200
     assert len(mock.matches) == 1
