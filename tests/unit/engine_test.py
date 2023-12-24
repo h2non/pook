@@ -16,5 +16,5 @@ def test_engine_use_network_filter(engine):
 
 def test_engine_enable_network(engine):
     assert len(engine.network_filters) == 0
-    engine.enable_network('http://foo', 'http://bar')
+    engine.enable_network("http://foo", "http://bar")
     assert len(engine.network_filters) == 2

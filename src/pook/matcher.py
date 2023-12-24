@@ -39,7 +39,7 @@ class MatcherEngine(list):
             try:
                 return matcher.match(request)
             except Exception as err:
-                err = '{}: {}'.format(type(matcher).__name__, err)
+                err = "{}: {}".format(type(matcher).__name__, err)
                 errors.append(err)
                 return False
 
@@ -53,4 +53,4 @@ class MatcherEngine(list):
             str
         """
         matchers = [repr(matcher) for matcher in self]
-        return 'MatcherEngine([\n  {}\n])'.format(',\n  '.join(matchers))
+        return "MatcherEngine([\n  {}\n])".format(",\n  ".join(matchers))

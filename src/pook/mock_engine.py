@@ -80,8 +80,8 @@ class MockEngine(object):
         """
         for index, interceptor in enumerate(self.interceptors):
             matches = (
-                type(interceptor).__name__ == name or
-                getattr(interceptor, 'name') == name
+                type(interceptor).__name__ == name
+                or getattr(interceptor, "name") == name
             )
             if matches:
                 self.interceptors.pop(index)

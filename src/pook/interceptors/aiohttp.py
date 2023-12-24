@@ -17,12 +17,10 @@ try:
 except Exception:
     yarl, multidict = None, None
 
-PATCHES = (
-    'aiohttp.client.ClientSession._request',
-)
+PATCHES = ("aiohttp.client.ClientSession._request",)
 
-RESPONSE_CLASS = 'ClientResponse'
-RESPONSE_PATH = 'aiohttp.client_reqrep'
+RESPONSE_CLASS = "ClientResponse"
+RESPONSE_PATH = "aiohttp.client_reqrep"
 
 
 class SimpleContent(EmptyStreamReader):
@@ -49,7 +47,7 @@ def HTTPResponse(*args, **kw):
         traces=[],
         loop=mock.Mock(),
         session=mock.Mock(),
-        **kw
+        **kw,
     )
 
 
@@ -61,8 +59,9 @@ class AIOHTTPInterceptor(BaseInterceptor):
     def _url(self, url):
         return yarl.URL(url) if yarl else None
 
-    async def _on_request(self, _request, session, method, url,
-                          data=None, headers=None, **kw):
+    async def _on_request(
+        self, _request, session, method, url, data=None, headers=None, **kw
+    ):
         # Create request contract based on incoming params
         req = Request(method)
         req.headers = headers or {}
@@ -72,11 +71,11 @@ class AIOHTTPInterceptor(BaseInterceptor):
         req.extra = kw
 
         # Compose URL
-        if not kw.get('params'):
+        if not kw.get("params"):
             req.url = str(url)
         else:
-            req.url = str(url) + '?' + urlencode(
-                [(x, y) for x, y in kw['params'].items()]
+            req.url = (
+                str(url) + "?" + urlencode([(x, y) for x, y in kw["params"].items()])
             )
 
         # Match the request against the registered mocks in pook
@@ -86,8 +85,9 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # or silent model are enabled, otherwise this statement won't
         # be reached (an exception will be raised before).
         if not mock:
-            return await _request(session, method, url,
-                                  data=data, headers=headers, **kw)
+            return await _request(
+                session, method, url, data=data, headers=headers, **kw
+            )
 
         # Simulate network delay
         if mock._delay:
@@ -112,14 +112,13 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
         # Add response headers
         _res._raw_headers = tuple(headers)
-        _res._headers = multidict.CIMultiDictProxy(
-            multidict.CIMultiDict(headers)
-        )
+        _res._headers = multidict.CIMultiDictProxy(multidict.CIMultiDict(headers))
 
         if res._body:
             _res.content = SimpleContent(
-                res._body if res._binary
-                else res._body.encode('utf-8', errors='replace'),
+                res._body
+                if res._binary
+                else res._body.encode("utf-8", errors="replace"),
             )
         else:
             # Define `_content` attribute with an empty string to
@@ -136,8 +135,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
         async def handler(session, method, url, data=None, headers=None, **kw):
             return await self._on_request(
-                _request, session, method, url,
-                data=data, headers=headers, **kw)
+                _request, session, method, url, data=data, headers=headers, **kw
+            )
 
         try:
             # Create a new patcher for Urllib3 urlopen function

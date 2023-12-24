@@ -10,7 +10,7 @@ class HeadersMatcher(BaseMatcher):
 
     def __init__(self, headers):
         if not isinstance(headers, dict):
-            raise TypeError('headers must be a dictionary')
+            raise TypeError("headers must be a dictionary")
         BaseMatcher.__init__(self, headers)
 
     @BaseMatcher.matcher
@@ -23,13 +23,12 @@ class HeadersMatcher(BaseMatcher):
             # Retrieve header value by key
             actual_value = req.headers.get(key)
 
-            assert not all([
-                expected_value is not None,
-                actual_value is None,
-            ]), (
-                f"Expected a value `{expected_value}` "
-                f"for '{key}' but found `None`"
-            )
+            assert not all(
+                [
+                    expected_value is not None,
+                    actual_value is None,
+                ]
+            ), f"Expected a value `{expected_value}` " f"for '{key}' but found `None`"
 
             # Compare header value
             if not self.compare(expected_value, actual_value, regex_expr=True):

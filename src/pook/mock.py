@@ -20,8 +20,7 @@ def _append_funcs(target, items):
         target (list): receptor list to append functions.
         items (iterable): iterable that yields elements to append.
     """
-    [target.append(item) for item in items
-     if isfunction(item) or ismethod(item)]
+    [target.append(item) for item in items if isfunction(item) or ismethod(item)]
 
 
 def _trigger_request(instance, request):
@@ -33,7 +32,7 @@ def _trigger_request(instance, request):
     approach.
     """
     if not isinstance(request, Request):
-        raise TypeError('request must be instance of pook.Request')
+        raise TypeError("request must be instance of pook.Request")
 
     # Register request matchers
     for key in request.keys:
@@ -147,7 +146,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.url = url
-        self.add_matcher(matcher('URLMatcher', url))
+        self.add_matcher(matcher("URLMatcher", url))
         return self
 
     def method(self, method):
@@ -162,7 +161,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.method = method
-        self.add_matcher(matcher('MethodMatcher', method))
+        self.add_matcher(matcher("MethodMatcher", method))
         return self
 
     def path(self, path):
@@ -180,7 +179,7 @@ class Mock(object):
         url = furl(self._request.rawurl)
         url.path = path
         self._request.url = url.url
-        self.add_matcher(matcher('PathMatcher', path))
+        self.add_matcher(matcher("PathMatcher", path))
         return self
 
     def header(self, name, value):
@@ -197,7 +196,7 @@ class Mock(object):
         """
         headers = {name: value}
         self._request.headers = headers
-        self.add_matcher(matcher('HeadersMatcher', headers))
+        self.add_matcher(matcher("HeadersMatcher", headers))
         return self
 
     def headers(self, headers=None, **kw):
@@ -215,7 +214,7 @@ class Mock(object):
         """
         headers = kw if kw else headers
         self._request.headers = headers
-        self.add_matcher(matcher('HeadersMatcher', headers))
+        self.add_matcher(matcher("HeadersMatcher", headers))
         return self
 
     def header_present(self, *names):
@@ -238,8 +237,8 @@ class Mock(object):
                 .header_present('content-type'))
         """
         for name in names:
-            headers = {name: re.compile('(.*)')}
-            self.add_matcher(matcher('HeadersMatcher', headers))
+            headers = {name: re.compile("(.*)")}
+            self.add_matcher(matcher("HeadersMatcher", headers))
         return self
 
     def headers_present(self, headers):
@@ -261,8 +260,8 @@ class Mock(object):
             (pook.get('server.com/api')
                 .headers_present(['content-type', 'Authorization']))
         """
-        headers = {name: re.compile('(.*)') for name in headers}
-        self.add_matcher(matcher('HeadersMatcher', headers))
+        headers = {name: re.compile("(.*)") for name in headers}
+        self.add_matcher(matcher("HeadersMatcher", headers))
         return self
 
     def type(self, value):
@@ -310,9 +309,9 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        header = {'Content-Type': TYPES.get(value, value)}
+        header = {"Content-Type": TYPES.get(value, value)}
         self._request.headers = header
-        self.add_matcher(matcher('HeadersMatcher', header))
+        self.add_matcher(matcher("HeadersMatcher", header))
         return self
 
     def param(self, name, value):
@@ -339,7 +338,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        self.params({name: re.compile('(.*)')})
+        self.params({name: re.compile("(.*)")})
         return self
 
     def params(self, params):
@@ -355,7 +354,7 @@ class Mock(object):
         url = furl(self._request.rawurl)
         url = url.add(params)
         self._request.url = url.url
-        self.add_matcher(matcher('QueryMatcher', params))
+        self.add_matcher(matcher("QueryMatcher", params))
         return self
 
     def body(self, body, binary=False):
@@ -372,7 +371,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.body = body
-        self.add_matcher(matcher('BodyMatcher', body, binary=False))
+        self.add_matcher(matcher("BodyMatcher", body, binary=False))
         return self
 
     def json(self, json):
@@ -390,7 +389,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.json = json
-        self.add_matcher(matcher('JSONMatcher', json))
+        self.add_matcher(matcher("JSONMatcher", json))
         return self
 
     def jsonschema(self, schema):
@@ -403,7 +402,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        self.add_matcher(matcher('JSONSchemaMatcher', schema))
+        self.add_matcher(matcher("JSONSchemaMatcher", schema))
         return self
 
     def xml(self, xml):
@@ -417,7 +416,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.xml = xml
-        self.add_matcher(matcher('XMLMatcher', xml))
+        self.add_matcher(matcher("XMLMatcher", xml))
         return self
 
     def file(self, path):
@@ -430,7 +429,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             self.body(str(f.read()))
         return self
 
@@ -499,7 +498,7 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        self._persist = status if type(status) is bool else True
+        self._persist = status if isinstance(status, bool) else True
         return self
 
     def filter(self, *filters):
@@ -713,7 +712,7 @@ class Mock(object):
         """
         # If mock already expired, fail it
         if self._times <= 0:
-            raise PookExpiredMock('Mock expired')
+            raise PookExpiredMock("Mock expired")
 
         # Trigger mock filters
         for test in self.filters:
@@ -724,7 +723,7 @@ class Mock(object):
         for mapper in self.mappers:
             request = mapper(request, self)
             if not request:
-                raise ValueError('map function must return a request object')
+                raise ValueError("map function must return a request object")
 
         # Match incoming request against registered mock matchers
         matches, errors = self.matchers.match(request)
@@ -770,7 +769,7 @@ class Mock(object):
 
         # Force type assertion and raise an error if it is not a function
         if not isfunction(fn) and not ismethod(fn):
-            raise TypeError('first argument must be a method or function')
+            raise TypeError("first argument must be a method or function")
 
         # Remove mock to prevent decorator definition scope collision
         self._engine.remove_mock(self)
@@ -808,21 +807,21 @@ class Mock(object):
         Returns:
             str
         """
-        keys = ('matches', 'times', 'persist', 'matchers', 'response')
+        keys = ("matches", "times", "persist", "matchers", "response")
 
         args = []
         for key in keys:
-            if key == 'matchers':
-                value = repr(self.matchers).replace('\n  ', '\n    ')
-                value = value[:-2] + '  ])'
-            elif key == 'response':
+            if key == "matchers":
+                value = repr(self.matchers).replace("\n  ", "\n    ")
+                value = value[:-2] + "  ])"
+            elif key == "response":
                 value = repr(self._response)
-                value = value[:-1] + '  )'
+                value = value[:-1] + "  )"
             else:
-                value = repr(getattr(self, '_' + key))
-            args.append('{}={}'.format(key, value))
+                value = repr(getattr(self, "_" + key))
+            args.append("{}={}".format(key, value))
 
-        args = '(\n  {}\n)'.format(',\n  '.join(args))
+        args = "(\n  {}\n)".format(",\n  ".join(args))
 
         return type(self).__name__ + args
 
@@ -849,7 +848,7 @@ class Mock(object):
         self._times = 0
 
         # Automatically disable the mock engine, if needed
-        if getattr(self, '_disable_engine', False):
+        if getattr(self, "_disable_engine", False):
             self._disable_engine = False
             self._engine.disable()
 

@@ -12,13 +12,16 @@ pook.set_mock_engine(MocketEngine)
 pook.on()
 
 # Target server URL to mock out
-url = 'http://twitter.com/api/1/foobar'
+url = "http://twitter.com/api/1/foobar"
 
 # Define your mock
-mock = pook.get(url,
-                reply=404, times=2,
-                headers={'content-type': 'application/json'},
-                response_json={'error': 'foo'})
+mock = pook.get(
+    url,
+    reply=404,
+    times=2,
+    headers={"content-type": "application/json"},
+    response_json={"error": "foo"},
+)
 
 # Run first HTTP request
 requests.get(url)
@@ -30,7 +33,7 @@ assert mock.calls == 2
 
 # Assert response data
 assert res.status_code == 404
-assert res.json() == {'error': 'foo'}
+assert res.json() == {"error": "foo"}
 
 # Explicitly disable pook (optional)
 pook.off()

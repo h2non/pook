@@ -63,16 +63,17 @@ class Engine(object):
             engine (pook.MockEngine): custom mock engine to use.
         """
         if not engine:
-            raise TypeError('engine must be a valid object')
+            raise TypeError("engine must be a valid object")
 
         # Instantiate mock engine
         mock_engine = engine(self)
 
         # Validate minimum viable interface
-        methods = ('activate', 'disable')
+        methods = ("activate", "disable")
         if not all([hasattr(mock_engine, method) for method in methods]):
-            raise NotImplementedError('engine must implementent the '
-                                      'required methods')
+            raise NotImplementedError(
+                "engine must implementent the " "required methods"
+            )
 
         # Use the custom mock engine
         self.mock_engine = mock_engine
@@ -93,6 +94,7 @@ class Engine(object):
             *hostnames: optional list of host names to enable real network
                 against them. hostname value can be a regular expression.
         """
+
         def hostname_filter(hostname, req):
             if isregex(hostname):
                 return hostname.match(req.url.hostname)
@@ -140,8 +142,8 @@ class Engine(object):
             pook.Mock: new mock instance.
         """
         # Activate mock engine, if explicitly requested
-        if kw.get('activate'):
-            kw.pop('activate')
+        if kw.get("activate"):
+            kw.pop("activate")
             self.activate()
 
         # Create the new HTTP mock expectation
@@ -182,8 +184,10 @@ class Engine(object):
         engine_method = getattr(self.mock_engine, method, None)
 
         if not engine_method:
-            raise NotImplementedError('current mock engine does not implements'
-                                      ' required "{}" method'.format(method))
+            raise NotImplementedError(
+                "current mock engine does not implements"
+                ' required "{}" method'.format(method)
+            )
 
         return engine_method(self.mock_engine, *args, **kw)
 
@@ -201,7 +205,7 @@ class Engine(object):
         Arguments:
             interceptors (pook.interceptors.BaseInterceptor)
         """
-        self._engine_proxy('add_interceptor', *interceptors)
+        self._engine_proxy("add_interceptor", *interceptors)
 
     def flush_interceptors(self):
         """
@@ -212,7 +216,7 @@ class Engine(object):
         Note: this method is may not be implemented if using a custom mock
         engine.
         """
-        self._engine_proxy('flush_interceptors')
+        self._engine_proxy("flush_interceptors")
 
     def remove_interceptor(self, name):
         """
@@ -227,7 +231,7 @@ class Engine(object):
         Returns:
             bool: `True` if the interceptor was disabled, otherwise `False`.
         """
-        return self._engine_proxy('remove_interceptor', name)
+        return self._engine_proxy("remove_interceptor", name)
 
     def activate(self):
         """
@@ -378,8 +382,7 @@ class Engine(object):
         Returns:
             bool
         """
-        return (self.networking and
-                all((fn(request) for fn in self.network_filters)))
+        return self.networking and all((fn(request) for fn in self.network_filters))
 
     def match(self, request):
         """
@@ -406,7 +409,7 @@ class Engine(object):
         for mapper in self.mappers:
             request = mapper(request, self)
             if not request:
-                raise ValueError('map function must return a request object')
+                raise ValueError("map function must return a request object")
 
         # Store list of mock matching errors for further debugging
         match_errors = []
@@ -426,18 +429,17 @@ class Engine(object):
 
         # Validate that we have a mock
         if not self.should_use_network(request):
-            msg = 'pook error!\n\n'
+            msg = "pook error!\n\n"
 
-            msg += (
-                '=> Cannot match any mock for the '
-                'following request:\n{}'.format(request)
+            msg += "=> Cannot match any mock for the " "following request:\n{}".format(
+                request
             )
 
             # Compose unmatch error details, if debug mode is enabled
             if self.debug:
-                err = '\n\n'.join([str(err) for err in match_errors])
+                err = "\n\n".join([str(err) for err in match_errors])
                 if err:
-                    msg += '\n\n=> Detailed matching errors:\n{}\n'.format(err)
+                    msg += "\n\n=> Detailed matching errors:\n{}\n".format(err)
 
             # Raise no matches exception
             raise PookNoMatches(msg)

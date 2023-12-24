@@ -11,21 +11,21 @@ from .json_schema import JSONSchemaMatcher
 
 # Explicit symbols to export
 __all__ = (
-    'init',
-    'add',
-    'get',
-    'matchers',
-    'BaseMatcher',
-    'MethodMatcher',
-    'URLMatcher',
-    'HeadersMatcher',
-    'QueryMatcher',
-    'PathMatcher',
-    'BodyMatcher',
-    'XMLMatcher',
-    'JSONMatcher',
-    'JSONSchemaMatcher',
-    'QueryMatcher',
+    "init",
+    "add",
+    "get",
+    "matchers",
+    "BaseMatcher",
+    "MethodMatcher",
+    "URLMatcher",
+    "HeadersMatcher",
+    "QueryMatcher",
+    "PathMatcher",
+    "BodyMatcher",
+    "XMLMatcher",
+    "JSONMatcher",
+    "JSONSchemaMatcher",
+    "QueryMatcher",
 )
 
 # List of built-in matchers
@@ -66,7 +66,7 @@ def get(name):
         matcher: found matcher instance, otherwise ``None``.
     """
     for matcher in matchers:
-        if matcher.__name__ == name or getattr(matcher, 'name', None) == name:
+        if matcher.__name__ == name or getattr(matcher, "name", None) == name:
             return matcher
 
 
@@ -88,5 +88,5 @@ def init(name, *args, **kwargs):
     """
     matcher = get(name)
     if not matcher:
-        raise ValueError('Cannot find matcher: {}'.format(name))
+        raise ValueError("Cannot find matcher: {}".format(name))
     return matcher(*args, **kwargs)

@@ -141,7 +141,7 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        self._headers['Content-Type'] = TYPES.get(name, name)
+        self._headers["Content-Type"] = TYPES.get(name, name)
         return self
 
     def body(self, body, binary=False, chunked=False):
@@ -157,13 +157,13 @@ class Response(object):
             self: ``pook.Response`` current instance.
         """
         if isinstance(body, bytes) and not binary:
-            body = body.decode('utf-8')
+            body = body.decode("utf-8")
 
         self._body = body
         self._binary = binary
 
         if chunked:
-            self.header('Transfer-Encoding', 'chunked')
+            self.header("Transfer-Encoding", "chunked")
         return self
 
     def json(self, data):
@@ -176,7 +176,7 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        self._headers['Content-Type'] = 'application/json'
+        self._headers["Content-Type"] = "application/json"
         if not isinstance(data, str):
             data = json.dumps(data, indent=4)
         self._body = data
@@ -207,7 +207,7 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             self._body = str(f.read())
         return self
 
@@ -233,7 +233,7 @@ class Response(object):
             str
         """
         args = []
-        for key in ('headers', 'status', 'body'):
-            value = getattr(self, '_{}'.format(key))
-            args.append('{}={}'.format(key, value))
-        return 'Response(\n    {}\n)'.format(',\n    '.join(args))
+        for key in ("headers", "status", "body"):
+            value = getattr(self, "_{}".format(key))
+            args.append("{}={}".format(key, value))
+        return "Response(\n    {}\n)".format(",\n    ".join(args))

@@ -2,7 +2,7 @@ import re
 import sys
 
 if sys.version_info < (3, 7):
-    Pattern = type(re.compile(''))
+    Pattern = type(re.compile(""))
 else:
     Pattern = re.Pattern
 
@@ -21,11 +21,7 @@ def isregex_expr(expr):
     if not isinstance(expr, str):
         return False
 
-    return all([
-        len(expr) > 3,
-        expr.startswith('re/'),
-        expr.endswith('/')
-    ])
+    return all([len(expr) > 3, expr.startswith("re/"), expr.endswith("/")])
 
 
 def isregex(value):

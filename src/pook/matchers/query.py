@@ -18,8 +18,7 @@ class QueryMatcher(BaseMatcher):
             param = [param] if not isinstance(param, list) else param
 
             # Compare query params
-            [[self.compare(value, expect)
-              for expect in match] for value in param]
+            [[self.compare(value, expect) for expect in match] for value in param]
 
             return True
 
@@ -35,7 +34,7 @@ class QueryMatcher(BaseMatcher):
 
         # Validate query params
         if not isinstance(query, dict):
-            raise ValueError('query params must be a str or dict')
+            raise ValueError("query params must be a str or dict")
 
         # Parse request URL query
         req_query = parse_qs(req.url.query)

@@ -2,7 +2,7 @@ import re
 from .assertion import test
 
 # Negate is used a reserved token identifier to negate matching
-NEGATE = '!!'
+NEGATE = "!!"
 
 
 def compile(expr):
@@ -20,7 +20,7 @@ def match(expr, value):
 
 
 def strip_negate(value):
-    return value[len(NEGATE):].lstrip()
+    return value[len(NEGATE) :].lstrip()
 
 
 def compare(expr, value, regex_expr=False):

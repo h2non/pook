@@ -3,7 +3,7 @@ from .exceptions import PookInvalidArgument
 
 
 def trigger_methods(instance, args):
-    """"
+    """
     Triggers specific class methods using a simple reflection
     mechanism based on the given input dictionary params.
 
@@ -20,10 +20,10 @@ def trigger_methods(instance, args):
         target = instance
 
         # If response attibutes
-        if name.startswith('response_') or name.startswith('reply_'):
-            name = name.replace('response_', '').replace('reply_', '')
+        if name.startswith("response_") or name.startswith("reply_"):
+            name = name.replace("response_", "").replace("reply_", "")
             # If instance has response attribute, use it
-            if hasattr(instance, '_response'):
+            if hasattr(instance, "_response"):
                 target = instance._response
 
         # Retrieve class member for inspection and future use
@@ -34,7 +34,7 @@ def trigger_methods(instance, args):
         iscallable = ismethod(member) and not isfunction(member)
 
         if not iscallable and not isattr:
-            raise PookInvalidArgument('Unsupported argument: {}'.format(name))
+            raise PookInvalidArgument("Unsupported argument: {}".format(name))
 
         # Set attribute or trigger method
         if iscallable:

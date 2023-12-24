@@ -53,7 +53,7 @@ class HTTPHeaderDict(MutableMapping):
 
     def __getitem__(self, key):
         val = self._container[key.lower()]
-        return ', '.join([to_string_value(v) for v in val[1:]])
+        return ", ".join([to_string_value(v) for v in val[1:]])
 
     def __delitem__(self, key):
         del self._container[key.lower()]
@@ -62,12 +62,13 @@ class HTTPHeaderDict(MutableMapping):
         return key.lower() in self._container
 
     def __eq__(self, other):
-        if not isinstance(other, Mapping) and not hasattr(other, 'keys'):
+        if not isinstance(other, Mapping) and not hasattr(other, "keys"):
             return False
         if not isinstance(other, type(self)):
             other = type(self)(other)
-        return (dict((k.lower(), v) for k, v in self.itermerged()) ==
-                dict((k.lower(), v) for k, v in other.itermerged()))
+        return dict((k.lower(), v) for k, v in self.itermerged()) == dict(
+            (k.lower(), v) for k, v in other.itermerged()
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -226,7 +227,7 @@ class HTTPHeaderDict(MutableMapping):
         """
         for key in self:
             val = self._container[key.lower()]
-            yield val[0], ', '.join([to_string_value(v) for v in val[1:]])
+            yield val[0], ", ".join([to_string_value(v) for v in val[1:]])
 
     def items(self):
         return list(self.iteritems())

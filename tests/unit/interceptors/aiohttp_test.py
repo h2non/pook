@@ -11,7 +11,13 @@ if SUPPORTED:
     import aiohttp
 
 
-pytestmark = [pytest.mark.pook, pytest.mark.asyncio, pytest.mark.skipif(not SUPPORTED, reason="See pyproject.toml comment on aiohttp dependency")]
+pytestmark = [
+    pytest.mark.pook,
+    pytest.mark.asyncio,
+    pytest.mark.skipif(
+        not SUPPORTED, reason="See pyproject.toml comment on aiohttp dependency"
+    ),
+]
 
 URL = "https://httpbin.org/status/404"
 

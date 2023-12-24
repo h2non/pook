@@ -21,14 +21,41 @@ else:
 
 # Public API symbols to export
 __all__ = (
-    'activate', 'on', 'disable', 'off', 'reset', 'engine',
-    'use_network', 'enable_network', 'disable_network',
-    'get', 'post', 'put', 'patch', 'head', 'use',
-    'set_mock_engine', 'delete', 'options', 'pending',
-    'ispending', 'mock', 'pending_mocks', 'unmatched_requests',
-    'isunmatched', 'unmatched', 'isactive', 'isdone', 'regex',
-    'Engine', 'Mock', 'Request', 'Response',
-    'MatcherEngine', 'MockEngine', 'use_network_filter'
+    "activate",
+    "on",
+    "disable",
+    "off",
+    "reset",
+    "engine",
+    "use_network",
+    "enable_network",
+    "disable_network",
+    "get",
+    "post",
+    "put",
+    "patch",
+    "head",
+    "use",
+    "set_mock_engine",
+    "delete",
+    "options",
+    "pending",
+    "ispending",
+    "mock",
+    "pending_mocks",
+    "unmatched_requests",
+    "isunmatched",
+    "unmatched",
+    "isactive",
+    "isdone",
+    "regex",
+    "Engine",
+    "Mock",
+    "Request",
+    "Response",
+    "MatcherEngine",
+    "MockEngine",
+    "use_network_filter",
 )
 
 # Default singleton mock engine to be used
@@ -318,7 +345,7 @@ def get(url, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='GET', **kw)
+    return mock(url, method="GET", **kw)
 
 
 def post(url, **kw):
@@ -334,7 +361,7 @@ def post(url, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='POST', **kw)
+    return mock(url, method="POST", **kw)
 
 
 def put(url, **kw):
@@ -350,7 +377,7 @@ def put(url, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='PUT', **kw)
+    return mock(url, method="PUT", **kw)
 
 
 def delete(url, **kw):
@@ -366,7 +393,7 @@ def delete(url, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='DELETE', **kw)
+    return mock(url, method="DELETE", **kw)
 
 
 def head(url, **kw):
@@ -382,7 +409,7 @@ def head(url, **kw):
     Returns:
         pook.Mock: mock instance
     """
-    return mock(url, method='HEAD', **kw)
+    return mock(url, method="HEAD", **kw)
 
 
 def patch(url=None, **kw):
@@ -398,7 +425,7 @@ def patch(url=None, **kw):
     Returns:
         pook.Mock: new mock instance.
     """
-    return mock(url, method='PATCH', **kw)
+    return mock(url, method="PATCH", **kw)
 
 
 def options(url=None, **kw):
@@ -414,7 +441,7 @@ def options(url=None, **kw):
     Returns:
         pook.Mock: new mock instance.
     """
-    return mock(url, method='OPTIONS', **kw)
+    return mock(url, method="OPTIONS", **kw)
 
 
 def pending():

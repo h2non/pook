@@ -16,7 +16,7 @@ class BaseMatcher(object):
 
     def __init__(self, expectation, negate=False):
         if not expectation:
-            raise ValueError('expectation argument cannot be empty')
+            raise ValueError("expectation argument cannot be empty")
 
         self.negate = negate
         self._expectation = expectation
@@ -68,7 +68,7 @@ class BaseMatcher(object):
         return {self.name: deepcopy(self.expectation)}
 
     def __repr__(self):
-        return '{}({})'.format(self.name, self.expectation)
+        return "{}({})".format(self.name, self.expectation)
 
     def __str__(self):
         return self.expectation
@@ -79,4 +79,5 @@ class BaseMatcher(object):
         def wrapper(self, *args):
             result = fn(self, *args)
             return not result if self.negate else result
+
         return wrapper

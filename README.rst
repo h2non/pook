@@ -16,7 +16,7 @@ Features
 -  Full regular expressions capable mock expectations matching.
 -  Supports most popular HTTP clients via interceptor adapters.
 -  Configurable volatile, persistent or TTL limited mocks.
--  Works with any testing framework/engine (unittest, pytest, nosetests...).
+-  Works with unittest and pytest.
 -  First-class JSON & XML support matching and responses.
 -  Supports JSON Schema body matching.
 -  Works in both runtime and testing environments.

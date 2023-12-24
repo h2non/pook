@@ -11,21 +11,21 @@ from http.client import (
 )
 
 PATCHES = (
-    'requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen',
-    'urllib3.connectionpool.HTTPConnectionPool.urlopen',
+    "requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen",
+    "urllib3.connectionpool.HTTPConnectionPool.urlopen",
 )
 
-RESPONSE_CLASS = 'HTTPResponse'
+RESPONSE_CLASS = "HTTPResponse"
 
 RESPONSE_PATH = {
-    'requests': 'requests.packages.urllib3.response',
-    'urllib3': 'urllib3.response'
+    "requests": "requests.packages.urllib3.response",
+    "urllib3": "urllib3.response",
 }
 
 
 def HTTPResponse(path, *args, **kw):
     # Infer package
-    package = path.split('.').pop(0)
+    package = path.split(".").pop(0)
     # Get import path
     import_path = RESPONSE_PATH.get(package)
 
@@ -37,8 +37,8 @@ def HTTPResponse(path, *args, **kw):
     return HTTPResponse(*args, **kw)
 
 
-def body_io(string, encoding='utf-8'):
-    if hasattr(string, 'encode'):
+def body_io(string, encoding="utf-8"):
+    if hasattr(string, "encode"):
         string = string.encode(encoding)
     return io.BytesIO(string)
 
@@ -58,6 +58,7 @@ class FakeHeaders(list):
     def get_all(self, key, default=None):
         key = key.lower()
         return [v for (k, v) in self if k.lower() == key]
+
     getheaders = get_all
 
 
@@ -77,23 +78,23 @@ class FakeResponse(object):
 class FakeChunkedResponseBody(object):
     def __init__(self, chunks):
         # append a terminating chunk
-        chunks.append(b'')
+        chunks.append(b"")
 
         self.position = 0
-        self.stream = b''.join([self._encode(c) for c in chunks])
+        self.stream = b"".join([self._encode(c) for c in chunks])
         self.closed = False
 
     def _encode(self, chunk):
-        length = '%X\r\n' % len(chunk)
-        return length.encode() + chunk + b'\r\n'
+        length = "%X\r\n" % len(chunk)
+        return length.encode() + chunk + b"\r\n"
 
     def read_chunk(self, amt=-1, whole=False):
         if whole or amt == -1:
-            end_idx = self.stream.index(b'\r\n', self.position) + 2
+            end_idx = self.stream.index(b"\r\n", self.position) + 2
         else:
             end_idx = self.position + amt
 
-        chunk = self.stream[self.position:end_idx]
+        chunk = self.stream[self.position : end_idx]
         self.position = end_idx
 
         return chunk
@@ -116,8 +117,9 @@ class Urllib3Interceptor(BaseInterceptor):
     Urllib3 HTTP traffic interceptor.
     """
 
-    def _on_request(self, urlopen, path, pool, method, url,
-                    body=None, headers=None, **kw):
+    def _on_request(
+        self, urlopen, path, pool, method, url, body=None, headers=None, **kw
+    ):
         # Remove bypass headers
         real_headers = dict(headers or {})
         real_headers.pop(URLLIB3_BYPASS)
@@ -128,12 +130,7 @@ class Urllib3Interceptor(BaseInterceptor):
         req.body = body
 
         # Compose URL
-        req.url = '{}://{}:{:d}{}'.format(
-            pool.scheme,
-            pool.host,
-            pool.port or 80,
-            url
-        )
+        req.url = "{}://{}:{:d}{}".format(pool.scheme, pool.host, pool.port or 80, url)
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
@@ -156,8 +153,7 @@ class Urllib3Interceptor(BaseInterceptor):
         if is_chunked_response(headers):
             body_chunks = body if isinstance(body, list) else [body]
             body_chunks = [
-                chunk if res._binary else chunk.encode()
-                for chunk in body_chunks
+                chunk if res._binary else chunk.encode() for chunk in body_chunks
             ]
 
             body = ClientHTTPResponse(MockSock)
@@ -184,8 +180,9 @@ class Urllib3Interceptor(BaseInterceptor):
             headers[URLLIB3_BYPASS] = "1"
 
             # Call request interceptor
-            return self._on_request(urlopen, path, conn, method, url,
-                                    body=body, headers=headers, **kw)
+            return self._on_request(
+                urlopen, path, conn, method, url, body=body, headers=headers, **kw
+            )
 
         try:
             # Create a new patcher for Urllib3 urlopen function
