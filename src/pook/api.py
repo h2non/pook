@@ -10,14 +10,8 @@ from .mock_engine import MockEngine
 from .request import Request
 from .response import Response
 
-try:
-    from asyncio import iscoroutinefunction
-except ImportError:
-    iscoroutinefunction = None
-if iscoroutinefunction is not None:
-    from .activate_async import activate_async
-else:
-    activate_async = None
+from asyncio import iscoroutinefunction
+from .activate_async import activate_async
 
 # Public API symbols to export
 __all__ = (
@@ -135,7 +129,7 @@ def activate(fn=None):
         return None
 
     # If used as decorator for an async coroutine, wrap it
-    if iscoroutinefunction is not None and iscoroutinefunction(fn):
+    if iscoroutinefunction(fn):
         return activate_async(fn, _engine)
 
     @functools.wraps(fn)

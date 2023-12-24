@@ -5,15 +5,15 @@ import requests
 pook.on()
 
 (
-    pook.get("httpbin.org/post")
+    pook.get("httpbin.org/get")
     .params({"foo": "bar"})
     .reply(204)
     .json({"error": "simulated"})
 )
 
 res = requests.get("http://httpbin.org/get", params={"foo": "bar"})
-print("Status:", res.status_code)
-print("Body:", res.json())
 
-print("Is done:", pook.isdone())
-print("Pending mocks:", pook.pending_mocks())
+assert res.status_code == 204
+assert res.json() == {"error": "simulated"}
+assert pook.isdone()
+assert pook.pending_mocks() == []

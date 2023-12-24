@@ -2,7 +2,7 @@ import pook
 import requests
 
 
-with pook.context():
+with pook.api.context():
     pook.get(
         "httpbin.org/ip",
         reply=403,

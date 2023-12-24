@@ -1,5 +1,5 @@
 import functools
-from asyncio import iscoroutinefunction
+from inspect import iscoroutinefunction
 
 
 def activate_async(fn, _engine):
@@ -19,8 +19,7 @@ def activate_async(fn, _engine):
         _engine.activate()
         try:
             if iscoroutinefunction(fn):
-                async for v in fn(*args, **kw):
-                    yield v
+                return await fn(*args, **kw)
             else:
                 fn(*args, **kw)
         finally:

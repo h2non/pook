@@ -1,16 +1,18 @@
 import subprocess
+import pytest
 
-# List of engine specific test commands to run
-engine_tests = (
-    "py.test tests/integration/engines/pytest_suite.py",
-    "python -m unittest tests.integration.engines.unittest_suite",
+
+@pytest.mark.parametrize(
+    "test_command",
+    (
+        pytest.param("pytest tests/integration/engines/pytest_suite.py", id="pytest"),
+        pytest.param(
+            "python -m unittest tests.integration.engines.unittest_suite", id="unittest"
+        ),
+    ),
 )
-
-
-def test_engines():
-    for cmd in engine_tests:
-        args = cmd.split(" ")
-        code = subprocess.call(args)
-
-        if code != 0:
-            raise AssertionError("invalid exit code for: {}".format(cmd))
+def test_engines(test_command):
+    args = test_command.split(" ")
+    assert (
+        subprocess.call(args) == 0
+    ), f"Engine smoke test failed for command '{test_command}'"
