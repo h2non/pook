@@ -53,7 +53,7 @@ def test_url_matcher_regex():
         ('http://foo.com/foo', 'http://foo.com/foo', True),
         ('http://foo.com/foo/bar', 'http://foo.com/foo/bar', True),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/foo/bar/baz', True),
-        ('http://foo.com/foo\?x=[0-9]', 'http://foo.com/foo?x=5', True),
+        (r'http://foo.com/foo\?x=[0-9]', 'http://foo.com/foo?x=5', True),
 
         # Invalid cases
         ('http://foo.com', 'http://bar.com', False),
@@ -62,5 +62,5 @@ def test_url_matcher_regex():
         ('http://foo.com/foo', 'http://foo.com/bar', False),
         ('http://foo.com/foo/bar', 'http://foo.com/bar/foo', False),
         ('http://foo.com/foo/bar/baz', 'http://foo.com/baz/bar/foo', False),
-        ('http://foo.com/foo\?x=[1-3]', 'http://foo.com/foo?x=5', False),
+        (r'http://foo.com/foo\?x=[1-3]', 'http://foo.com/foo?x=5', False),
     ), regex=True)

@@ -86,14 +86,8 @@ def test_binary_body_chunked():
     assert list(r.read_chunked()) == [binary_file]
 
 
-@pytest.mark.xfail(
-    condition=sys.version_info < (3, 7),
-    reason=(
-        "urllib3 converts https to http with "
-        "port 443 and fails on header parsing"
-    )
-)
-def test_post_with_headers(pook_on):
+@pytest.mark.pook
+def test_post_with_headers():
     mock = pook.post(URL).header('k', 'v').reply(200).mock
     http = urllib3.PoolManager(headers={'k': 'v'})
     resp = http.request('POST', URL)

@@ -43,7 +43,7 @@ def HTTPResponse(*args, **kw):
     return ClientResponse(
         *args,
         request_info=mock.Mock(),
-        writer=mock.Mock(),
+        writer=None,
         continue100=None,
         timer=TimerNoop(),
         traces=[],
