@@ -38,18 +38,18 @@ jobs:
         run: hatch run lint:run
 
   test:
-    name: test on ${{ matrix.config.py }}
+    name: test on ${{ matrix.py }}
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - py: 'pypy3.10'
-          - py: '3.12'
-          - py: '3.11'
-          - py: '3.10'
-          - py: '3.9'
-          - py: '3.8'
+        py:
+          - 'pypy3.10'
+          - '3.12'
+          - '3.11'
+          - '3.10'
+          - '3.9'
+          - '3.8'
 
     steps:
       - name: Checkout repository
@@ -57,14 +57,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python for test ${{ matrix.config.py }}
+      - name: Setup Python for test ${{ matrix.py }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.config.py }}
+          python-version: ${{ matrix.py }}
           cache: pip
 
       - name: Install hatch
         run: pipx install hatch
 
       - name: Run test suite
-        run: hatch run test.${{ matrix.config.py }}:test
+        run: hatch run test.${{ !startsWith(matrix.py, 'pypy') && 'py' || '' }}${{ matrix.py }}:test
