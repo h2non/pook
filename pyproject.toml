@@ -61,11 +61,8 @@ extra-dependencies = [
     # async-timeout is only used for testing aiohttp
     "aiohttp~=3.8; python_version < '3.12'",
     "async-timeout~=4.0.3; python_version < '3.12'",
-    # mocket disabled pook for 3.11 due to pook's compatibility issues
-    # https://github.com/mindflayer/python-mocket/issues/210
-    # Once that issue is resolved, we can re-enable mocket testing for all versions
     # mocket relies on httptools which does not support PyPy
-    "mocket[pook]~=3.12.0; python_version < '3.11' and platform_python_implementation != 'PyPy'",
+    "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
 ]
 
 [tool.hatch.envs.lint]

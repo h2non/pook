@@ -9,7 +9,8 @@ examples_dir = Path(__file__).parents[2] / "examples"
 
 examples = [f.name for f in examples_dir.glob("*.py")]
 
-if sys.version_info >= (3, 11) or platform.python_implementation() == "PyPy":
+
+if platform.python_implementation() == "PyPy":
     # See pyproject.toml note on mocket dependency
     examples.remove("mocket_example.py")
 
