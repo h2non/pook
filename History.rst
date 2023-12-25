@@ -1,4 +1,22 @@
 
+v1.3.0 / 2023-12-25
+===================
+
+This release modernizes Pook build and development environments.
+
+  * Drop support for EOL'd Python versions (in other words, 3.6 and 3.7)
+  * Use pyproject.toml
+  * Use ruff to lint files
+  * Use pre-commit to add pre-commit hooks
+  * Use hatch to manage test, development, and build environments
+  * Fix the test configuration to actually run the example tests
+  * Fix the documentation build
+  * Fix support for asynchronous functions in the activate decorator (this was a direct result of re-enabling the example tests and finding lots of little issues)
+  * Remove all mention of the unsupported pycurl library
+  * Clean up tests that can use pytest parametrize to do so (and get better debugging information during tests runs as a result)
+  * Use pytest-pook to clean up a bunch of unnecessary test fixtures
+  * Fix deprecation warning for invalid string escape sequences caused by untagged regex strings
+
 v1.2.1 / 2023-12-23
 ===================
 
