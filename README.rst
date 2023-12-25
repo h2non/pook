@@ -249,39 +249,46 @@ Clone the repository:
     git clone git@github.com:h2non/pook.git
 
 
-Install dependencies:
+Use [`hatch`](https://hatch.pypa.io/) to configure the environment by running the test suite:
 
 .. code:: bash
 
-    pip install -r requirements.txt -r requirements-dev.txt
+    hatch run test
 
 
-Install Python dependencies:
-
-.. code:: bash
-
-    make install
-
-
-Lint code:
+Install the pre-commit hook:
 
 .. code:: bash
 
-    make lint
+    hatch run lint:install
 
 
-Run tests:
+Lint the code:
 
 .. code:: bash
 
-    make test
+    hatch run lint:run
+
+
+Run tests on all supported Python versions and implementations (this requires your host operating system to have each implementation available):
+
+.. code:: bash
+
+    hatch run test:test
+
+
+To run tests only for a specific version, affix the version designation to the environment name (the left side of the `:`):
+
+.. code:: bash
+
+    hatch run test.pypy3.10:test
 
 
 Generate documentation:
 
 .. code:: bash
 
-    make htmldocs
+    hatch run docs:build
 
 
 License
