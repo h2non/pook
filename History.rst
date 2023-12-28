@@ -1,4 +1,10 @@
 
+v1.4.0 / 2023-12-29
+===================
+
+  * Add support for httpx (#90)
+  * Enable mocket integration tests for Python >= 3.11 (#103)
+
 v1.3.0 / 2023-12-25
 ===================
 
