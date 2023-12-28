@@ -56,11 +56,14 @@ extra-dependencies = [
 
     "requests~=2.20",
     "urllib3~=1.24",
+    "httpx~=0.26.0",
+
     # aiohttp depends on multidict, so we can't test aiohttp until
     # https://github.com/aio-libs/multidict/issues/887 is resolved
     # async-timeout is only used for testing aiohttp
     "aiohttp~=3.8; python_version < '3.12'",
     "async-timeout~=4.0.3; python_version < '3.12'",
+
     # mocket relies on httptools which does not support PyPy
     "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
 ]
@@ -88,3 +91,6 @@ build = 'hatch run apidocs; hatch run htmldocs'
 [tool.hatch.envs.test]
 [[tool.hatch.envs.test.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11", "3.12", "pypy3.10"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

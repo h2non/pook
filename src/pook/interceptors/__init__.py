@@ -10,6 +10,7 @@ __all__ = (
     "BaseInterceptor",
     "Urllib3Interceptor",
     "HTTPClientInterceptor",
+    "HttpxInterceptor",
     "AIOHTTPInterceptor",
 )
 
@@ -21,6 +22,14 @@ try:
     from .aiohttp import AIOHTTPInterceptor
 
     interceptors.append(AIOHTTPInterceptor)
+except ImportError:
+    pass
+
+try:
+    import httpx  # noqa
+    from ._httpx import HttpxInterceptor
+
+    interceptors.append(HttpxInterceptor)
 except ImportError:
     pass
 
