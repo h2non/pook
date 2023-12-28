@@ -63,7 +63,7 @@ jobs:
         run: hatch build
 
       - name: Check build
-        run: twine check dist/*
+        run: twine check --strict dist/*
 
   test:
     name: test on ${{ matrix.py }}
