@@ -303,6 +303,7 @@ MIT - Tomas Aparicio
 .. _annotated API reference: http://pook.readthedocs.io/en/latest/api.html
 .. _examples: http://pook.readthedocs.io/en/latest/examples.html
 .. _aiohttp: https://github.com/KeepSafe/aiohttp
+.. _httpx: https://www.python-httpx.org/
 .. _requests: http://docs.python-requests.org/en/master/
 .. _urllib3: https://github.com/shazow/urllib3
 .. _urllib: https://docs.python.org/3/library/urllib.html

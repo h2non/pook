@@ -37,6 +37,34 @@ jobs:
       - name: Lint
         run: hatch run lint:run
 
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install hatch
+        run: pipx install hatch
+
+      - name: Install twine
+        run: pipx install twine
+
+      - name: Build distribution
+        run: hatch build
+
+      - name: Check build
+        run: twine check --strict dist/*
+
   test:
     name: test on ${{ matrix.py }}
     runs-on: ubuntu-22.04
