@@ -1,8 +1,24 @@
+import re
+
 from inspect import ismethod, isfunction
 from .exceptions import PookInvalidArgument
 
 
-def trigger_methods(instance, args):
+reply_response_re = re.compile("^(response|reply)_")
+
+
+def _get_key(key_order):
+    def key(x):
+        raw = reply_response_re.sub("", x)
+        try:
+            return key_order.index(raw)
+        except KeyError:
+            raise PookInvalidArgument("Unsupported argument: {}".format(x))
+
+    return key
+
+
+def trigger_methods(instance, args, key_order=None):
     """
     Triggers specific class methods using a simple reflection
     mechanism based on the given input dictionary params.
@@ -10,18 +26,25 @@ def trigger_methods(instance, args):
     Arguments:
         instance (object): target instance to dynamically trigger methods.
         args (iterable): input arguments to trigger objects to
+        key_order (None|iterable): optional order in which to process keys; falls back to `sorted`'s default behaviour if not present
 
     Returns:
         None
     """
     # Start the magic
-    for name in sorted(args):
+    if key_order:
+        key = _get_key(key_order)
+        sorted_args = sorted(args, key=key)
+    else:
+        sorted_args = sorted(args)
+
+    for name in sorted_args:
         value = args[name]
         target = instance
 
         # If response attibutes
-        if name.startswith("response_") or name.startswith("reply_"):
-            name = name.replace("response_", "").replace("reply_", "")
+        if reply_response_re.match(name):
+            name = reply_response_re.sub("", name)
             # If instance has response attribute, use it
             if hasattr(instance, "_response"):
                 target = instance._response

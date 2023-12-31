@@ -96,6 +96,46 @@ class Mock(object):
         pook.Mock
     """
 
+    _KEY_ORDER = (
+        "add_matcher",
+        "body",
+        "callback",
+        "calls",
+        "content",
+        "delay",
+        "done",
+        "error",
+        "file",
+        "filter",
+        "header",
+        "header_present",
+        "headers",
+        "headers_present",
+        "isdone",
+        "ismatched",
+        "json",
+        "jsonschema",
+        "map",
+        "match",
+        "matched",
+        "matches",
+        "method",
+        "url",
+        "param",
+        "param_exists",
+        "params",
+        "path",
+        "persist",
+        "reply",
+        "response",
+        "status",
+        "times",
+        "total_matches",
+        "type",
+        "use",
+        "xml",
+    )
+
     def __init__(self, request=None, response=None, **kw):
         # Stores the number of times the mock should live
         self._times = 1
@@ -126,7 +166,7 @@ class Mock(object):
         self.callbacks = []
 
         # Triggers instance methods based on argument names
-        trigger_methods(self, kw)
+        trigger_methods(self, kw, self._KEY_ORDER)
 
         # Trigger matchers based on predefined request object, if needed
         if request:
