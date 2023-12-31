@@ -44,7 +44,7 @@ class Request(object):
         self._extra = kw.get("extra")
         self._headers = HTTPHeaderDict()
 
-        trigger_methods(self, kw)
+        trigger_methods(self, kw, self.keys)
 
     @property
     def method(self):

@@ -23,6 +23,20 @@ class Response(object):
         mock (pook.Mock): reference to mock instance.
     """
 
+    _KEY_ORDER = (
+        "body",
+        "content",
+        "file",
+        "header",
+        "headers",
+        "json",
+        "mock",
+        "set",
+        "status",
+        "type",
+        "xml",
+    )
+
     def __init__(self, **kw):
         self._status = 200
         self._mock = None
@@ -31,7 +45,7 @@ class Response(object):
         self._headers = HTTPHeaderDict()
 
         # Trigger response method based on input arguments
-        trigger_methods(self, kw)
+        trigger_methods(self, kw, self._KEY_ORDER)
 
     def status(self, code=200):
         """
