@@ -1,6 +1,12 @@
 import pook
-import httpx
 import pytest
+
+try:
+    import httpx
+
+    pytestmark = [pytest.mark.pook]
+except ImportError:
+    pytestmark = [pytest.mark.skip(reason="No httpx")]
 
 from itertools import zip_longest
 

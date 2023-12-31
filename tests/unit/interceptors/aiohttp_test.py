@@ -8,7 +8,10 @@ from pathlib import Path
 SUPPORTED = sys.version_info < (3, 12)
 if SUPPORTED:
     # See pyproject.toml comment
-    import aiohttp
+    try:
+        import aiohttp
+    except ImportError:
+        SUPPORTED = False
 
 
 pytestmark = [
