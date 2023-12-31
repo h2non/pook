@@ -1,6 +1,12 @@
 import pytest
+import json
+import re
+
+import pook
 from pook.mock import Mock
 from pook.request import Request
+from urllib.request import urlopen
+from urllib.parse import urlencode
 
 
 @pytest.fixture
@@ -15,6 +21,47 @@ def matcher(mock):
 def test_mock_url(mock):
     mock.url("http://google.es")
     assert str(matcher(mock)) == "http://google.es"
+
+
+@pytest.mark.parametrize(
+    ("param_kwargs", "query_string"),
+    (
+        pytest.param({"params": {"x": "1"}}, "?x=1", id="params"),
+        pytest.param(
+            {"param": ("y", "pook")},
+            "?y=pook",
+            marks=pytest.mark.xfail(
+                condition=True,
+                reason="Constructor does not correctly handle multi-argument methods from kwargs",
+            ),
+            id="param",
+        ),
+        pytest.param(
+            {"param_exists": "z"},
+            # This complexity is needed until https://github.com/h2non/pook/issues/110
+            # is resolved
+            f'?{urlencode({"z": re.compile("(.*)")})}',
+            id="param_exists",
+        ),
+    ),
+)
+def test_constructor(param_kwargs, query_string):
+    # Should not raise
+    mock = Mock(
+        url="https://httpbin.org/404",
+        reply_status=200,
+        response_json={"hello": "from pook"},
+        **param_kwargs,
+    )
+
+    expected_url = f"https://httpbin.org/404{query_string}"
+    assert mock._request.rawurl == expected_url
+
+    with pook.use():
+        pook.engine().add_mock(mock)
+        res = urlopen(expected_url)
+        assert res.status == 200
+        assert json.loads(res.read()) == {"hello": "from pook"}
 
 
 @pytest.mark.parametrize(
