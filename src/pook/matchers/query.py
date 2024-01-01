@@ -1,4 +1,4 @@
-from .base import BaseMatcher
+from .base import BaseMatcher, ExistsMatcher
 
 from urllib.parse import parse_qs
 
@@ -41,3 +41,7 @@ class QueryMatcher(BaseMatcher):
 
         # Match query params
         return self.match_query(query, req_query)
+
+
+class QueryParameterExistsMatcher(ExistsMatcher):
+    request_attr = "query"

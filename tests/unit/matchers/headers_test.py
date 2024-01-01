@@ -236,6 +236,6 @@ def test_headers_present(required_headers, requested_headers, should_match):
     assert matched == should_match, explanation
 
 
-def test_headers_present_empty_headers():
+def test_headers_present_empty_argument():
     with pytest.raises(ValueError):
         pook.get("https://example.com").headers_present([])

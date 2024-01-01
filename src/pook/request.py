@@ -90,10 +90,15 @@ class Request(object):
             if not protoregex.match(url):
                 url = "http://{}".format(url)
             self._url = urlparse(url)
-            self._query = parse_qs(self._url.query) if self._url.query else self._query
+            # keep_blank_values necessary for `param_exists` when a parameter has no value but is present
+            self._query = (
+                parse_qs(self._url.query, keep_blank_values=True)
+                if self._url.query
+                else self._query
+            )
 
     @property
-    def query(self, url):
+    def query(self):
         return self._query
 
     @query.setter

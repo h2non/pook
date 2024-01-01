@@ -1,4 +1,4 @@
-from .base import BaseMatcher
+from .base import BaseMatcher, ExistsMatcher
 from ..headers import to_string_value
 from ..regex import Pattern
 
@@ -53,3 +53,7 @@ class HeadersMatcher(BaseMatcher):
             return value
 
         return to_string_value(value)
+
+
+class HeaderExistsMatcher(ExistsMatcher):
+    request_attr = "headers"
