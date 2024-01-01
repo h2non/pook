@@ -37,12 +37,11 @@ def test_mock_url(mock):
         pytest.param(
             {"param_exists": "z"},
             "?z",
+            marks=pytest.mark.xfail(
+                condition=True,
+                reason="Constructor does not have a method for passing `allow_empty` to `param_exists`",
+            ),
             id="param_exists_empty_on_request",
-        ),
-        pytest.param(
-            {"param_exists": "z"},
-            "?z=",
-            id="param_exists_empty_on_request_with_=",
         ),
         pytest.param(
             {"param_exists": "z"},

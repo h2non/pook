@@ -367,17 +367,18 @@ class Mock(object):
         self.params({name: value})
         return self
 
-    def param_exists(self, name):
+    def param_exists(self, name, allow_empty=False):
         """
         Checks if a given URL param name is present in the URL.
 
         Arguments:
             name (str): param name to check existence.
+            allow_empty (bool): whether to allow an empty value of the param
 
         Returns:
             self: current Mock instance.
         """
-        self.add_matcher(matcher("QueryParameterExistsMatcher", name))
+        self.add_matcher(matcher("QueryParameterExistsMatcher", name, allow_empty))
         return self
 
     def params(self, params):
