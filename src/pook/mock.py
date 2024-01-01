@@ -1,4 +1,3 @@
-import re
 import functools
 from furl import furl
 from inspect import isfunction, ismethod
@@ -276,10 +275,7 @@ class Mock(object):
             (pook.get('server.com/api')
                 .header_present('content-type'))
         """
-        for name in names:
-            headers = {name: re.compile("(.*)")}
-            self.add_matcher(matcher("HeadersMatcher", headers))
-        return self
+        return self.headers_present(names)
 
     def headers_present(self, headers):
         """
@@ -300,8 +296,11 @@ class Mock(object):
             (pook.get('server.com/api')
                 .headers_present(['content-type', 'Authorization']))
         """
-        headers = {name: re.compile("(.*)") for name in headers}
-        self.add_matcher(matcher("HeadersMatcher", headers))
+        if not headers:
+            raise ValueError("`headers` must not be empty")
+
+        for header in headers:
+            self.add_matcher(matcher("HeaderExistsMatcher", header))
         return self
 
     def type(self, value):
@@ -368,17 +367,18 @@ class Mock(object):
         self.params({name: value})
         return self
 
-    def param_exists(self, name):
+    def param_exists(self, name, allow_empty=False):
         """
         Checks if a given URL param name is present in the URL.
 
         Arguments:
             name (str): param name to check existence.
+            allow_empty (bool): whether to allow an empty value of the param
 
         Returns:
             self: current Mock instance.
         """
-        self.params({name: re.compile("(.*)")})
+        self.add_matcher(matcher("QueryParameterExistsMatcher", name, allow_empty))
         return self
 
     def params(self, params):

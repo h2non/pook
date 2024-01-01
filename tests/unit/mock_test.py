@@ -1,12 +1,10 @@
 import pytest
 import json
-import re
 
 import pook
 from pook.mock import Mock
 from pook.request import Request
 from urllib.request import urlopen
-from urllib.parse import urlencode
 
 
 @pytest.fixture
@@ -38,14 +36,21 @@ def test_mock_url(mock):
         ),
         pytest.param(
             {"param_exists": "z"},
-            # This complexity is needed until https://github.com/h2non/pook/issues/110
-            # is resolved
-            f'?{urlencode({"z": re.compile("(.*)")})}',
-            id="param_exists",
+            "?z",
+            marks=pytest.mark.xfail(
+                condition=True,
+                reason="Constructor does not have a method for passing `allow_empty` to `param_exists`",
+            ),
+            id="param_exists_empty_on_request",
+        ),
+        pytest.param(
+            {"param_exists": "z"},
+            "?z=123",
+            id="param_exists_has_value",
         ),
     ),
 )
-def test_constructor(param_kwargs, query_string):
+def test_mock_constructor(param_kwargs, query_string):
     # Should not raise
     mock = Mock(
         url="https://httpbin.org/404",
@@ -54,12 +59,9 @@ def test_constructor(param_kwargs, query_string):
         **param_kwargs,
     )
 
-    expected_url = f"https://httpbin.org/404{query_string}"
-    assert mock._request.rawurl == expected_url
-
     with pook.use():
         pook.engine().add_mock(mock)
-        res = urlopen(expected_url)
+        res = urlopen(f"https://httpbin.org/404{query_string}")
         assert res.status == 200
         assert json.loads(res.read()) == {"hello": "from pook"}
 

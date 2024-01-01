@@ -1,9 +1,9 @@
 from .base import BaseMatcher
 from .url import URLMatcher
 from .body import BodyMatcher
-from .query import QueryMatcher
+from .query import QueryMatcher, QueryParameterExistsMatcher
 from .method import MethodMatcher
-from .headers import HeadersMatcher
+from .headers import HeadersMatcher, HeaderExistsMatcher
 from .path import PathMatcher
 from .xml import XMLMatcher
 from .json import JSONMatcher
@@ -34,6 +34,7 @@ matchers = [
     MethodMatcher,
     URLMatcher,
     HeadersMatcher,
+    HeaderExistsMatcher,
     QueryMatcher,
     PathMatcher,
     BodyMatcher,
@@ -41,6 +42,7 @@ matchers = [
     JSONMatcher,
     JSONSchemaMatcher,
     QueryMatcher,
+    QueryParameterExistsMatcher,
 ]
 
 

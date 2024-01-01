@@ -1,4 +1,7 @@
 import pytest
+from urllib.request import urlopen, Request
+
+import pook
 from pook import MockEngine, Engine
 from pook.interceptors import BaseInterceptor
 
@@ -49,3 +52,20 @@ def test_mock_engine_status(engine):
 
     engine.disable()
     assert not interceptor.active
+
+
+@pytest.mark.xfail(
+    reason="Pook cannot disambiguate the two mocks. Ideally it would try to find the most specific mock that matches, but that's not possible yet."
+)
+@pytest.mark.pook(allow_pending_mocks=True)
+def test_mock_specificity():
+    pook.get("https://httpbin.org/404").header_present("authorization").reply(201)
+    pook.get("https://httpbin.org/404").headers({"Authorization": "Bearer pook"}).reply(
+        200
+    )
+
+    res_with_headers = urlopen(
+        Request("https://httpbin.org/404", headers={"Authorization": "Bearer pook"})
+    )
+
+    assert res_with_headers.status == 200

@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 from ..compare import compare
 
 
-class BaseMatcher(object):
+class BaseMatcher:
     """
     BaseMatcher implements the basic HTTP request matching interface.
     """
@@ -81,3 +81,39 @@ class BaseMatcher(object):
             return not result if self.negate else result
 
         return wrapper
+
+
+class ExistsMatcher(BaseMatcher, metaclass=ABCMeta):
+    """
+    Base class for matchers that only check for existence.
+    """
+
+    @property
+    @abstractmethod
+    def request_attr(self):
+        """
+        The attribute from the request in which to check for existence of the expectation.
+        """
+        ...
+
+    def get_request_attribute(self, request):
+        """
+        Retrieve attribute from the request in which existence should be checked.
+        """
+        if self.request_attr is None:
+            raise ValueError("`request_attr` must not be None")
+
+        return getattr(request, self.request_attr)
+
+    @BaseMatcher.matcher
+    def match(self, request):
+        attribute = self.get_request_attribute(request)
+        assert (
+            attribute is not None
+        ), f"Expected request to have {self.request_attr} with {self.expectation}, but no {self.request_attr} found on the request"
+
+        assert (
+            self.expectation in attribute
+        ), f"{self.expectation} not found in request's {self.request_attr}"
+
+        return True
