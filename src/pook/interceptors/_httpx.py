@@ -28,7 +28,7 @@ class HttpxInterceptor(BaseInterceptor):
             transport_cls = SyncTransport
 
         def handler(client, *_):
-            return transport_cls(self, _original_transport_for_url)
+            return transport_cls(self, client, _original_transport_for_url)
 
         try:
             patcher = mock.patch(path, handler)
@@ -47,8 +47,9 @@ class HttpxInterceptor(BaseInterceptor):
 
 
 class MockedTransport(httpx.BaseTransport):
-    def __init__(self, interceptor, _original_transport_for_url):
+    def __init__(self, interceptor, client, _original_transport_for_url):
         self._interceptor = interceptor
+        self._client = client
         self._original_transport_for_url = _original_transport_for_url
 
     def _get_pook_request(self, httpx_request):
@@ -89,7 +90,7 @@ class AsyncTransport(MockedTransport):
         mock = self._interceptor.engine.match(pook_request)
 
         if not mock:
-            transport = self._original_transport_for_url(request.url)
+            transport = self._original_transport_for_url(self._client, self.request.url)
             return await transport.handle_async_request(request)
 
         if mock._delay:
@@ -110,7 +111,7 @@ class SyncTransport(MockedTransport):
         mock = self._interceptor.engine.match(pook_request)
 
         if not mock:
-            transport = self._original_transport_for_url(request.url)
-            return transport.handle_async_request(request)
+            transport = self._original_transport_for_url(self._client, request.url)
+            return transport.handle_request(request)
 
         return self._get_httpx_response(request, mock._response)
