@@ -7,5 +7,5 @@ build:
   commands:
     - pip install hatch
     - hatch run docs:build
-    - mkdir -p $READTHEDOCS_OUTPUT/html/
-    - rsync -av docs/_build/html/ $READTHEDOCS_OUTPUT/html
+    - mkdir -p $READTHEDOCS_OUTPUT
+    - cp -r docs/_build/html $READTHEDOCS_OUTPUT
