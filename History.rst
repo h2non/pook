@@ -1,19 +1,21 @@
+History
+=======
 
 v1.4.1 / 2024-02-12
-===================
+-------------------
 
   * Fix `Mock` constructor params/url order mishandling (#111)
   * Optionally match empty values in query parameter presence matcher (#113)
   * Fix httpx network mode (#116)
 
 v1.4.0 / 2023-12-29
-===================
+-------------------
 
   * Add support for httpx (#90)
   * Enable mocket integration tests for Python >= 3.11 (#103)
 
 v1.3.0 / 2023-12-25
-===================
+-------------------
 
 This release modernizes Pook build and development environments.
 
@@ -31,27 +33,27 @@ This release modernizes Pook build and development environments.
   * Fix deprecation warning for invalid string escape sequences caused by untagged regex strings
 
 v1.2.1 / 2023-12-23
-===================
+-------------------
 
   * Fix usage of regex values in header matchers (#97)
   * Fix urllib SSL handling (#98)
 
 v1.2.0 / 2023-12-17
-===================
+-------------------
 
   * feat(api): add support for binary bodies (#88)
   * fix(urllib3): don't put non-strings into HTTP header dict (#87)
   * refactor: drop Python 3.5 support (#92). Note: Python 3.5 had been supported for some time. The change here only makes the documentation accurately reflect that 3.5 is not supported.
 
 v1.1.0 / 2023-01-01
-===================
+-------------------
 
   * chore(version): bump minor v1.1.0
   * Switch to Python >= 3.5 and fix latest aiohttp compatability (#83)
   * fix: remove print call (#81)
 
 v1.0.2 / 2021-09-10
-===================
+-------------------
 
   * fix(urllib3): interceptor is never really disabled (#68)
   * Closes #75 Re consider @fluent decorator (#76)
