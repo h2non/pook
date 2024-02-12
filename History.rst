@@ -2,6 +2,8 @@
 v1.4.1 / 2024-02-12
 ===================
 
+  * Fix `Mock` constructor params/url order mishandling (#111)
+  * Optionally match empty values in query parameter presence matcher (#113)
   * Fix httpx network mode (#116)
 
 v1.4.0 / 2023-12-29
