@@ -75,6 +75,12 @@ class MockedTransport(httpx.BaseTransport):
             request=httpx_request,
         )
 
+        # Allow to read the response on client side
+        res.is_stream_consumed = False
+        res.is_closed = False
+        if hasattr(res, "_content"):
+            del res._content
+
         return res
 
 
