@@ -1,6 +1,11 @@
 History
 =======
 
+v1.4.2 / 2024-02-15
+-------------------
+
+  * fix #122: httpx streaming via `iter_raw` raises `httpx.StreamConsumed` by @petarmaric in https://github.com/h2non/pook/pull/123
+
 v1.4.1 / 2024-02-12
 -------------------
 
