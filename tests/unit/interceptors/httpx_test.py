@@ -44,15 +44,23 @@ def test_json():
     assert response.json() == {"title": "123abc title"}
 
 
-def test_streaming():
+def _check_streaming_via(response_method):
     streamed_response = b"streamed response"
     pook.get(URL).times(1).reply(200).body(streamed_response).mock
 
     with httpx.stream("GET", URL) as r:
-        read_bytes = list(r.iter_bytes(chunk_size=1))
+        read_bytes = list(getattr(r, response_method)(chunk_size=1))
 
     assert len(read_bytes) == len(streamed_response)
     assert bytes().join(read_bytes) == streamed_response
+
+
+def test_streaming_via_iter_bytes():
+    _check_streaming_via("iter_bytes")
+
+
+def test_streaming_via_iter_raw():
+    _check_streaming_via("iter_raw")
 
 
 def test_redirect_following():
