@@ -5,10 +5,8 @@ import pytest
 
 from pathlib import Path
 
-SUPPORTED = sys.version_info < (3, 12)
-if SUPPORTED:
-    # See pyproject.toml comment
-    import aiohttp
+import pytest
+import aiohttp
 
 
 pytestmark = [
