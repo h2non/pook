@@ -54,6 +54,7 @@ extra-dependencies = [
     "pytest~=7.4",
     "pytest-asyncio~=0.20.3",
     "pytest-pook==0.1.0b0",
+    "pytest-httpbin==2.0.0",
 
     "requests~=2.20",
     "urllib3~=1.24",
