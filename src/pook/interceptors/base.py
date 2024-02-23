@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 
 
-class BaseInterceptor(object):
+class BaseInterceptor:
     """
     BaseInterceptor provides a base class for HTTP traffic
     interceptors implementations.
@@ -14,7 +14,7 @@ class BaseInterceptor(object):
         self.engine = engine
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         Exposes the interceptor class name.
         """
@@ -26,7 +26,7 @@ class BaseInterceptor(object):
         Activates the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        pass
+        raise NotImplementedError("Sub-classes must implement `activate`")
 
     @abstractmethod
     def disable(self):
@@ -34,4 +34,4 @@ class BaseInterceptor(object):
         Disables the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        pass
+        raise NotImplementedError("Sub-classes must implement `disable`")

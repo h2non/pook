@@ -42,7 +42,7 @@ class HttpxInterceptor(BaseInterceptor):
     def activate(self):
         [self._patch(path) for path in PATCHES]
 
-    def deactivate(self):
+    def disable(self):
         [patch.stop() for patch in self.patchers]
 
 
@@ -96,7 +96,7 @@ class AsyncTransport(MockedTransport):
         mock = self._interceptor.engine.match(pook_request)
 
         if not mock:
-            transport = self._original_transport_for_url(self._client, self.request.url)
+            transport = self._original_transport_for_url(self._client, request.url)
             return await transport.handle_async_request(request)
 
         if mock._delay:
