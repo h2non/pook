@@ -4,8 +4,27 @@ import pytest
 
 from itertools import zip_longest
 
+from tests.unit.interceptors.base import StandardTests
+
 
 pytestmark = [pytest.mark.pook]
+
+
+class TestStandardAsyncHttpx(StandardTests):
+    is_async = True
+
+    async def amake_request(self, method, url):
+        async with httpx.AsyncClient() as client:
+            response = await client.request(method=method, url=url)
+            content = await response.aread()
+            return response.status_code, content.decode("utf-8")
+
+
+class TestStandardSyncHttpx(StandardTests):
+    def make_request(self, method, url):
+        response = httpx.request(method=method, url=url)
+        content = response.read()
+        return response.status_code, content.decode("utf-8")
 
 
 @pytest.fixture
@@ -46,10 +65,7 @@ def test_json(URL):
     assert response.json() == {"title": "123abc title"}
 
 
-@pytest.mark.parametrize(
-    "response_method",
-    ("iter_bytes", "iter_raw")
-)
+@pytest.mark.parametrize("response_method", ("iter_bytes", "iter_raw"))
 def test_streaming(URL, response_method):
     streamed_response = b"streamed response"
     pook.get(URL).times(1).reply(200).body(streamed_response).mock

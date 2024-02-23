@@ -1,17 +1,24 @@
-import sys
-
-import pook
-import pytest
-
 from pathlib import Path
 
 import pytest
 import aiohttp
 
+import pook
 
-pytestmark = [
-    pytest.mark.pook
-]
+from tests.unit.interceptors.base import StandardTests
+
+
+pytestmark = [pytest.mark.pook]
+
+
+class TestStandardAiohttp(StandardTests):
+    is_async = True
+
+    async def amake_request(self, method, url):
+        async with aiohttp.ClientSession(loop=self.loop) as session:
+            req = await session.request(method=method, url=url)
+            content = await req.read()
+            return req.status, content.decode("utf-8")
 
 
 binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()

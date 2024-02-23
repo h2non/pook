@@ -61,9 +61,7 @@ def test_mock_engine_status(engine):
 def test_mock_specificity(httpbin):
     url404 = f"{httpbin.url}/status/404"
     pook.get(url404).header_present("authorization").reply(201)
-    pook.get(url404).headers({"Authorization": "Bearer pook"}).reply(
-        200
-    )
+    pook.get(url404).headers({"Authorization": "Bearer pook"}).reply(200)
 
     res_with_headers = urlopen(
         Request(url404, headers={"Authorization": "Bearer pook"})

@@ -2,7 +2,11 @@ from pook import interceptors
 
 
 class CustomInterceptor(interceptors.BaseInterceptor):
-    pass
+    def activate(self):
+        ...
+
+    def disable(self):
+        ...
 
 
 def test_add_custom_interceptor():

@@ -4,8 +4,17 @@ import pytest
 
 from pathlib import Path
 
+from tests.unit.interceptors.base import StandardTests
+
 
 binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
+
+
+class TestStandardUrllib3(StandardTests):
+    def make_request(self, method, url):
+        http = urllib3.PoolManager()
+        response = http.request(method, url)
+        return response.status, response.read().decode("utf-8")
 
 
 @pytest.fixture
