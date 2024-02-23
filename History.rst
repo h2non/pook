@@ -1,6 +1,11 @@
 History
 =======
 
+v1.4.3 / 2024-02-23
+-------------------
+
+  * Fix httpx incorrectly named method on interceptor subclass by @sarayourfriend in https://github.com/h2non/pook/pull/126
+
 v1.4.2 / 2024-02-15
 -------------------
 

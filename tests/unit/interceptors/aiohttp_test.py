@@ -1,36 +1,41 @@
-import sys
-
-import pook
-import pytest
-
 from pathlib import Path
 
-SUPPORTED = sys.version_info < (3, 12)
-if SUPPORTED:
-    # See pyproject.toml comment
-    import aiohttp
+import pytest
+import aiohttp
+
+import pook
+
+from tests.unit.interceptors.base import StandardTests
 
 
-pytestmark = [
-    pytest.mark.pook,
-    pytest.mark.asyncio,
-    pytest.mark.skipif(
-        not SUPPORTED, reason="See pyproject.toml comment on aiohttp dependency"
-    ),
-]
+pytestmark = [pytest.mark.pook]
 
-URL = "https://httpbin.org/status/404"
+
+class TestStandardAiohttp(StandardTests):
+    is_async = True
+
+    async def amake_request(self, method, url):
+        async with aiohttp.ClientSession(loop=self.loop) as session:
+            req = await session.request(method=method, url=url)
+            content = await req.read()
+            return req.status, content.decode("utf-8")
 
 
 binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
 
 
-def _pook_url():
+def _pook_url(URL):
     return pook.head(URL).reply(200).mock
 
 
-async def test_async_with_request():
-    mock = _pook_url()
+@pytest.fixture
+def URL(httpbin):
+    return f"{httpbin.url}/status/404"
+
+
+@pytest.mark.asyncio
+async def test_async_with_request(URL):
+    mock = _pook_url(URL)
     async with aiohttp.ClientSession() as session:
         async with session.head(URL) as req:
             assert req.status == 200
@@ -38,8 +43,9 @@ async def test_async_with_request():
     assert len(mock.matches) == 1
 
 
-async def test_await_request():
-    mock = _pook_url()
+@pytest.mark.asyncio
+async def test_await_request(URL):
+    mock = _pook_url(URL)
     async with aiohttp.ClientSession() as session:
         req = await session.head(URL)
         assert req.status == 200
@@ -47,7 +53,8 @@ async def test_await_request():
     assert len(mock.matches) == 1
 
 
-async def test_binary_body():
+@pytest.mark.asyncio
+async def test_binary_body(URL):
     pook.get(URL).reply(200).body(binary_file, binary=True)
     async with aiohttp.ClientSession() as session:
         req = await session.get(URL)

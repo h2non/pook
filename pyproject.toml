@@ -54,6 +54,7 @@ extra-dependencies = [
     "pytest~=7.4",
     "pytest-asyncio~=0.20.3",
     "pytest-pook==0.1.0b0",
+    "pytest-httpbin==2.0.0",
 
     "requests~=2.20",
     "urllib3~=1.24",
@@ -62,8 +63,8 @@ extra-dependencies = [
     # aiohttp depends on multidict, so we can't test aiohttp until
     # https://github.com/aio-libs/multidict/issues/887 is resolved
     # async-timeout is only used for testing aiohttp
-    "aiohttp~=3.8; python_version < '3.12'",
-    "async-timeout~=4.0.3; python_version < '3.12'",
+    "aiohttp~=3.8",
+    "async-timeout~=4.0.3",
 
     # mocket relies on httptools which does not support PyPy
     "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",

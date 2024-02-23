@@ -1,6 +1,23 @@
 import pook
-from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.request import urlopen, Request
 import pytest
+
+
+from tests.unit.interceptors.base import StandardTests
+
+
+class TestUrllib(StandardTests):
+    def make_request(self, method, url):
+        request = Request(
+            url=url,
+            method=method,
+        )
+        try:
+            response = urlopen(request)
+            return response.status, response.read()
+        except HTTPError as e:
+            return e.code, e.msg
 
 
 @pytest.mark.pook
