@@ -7,7 +7,6 @@ from .constants import TYPES
 from .request import Request
 from .matcher import MatcherEngine
 from .helpers import trigger_methods
-from .exceptions import PookExpiredMock
 from .matchers import init as matcher
 
 
@@ -750,10 +749,6 @@ class Mock(object):
                 the outgoing HTTP request, otherwise ``False``. Also returns
                 an optional list of error exceptions.
         """
-        # If mock already expired, fail it
-        if self._times <= 0:
-            raise PookExpiredMock("Mock expired")
-
         # Trigger mock filters
         for test in self.filters:
             if not test(request, self):
@@ -771,6 +766,11 @@ class Mock(object):
         # If not matched, return False
         if not matches:
             return False, errors
+
+        if self.isdone():
+            return False, [
+                f"Mock matches request but is expired.\n{repr(self)}"
+            ]
 
         # Register matched request for further inspecion and reference
         self._calls.append(request)

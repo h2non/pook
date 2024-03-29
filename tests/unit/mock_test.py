@@ -4,6 +4,7 @@ import json
 import pook
 from pook.mock import Mock
 from pook.request import Request
+from pook.exceptions import PookNoMatches
 from urllib.request import urlopen
 
 
@@ -123,3 +124,30 @@ def test_mock_params(url, params, req, expected, mock):
 
 def test_new_response(mock):
     assert mock.reply() != mock.reply(new_response=True, json={})
+
+
+def test_times(mock):
+    url = "https://example.com"
+    mock.url(url)
+    mock.times(2)
+
+    req = Request(url=url)
+
+    assert mock.match(req) == (True, [])
+    assert mock.match(req) == (True, [])
+    assert mock.match(req) == (False, ["ExpiredMatcher: Mock is expired"])
+
+
+@pytest.mark.pook
+def test_times_integrated(httpbin):
+    url = f"{httpbin.url}/status/404"
+    pook.get(url).times(2).reply(200).body("hello from pook")
+
+    res = urlopen(url)
+    assert res.read() == "hello from pook"
+
+    res = urlopen(url)
+    assert res.read() == "hello from pook"
+
+    with pytest.raises(PookNoMatches, match="Mock matches request but is expired."):
+        urlopen(url)
