@@ -1,10 +1,7 @@
 import re
 import sys
 
-if sys.version_info < (3, 7):
-    Pattern = type(re.compile(""))
-else:
-    Pattern = re.Pattern
+Pattern = re.Pattern
 
 
 def isregex_expr(expr):

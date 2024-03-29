@@ -15,12 +15,6 @@ if platform.python_implementation() == "PyPy":
     examples.remove("mocket_example.py")
 
 
-if sys.version_info >= (3, 12):
-    # See pyproject.toml note on aiohttp dependency
-    examples.remove("aiohttp_client.py")
-    examples.remove("decorator_activate_async.py")
-
-
 @pytest.mark.parametrize("example", examples)
 def test_examples(example):
     result = subprocess.run(["python", "examples/{}".format(example)])

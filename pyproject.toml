@@ -60,9 +60,6 @@ extra-dependencies = [
     "urllib3~=1.24",
     "httpx~=0.26.0",
 
-    # aiohttp depends on multidict, so we can't test aiohttp until
-    # https://github.com/aio-libs/multidict/issues/887 is resolved
-    # async-timeout is only used for testing aiohttp
     "aiohttp~=3.8",
     "async-timeout~=4.0.3",
 
