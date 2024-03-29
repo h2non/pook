@@ -29,7 +29,7 @@ class MatcherEngine(list):
             request (pook.Request): outgoing request to match.
 
         Returns:
-            tuple(bool, list[Exception]): ``True`` if all matcher tests
+            tuple(bool, list[str]): ``True`` if all matcher tests
                 passes, otherwise ``False``. Also returns an optional list
                 of error exceptions.
         """

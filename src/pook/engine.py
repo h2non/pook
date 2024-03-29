@@ -3,7 +3,7 @@ from inspect import isfunction
 from .mock import Mock
 from .regex import isregex
 from .mock_engine import MockEngine
-from .exceptions import PookNoMatches, PookExpiredMock
+from .exceptions import PookNoMatches
 
 
 class Engine(object):
@@ -416,16 +416,12 @@ class Engine(object):
 
         # Try to match the request against registered mock definitions
         for mock in self.mocks[:]:
-            try:
-                # Return the first matched HTTP request mock
-                matches, errors = mock.match(request.copy())
-                if len(errors):
-                    match_errors += errors
-                if matches:
-                    return mock
-            except PookExpiredMock:
-                # Remove the mock if already expired
-                self.mocks.remove(mock)
+            # Return the first matched HTTP request mock
+            matches, errors = mock.match(request.copy())
+            if len(errors):
+                match_errors += errors
+            if matches:
+                return mock
 
         # Validate that we have a mock
         if not self.should_use_network(request):
@@ -442,7 +438,11 @@ class Engine(object):
                     msg += "\n\n=> Detailed matching errors:\n{}\n".format(err)
 
             # Raise no matches exception
-            raise PookNoMatches(msg)
+            self.no_matches(msg)
 
         # Register unmatched request
         self.unmatched_reqs.append(request)
+
+    def no_matches(self, msg):
+        """Raise `PookNoMatches` and reduce pytest printed stacktrace noise"""
+        raise PookNoMatches(msg)

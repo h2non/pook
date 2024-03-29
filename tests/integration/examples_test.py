@@ -1,4 +1,3 @@
-import sys
 import subprocess
 import pytest
 from pathlib import Path
@@ -13,12 +12,6 @@ examples = [f.name for f in examples_dir.glob("*.py")]
 if platform.python_implementation() == "PyPy":
     # See pyproject.toml note on mocket dependency
     examples.remove("mocket_example.py")
-
-
-if sys.version_info >= (3, 12):
-    # See pyproject.toml note on aiohttp dependency
-    examples.remove("aiohttp_client.py")
-    examples.remove("decorator_activate_async.py")
 
 
 @pytest.mark.parametrize("example", examples)
