@@ -135,7 +135,11 @@ def test_times(mock):
 
     assert mock.match(req) == (True, [])
     assert mock.match(req) == (True, [])
-    assert mock.match(req) == (False, ["ExpiredMatcher: Mock is expired"])
+    matches, errors = mock.match(req)
+    assert not matches
+    assert len(errors) == 1
+    assert "Mock matches request but is expired." in errors[0]
+    assert repr(mock) in errors[0]
 
 
 @pytest.mark.pook
