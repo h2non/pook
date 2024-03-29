@@ -768,9 +768,7 @@ class Mock(object):
             return False, errors
 
         if self.isdone():
-            return False, [
-                f"Mock matches request but is expired.\n{repr(self)}"
-            ]
+            return False, [f"Mock matches request but is expired.\n{repr(self)}"]
 
         # Register matched request for further inspecion and reference
         self._calls.append(request)

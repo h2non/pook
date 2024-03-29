@@ -15,7 +15,11 @@ class PookNetworkFilterError(Exception):
 
 class PookExpiredMock(Exception):
     def __init__(self, *args, **kwargs):
-        warnings.warn("PookExpiredMock is deprecated and will be removed in a future version of Pook", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "PookExpiredMock is deprecated and will be removed in a future version of Pook",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(*args, **kwargs)
 
 

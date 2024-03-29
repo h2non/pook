@@ -1,5 +1,4 @@
 import re
-import sys
 
 Pattern = re.Pattern
 
