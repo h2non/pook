@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import pytest
 
@@ -12,12 +12,14 @@ class StandardTests:
 
     async def amake_request(
         self, method: str, url: str
-    ) -> Tuple[int, Optional[str | bytes]]:
+    ) -> Tuple[int, Optional[Union[str, bytes]]]:
         raise NotImplementedError(
             "Sub-classes for async transports must implement `amake_request`"
         )
 
-    def make_request(self, method: str, url: str) -> Tuple[int, Optional[str | bytes]]:
+    def make_request(
+        self, method: str, url: str
+    ) -> Tuple[int, Optional[Union[str, bytes]]]:
         if self.is_async:
             return self.loop.run_until_complete(self.amake_request(method, url))
 
