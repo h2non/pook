@@ -767,7 +767,7 @@ class Mock(object):
         if not matches:
             return False, errors
 
-        if self.isdone():
+        if self._times <= 0:
             return False, [f"Mock matches request but is expired.\n{repr(self)}"]
 
         # Register matched request for further inspecion and reference
