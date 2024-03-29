@@ -438,7 +438,11 @@ class Engine(object):
                     msg += "\n\n=> Detailed matching errors:\n{}\n".format(err)
 
             # Raise no matches exception
-            raise PookNoMatches(msg)
+            self.no_matches(msg)
 
         # Register unmatched request
         self.unmatched_reqs.append(request)
+
+    def no_matches(self, msg):
+        """Raise `PookNoMatches` and reduce pytest printed stacktrace noise"""
+        raise PookNoMatches(msg)
