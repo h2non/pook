@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import pytest
 
@@ -8,18 +8,13 @@ import pook
 
 class StandardTests:
     is_async: bool = False
-    requires_binary_body_fix: bool = False
 
-    async def amake_request(
-        self, method: str, url: str
-    ) -> Tuple[int, Optional[Union[str, bytes]]]:
+    async def amake_request(self, method: str, url: str) -> Tuple[int, Optional[str]]:
         raise NotImplementedError(
             "Sub-classes for async transports must implement `amake_request`"
         )
 
-    def make_request(
-        self, method: str, url: str
-    ) -> Tuple[int, Optional[Union[str, bytes]]]:
+    def make_request(self, method: str, url: str) -> Tuple[int, Optional[str]]:
         if self.is_async:
             return self.loop.run_until_complete(self.amake_request(method, url))
 
@@ -42,7 +37,7 @@ class StandardTests:
         status, body = self.make_request("GET", url)
 
         assert status == 200
-        assert body == b"hello from pook"
+        assert body == "hello from pook"
 
         pook.disable()
 
@@ -61,18 +56,3 @@ class StandardTests:
         status, body = self.make_request("POST", upstream_url)
 
         assert status == 500
-
-    @pytest.mark.pook
-    def test_binary_body_deprecated(self, httpbin, without_binary_body_fix):
-        url = f"{httpbin.url}/status/404"
-
-        pook.get(url).reply(200).body("hello from pook")
-
-        status, body = self.make_request("GET", url)
-
-        assert status == 200
-
-        if self.requires_binary_body_fix:
-            assert body == "hello from pook"
-        else:
-            assert body == b"hello from pook"

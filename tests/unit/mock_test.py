@@ -148,10 +148,10 @@ def test_times_integrated(httpbin):
     pook.get(url).times(2).reply(200).body("hello from pook")
 
     res = urlopen(url)
-    assert res.read() == b"hello from pook"
+    assert res.read() == "hello from pook"
 
     res = urlopen(url)
-    assert res.read() == b"hello from pook"
+    assert res.read() == "hello from pook"
 
     with pytest.raises(PookNoMatches, match="Mock matches request but is expired."):
         urlopen(url)

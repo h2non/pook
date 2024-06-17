@@ -1,7 +1,6 @@
 import urllib3
 import pook
 import pytest
-import requests
 
 from pathlib import Path
 
@@ -15,16 +14,7 @@ class TestStandardUrllib3(StandardTests):
     def make_request(self, method, url):
         http = urllib3.PoolManager()
         response = http.request(method, url)
-        return response.status, response.read()
-
-
-class TestStandardRequests(StandardTests):
-    def make_request(self, method, url):
-        res = requests.request(
-            method=method,
-            url=url,
-        )
-        return res.status_code, res.content
+        return response.status, response.read().decode("utf-8")
 
 
 @pytest.fixture
@@ -37,24 +27,25 @@ def assert_chunked_response(URL, input_data, expected):
     (pook.get(URL).reply(204).body(input_data, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request("GET", URL, decode_content=False)
+    r = http.request("GET", URL)
 
     assert r.status == 204
 
     chunks = list(r.read_chunked())
+    chunks = [c.decode() if isinstance(c, bytes) else c for c in chunks]
     assert chunks == expected
 
 
 def test_chunked_response_list(URL):
-    assert_chunked_response(URL, ["a", "b", "c"], [b"a", b"b", b"c"])
+    assert_chunked_response(URL, ["a", "b", "c"], ["a", "b", "c"])
 
 
 def test_chunked_response_str(URL):
-    assert_chunked_response(URL, "text", [b"text"])
+    assert_chunked_response(URL, "text", ["text"])
 
 
 def test_chunked_response_byte(URL):
-    assert_chunked_response(URL, b"byteman", [b"byteman"])
+    assert_chunked_response(URL, b"byteman", ["byteman"])
 
 
 def test_chunked_response_empty(URL):
@@ -62,7 +53,7 @@ def test_chunked_response_empty(URL):
 
 
 def test_chunked_response_contains_newline(URL):
-    assert_chunked_response(URL, "newline\r\n", [b"newline\r\n"])
+    assert_chunked_response(URL, "newline\r\n", ["newline\r\n"])
 
 
 def test_activate_disable():
@@ -76,7 +67,7 @@ def test_activate_disable():
 
 
 @pook.on
-def test_binary_body_deprecated(URL, without_binary_body_fix):
+def test_binary_body(URL):
     (pook.get(URL).reply(200).body(binary_file, binary=True))
 
     http = urllib3.PoolManager()
@@ -86,28 +77,8 @@ def test_binary_body_deprecated(URL, without_binary_body_fix):
 
 
 @pook.on
-def test_binary_body(URL):
-    (pook.get(URL).reply(200).body(binary_file))
-
-    http = urllib3.PoolManager()
-    r = http.request("GET", URL)
-
-    assert r.read() == binary_file
-
-
-@pook.on
-def test_binary_body_chunked_deprecated(URL, without_binary_body_fix):
-    (pook.get(URL).reply(200).body(binary_file, binary=True, chunked=True))
-
-    http = urllib3.PoolManager()
-    r = http.request("GET", URL)
-
-    assert list(r.read_chunked()) == [binary_file]
-
-
-@pook.on
 def test_binary_body_chunked(URL):
-    (pook.get(URL).reply(200).body(binary_file, chunked=True))
+    (pook.get(URL).reply(200).body(binary_file, binary=True, chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)

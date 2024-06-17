@@ -1,48 +1,7 @@
 import json
-import warnings
-from textwrap import dedent
-
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 from .constants import TYPES
-
-
-class _BinaryDefault:
-    fixed = False
-
-    start_warning = " ".join(
-        dedent(
-            """
-            Non-binary pook response bodies are deprecated.
-            Support for them will be removed in the next major version of pook,
-            and responses will always be bytes, matching the behaviour of all
-            client libraries that pook supports.
-            """
-        )
-        .strip()
-        .split("\n")
-    )
-
-    end_warning = " ".join(
-        dedent(
-            """
-            Refer to https://github.com/h2non/pook/issues/128 for further details.
-            In most circumstances, your existing code will continue to work without changes.
-            If you do not use pook to mock urllib (e.g., `urlopen` or a library that wraps it),
-            then you are not affected and can safely ignore this warning.
-            """
-        )
-        .strip()
-        .split("\n")
-    )
-
-    @classmethod
-    def make_warning(cls, text):
-        return f"{cls.start_warning} {text} {cls.end_warning}"
-
-
-def apply_binary_body_fix():
-    _BinaryDefault.fixed = True
 
 
 class Response(object):
@@ -199,7 +158,7 @@ class Response(object):
         self._headers["Content-Type"] = TYPES.get(name, name)
         return self
 
-    def body(self, body, binary=_BinaryDefault, chunked=False):
+    def body(self, body, binary=False, chunked=False):
         """
         Defines response body data.
 
@@ -211,59 +170,6 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        apply_fix = False
-        if binary is _BinaryDefault:
-            if _BinaryDefault.fixed:
-                # Fixed and not explicitly passing binary, perfect! Ready for the future!
-                apply_fix = True
-            else:
-                warnings.warn(
-                    _BinaryDefault.make_warning(
-                        "Call `pook.apply_binary_body_fix()` at least once to resolve this notice."
-                    ),
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                binary = False
-
-        else:  # explicitly True or False
-            if _BinaryDefault.fixed:
-                # Fixed, but explicitly passing `binary`
-                warnings.warn(
-                    _BinaryDefault.make_warning(
-                        "The fix is already applied, but `binary` was explicitly passed to `.body()`. "
-                        "Remove `binary` from this body call, and update any application code that treated "
-                        "the response as anything other than bytes."
-                    ),
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                if binary:
-                    apply_fix = True
-            else:
-                # Not fixed and explicitly passing `binary`
-                warnings.warn(
-                    _BinaryDefault.make_warning(
-                        "To resolve this notice, call `pook.apply_binary_body_fix()` in your "
-                        "conftest (or equivalent). "
-                        "Then, remove `binary` from this body call, and update any application code that treated "
-                        "the response as anything other than bytes."
-                    ),
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-
-        if apply_fix:
-            binary = True
-
-            if isinstance(body, list):
-                for i, chunk in enumerate(body):
-                    if hasattr(chunk, "encode"):
-                        body[i] = chunk.encode()
-
-            if hasattr(body, "encode"):
-                body = body.encode()
-
         if isinstance(body, bytes) and not binary:
             body = body.decode("utf-8")
 
