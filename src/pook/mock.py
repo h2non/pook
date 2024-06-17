@@ -410,7 +410,7 @@ class Mock(object):
             self: current Mock instance.
         """
         self._request.body = body
-        self.add_matcher(matcher("BodyMatcher", body, binary=False))
+        self.add_matcher(matcher("BodyMatcher", body, binary=binary))
         return self
 
     def json(self, json):
