@@ -92,7 +92,7 @@ class HTTPClientInterceptor(BaseInterceptor):
 
         # Path reader
         def read():
-            return res._body or ""
+            return res._body or b""
 
         mockres.read = read
 

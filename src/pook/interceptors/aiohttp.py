@@ -115,11 +115,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
         _res._headers = multidict.CIMultiDictProxy(multidict.CIMultiDict(headers))
 
         if res._body:
-            _res.content = SimpleContent(
-                res._body
-                if res._binary
-                else res._body.encode("utf-8", errors="replace"),
-            )
+            _res.content = SimpleContent(res._body)
         else:
             # Define `_content` attribute with an empty string to
             # force do not read from stream (which won't exists)
