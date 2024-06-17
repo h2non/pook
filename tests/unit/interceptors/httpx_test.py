@@ -17,14 +17,14 @@ class TestStandardAsyncHttpx(StandardTests):
         async with httpx.AsyncClient() as client:
             response = await client.request(method=method, url=url)
             content = await response.aread()
-            return response.status_code, content
+            return response.status_code, content.decode("utf-8")
 
 
 class TestStandardSyncHttpx(StandardTests):
     def make_request(self, method, url):
         response = httpx.request(method=method, url=url)
         content = response.read()
-        return response.status_code, content
+        return response.status_code, content.decode("utf-8")
 
 
 @pytest.fixture

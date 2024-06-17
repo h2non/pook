@@ -8,7 +8,7 @@ from .matcher import MatcherEngine
 from .mock import Mock
 from .mock_engine import MockEngine
 from .request import Request
-from .response import Response, apply_binary_body_fix
+from .response import Response
 
 from asyncio import iscoroutinefunction
 from .activate_async import activate_async
@@ -16,7 +16,6 @@ from .activate_async import activate_async
 # Public API symbols to export
 __all__ = (
     "activate",
-    "apply_binary_body_fix",
     "on",
     "disable",
     "off",

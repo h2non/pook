@@ -1,6 +1,5 @@
 import socket
 from ..request import Request
-from ..response import _BinaryDefault
 from .base import BaseInterceptor
 
 from unittest import mock
@@ -37,9 +36,6 @@ class SocketMock(socket.socket):
 
     def close(self, *args, **kw):
         pass
-
-
-_body_fallback = b"" if _BinaryDefault.fixed else ""
 
 
 class HTTPClientInterceptor(BaseInterceptor):
@@ -96,7 +92,7 @@ class HTTPClientInterceptor(BaseInterceptor):
 
         # Path reader
         def read():
-            return res._body or _body_fallback
+            return res._body or ""
 
         mockres.read = read
 
