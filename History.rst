@@ -1,8 +1,8 @@
 History
 =======
 
-v2.0.0 / 2024-06-17
--------------------
+Draft v2.0.0 / Unreleased
+-------------------------
 
   * **Breaking change**: Remove ``Response::body``'s ``binary`` parameter and enforce a keyword argument for ``chunked``
 
