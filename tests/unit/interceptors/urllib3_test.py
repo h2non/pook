@@ -2,12 +2,9 @@ import urllib3
 import pook
 import pytest
 
-from pathlib import Path
 
 from tests.unit.interceptors.base import StandardTests
-
-
-binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
+from tests.unit.fixtures import BINARY_FILE
 
 
 class TestStandardUrllib3(StandardTests):
@@ -67,22 +64,22 @@ def test_activate_disable():
 
 @pook.on
 def test_binary_body(URL):
-    (pook.get(URL).reply(200).body(binary_file))
+    (pook.get(URL).reply(200).body(BINARY_FILE))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)
 
-    assert r.read() == binary_file
+    assert r.read() == BINARY_FILE
 
 
 @pook.on
 def test_binary_body_chunked(URL):
-    (pook.get(URL).reply(200).body(binary_file, chunked=True))
+    (pook.get(URL).reply(200).body(BINARY_FILE, chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)
 
-    assert list(r.read_chunked()) == [binary_file]
+    assert list(r.read_chunked()) == [BINARY_FILE]
 
 
 @pytest.mark.pook

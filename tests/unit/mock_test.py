@@ -1,11 +1,15 @@
 import pytest
 import json
+import itertools
+from textwrap import dedent
 
 import pook
 from pook.mock import Mock
 from pook.request import Request
 from pook.exceptions import PookNoMatches
 from urllib.request import urlopen
+
+from tests.unit.fixtures import BINARY_FILE, BINARY_FILE_PATH
 
 
 @pytest.fixture
@@ -155,3 +159,98 @@ def test_times_integrated(httpbin):
 
     with pytest.raises(PookNoMatches, match="Mock matches request but is expired."):
         urlopen(url)
+
+
+def test_file_matches(httpbin, mock):
+    mock.file(BINARY_FILE_PATH)
+
+    req = Request(
+        url=httpbin.url,
+        body=BINARY_FILE,
+    )
+
+    assert mock.match(req) == (True, [])
+
+
+def test_file_not_matches(httpbin, mock):
+    mock.file(BINARY_FILE_PATH)
+
+    req = Request(
+        url=httpbin.url,
+        body=b"not the binary file you're looking for!",
+    )
+
+    matches, errors = mock.match(req)
+    assert not matches
+    assert len(errors) == 1
+    assert errors[0].startswith("BodyMatcher")
+
+
+@pytest.mark.parametrize(
+    "mock_body, request_body",
+    # Both sides will always match, regardless of str/bytes
+    list(itertools.product((b"hello", "hello"), (b"hello", "hello"))),
+)
+def test_body_matches(httpbin, mock, mock_body, request_body):
+    mock.body(mock_body)
+    req = Request(url=httpbin.url, body=request_body)
+
+    assert mock.match(req) == (True, [])
+
+
+@pytest.mark.parametrize(
+    "mock_body, request_body",
+    # Neither left nor right side will ever match due to differing contents
+    list(itertools.product((b"bytes", "str"), (b"hello bytes", "hello str"))),
+)
+def test_body_not_matches(httpbin, mock, mock_body, request_body):
+    mock.body(mock_body)
+    req = Request(url=httpbin.url, body=request_body)
+
+    matches, errors = mock.match(req)
+    assert not matches
+    assert len(errors) == 1
+    assert errors[0].startswith("BodyMatcher: ")
+
+
+def test_xml_matches(httpbin, mock):
+    xml = dedent(
+        """
+        <?xml version="1.0"?>
+
+        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+            <dc:title>A pook test for XML!</dc:title>
+        </metadata>
+        """
+    ).strip()
+    mock.xml(xml)
+
+    req = Request(
+        url=httpbin.url,
+        xml=xml,
+    )
+
+    assert mock.match(req) == (True, [])
+
+
+def test_xml_not_matches(httpbin, mock):
+    xml = dedent(
+        """
+        <?xml version="1.0"?>
+
+        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+            <dc:title>A pook test for XML!</dc:title>
+        </metadata>
+        """
+    ).strip()
+    mock.xml(xml)
+
+    req = Request(
+        url=httpbin.url,
+        xml=xml.replace("A pook test for XML!", "Not this one!"),
+    )
+
+    matches, errors = mock.match(req)
+    assert not matches
+    assert len(errors) == 1
+    assert errors[0].startswith("XMLMatcher:")

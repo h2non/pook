@@ -17,19 +17,13 @@ class JSONSchemaMatcher(BaseMatcher):
 
     @BaseMatcher.matcher
     def match(self, req):
-        body = req.body
+        req_json = req.json
 
-        if isinstance(body, str):
-            try:
-                body = json.loads(body)
-            except Exception:
-                return False
-
-        if not body:
+        if not req_json:
             return False
 
         try:
-            validate(body, self.expectation)
+            validate(req_json, self.expectation)
         except Exception:
             return False
 

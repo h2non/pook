@@ -1,12 +1,29 @@
 import json
 import xmltodict
 from .base import BaseMatcher
+from ..assertion import equal
 
 
 class XMLMatcher(BaseMatcher):
     """
-    XMLMatcher implements a XML body matcher supporting both strict structure
-    comparison and regular expression.
+    Match XML documents of equivalent structural value.
+
+    XML documents are matched on the structured data in the document,
+    rather than on the strict organisation of the document.
+
+    The following two XML snippets are treated as identical by this matcher:
+
+        <a value="one"></a>
+        <b>two</b>
+
+    ... is considered idential to ...
+
+        <b>two</b>
+        <a value="one"></a>
+
+    In other words, the order does not matter in comparison.
+
+    Use ``BodyMatcher`` to strictly match the exact textual structure.
     """
 
     def __init__(self, data):
@@ -19,13 +36,13 @@ class XMLMatcher(BaseMatcher):
         x = json.dumps(xmltodict.parse(data), sort_keys=True)
         y = json.dumps(self.expectation, sort_keys=True)
 
-        return x == y
+        return equal(x, y)
 
     @BaseMatcher.matcher
     def match(self, req):
-        data = req.body
+        xml = req.xml
 
-        if not isinstance(data, str):
+        if not isinstance(xml, str):
             return False
 
-        return self.compare(data)
+        return self.compare(xml)
