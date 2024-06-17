@@ -1,5 +1,6 @@
 import json
 import warnings
+from textwrap import dedent
 
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
@@ -8,6 +9,36 @@ from .constants import TYPES
 
 class _BinaryDefault:
     fixed = False
+
+    start_warning = " ".join(
+        dedent(
+            """
+            Non-binary pook response bodies are deprecated.
+            Support for them will be removed in the next major version of pook,
+            and responses will always be bytes, matching the behaviour of all
+            client libraries that pook supports.
+            """
+        )
+        .strip()
+        .split("\n")
+    )
+
+    end_warning = " ".join(
+        dedent(
+            """
+            Refer to https://github.com/h2non/pook/issues/128 for further details.
+            In most circumstances, your existing code will continue to work without changes.
+            If you do not use pook to mock urllib (e.g., `urlopen` or a library that wraps it),
+            then you are not affected and can safely ignore this warning.
+            """
+        )
+        .strip()
+        .split("\n")
+    )
+
+    @classmethod
+    def make_warning(cls, text):
+        return f"{cls.start_warning} {text} {cls.end_warning}"
 
 
 def apply_binary_body_fix():
@@ -187,12 +218,8 @@ class Response(object):
                 apply_fix = True
             else:
                 warnings.warn(
-                    (
-                        "Non-binary pook response bodies are deprecated. "
-                        "Support for them will be removed in the next major version of pook. "
-                        "Call `pook.apply_binary_body_fix()` at least once to resolve this notice "
-                        "and refer to https://github.com/h2non/pook/issues/128 for details of how this will effect your "
-                        "code in test. In most circumstances, your existing code will continue to work without changes."
+                    _BinaryDefault.make_warning(
+                        "Call `pook.apply_binary_body_fix()` at least once to resolve this notice."
                     ),
                     DeprecationWarning,
                     stacklevel=2,
@@ -203,12 +230,10 @@ class Response(object):
             if _BinaryDefault.fixed:
                 # Fixed, but explicitly passing `binary`
                 warnings.warn(
-                    (
-                        "Non-binary pook response bodies are deprecated. "
-                        "The fix is already applied, but `binary` was passed to `.body()`. "
-                        "Remove `binary` from this body call. If it was set to True, update any code that treated "
-                        "the response as anything other than bytes. Refer to "
-                        "https://github.com/h2non/pook/issues/128 for further details."
+                    _BinaryDefault.make_warning(
+                        "The fix is already applied, but `binary` was explicitly passed to `.body()`. "
+                        "Remove `binary` from this body call, and update any application code that treated "
+                        "the response as anything other than bytes."
                     ),
                     DeprecationWarning,
                     stacklevel=2,
@@ -217,22 +242,12 @@ class Response(object):
                     apply_fix = True
             else:
                 # Not fixed and explicitly passing `binary`
-                resolution = (
-                    "and remove `binary=True` from this call to `.body()`"
-                    if binary
-                    else (
-                        "and remove `binary=False` from this call to `.body()` and update "
-                        "any code that treated the response as anything other than bytes"
-                    )
-                )
                 warnings.warn(
-                    (
-                        "Non-binary pook response bodies are deprecated. "
-                        "Support for them will be removed in the next major version of pook. "
-                        "Call `pook.apply_binary_body_fix()` in your conftest (or equivalent) "
-                        f"{resolution} to resolve this notice. Refer to "
-                        "https://github.com/h2non/pook/issues/128 for details of how this will effect your "
-                        "code in test. In most circumstances, your existing code will continue to work without changes."
+                    _BinaryDefault.make_warning(
+                        "To resolve this notice, call `pook.apply_binary_body_fix()` in your "
+                        "conftest (or equivalent). "
+                        "Then, remove `binary` from this body call, and update any application code that treated "
+                        "the response as anything other than bytes."
                     ),
                     DeprecationWarning,
                     stacklevel=2,
