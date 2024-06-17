@@ -18,7 +18,7 @@ class TestStandardAiohttp(StandardTests):
         async with aiohttp.ClientSession(loop=self.loop) as session:
             req = await session.request(method=method, url=url)
             content = await req.read()
-            return req.status, content.decode("utf-8")
+            return req.status, content
 
 
 binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
@@ -54,8 +54,16 @@ async def test_await_request(URL):
 
 
 @pytest.mark.asyncio
-async def test_binary_body(URL):
+async def test_binary_body_deprecated(URL, without_binary_body_fix):
     pook.get(URL).reply(200).body(binary_file, binary=True)
+    async with aiohttp.ClientSession() as session:
+        req = await session.get(URL)
+        assert await req.read() == binary_file
+
+
+@pytest.mark.asyncio
+async def test_binary_body(URL):
+    pook.get(URL).reply(200).body(binary_file)
     async with aiohttp.ClientSession() as session:
         req = await session.get(URL)
         assert await req.read() == binary_file

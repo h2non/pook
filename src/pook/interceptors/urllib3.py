@@ -152,8 +152,10 @@ class Urllib3Interceptor(BaseInterceptor):
 
         if is_chunked_response(headers):
             body_chunks = body if isinstance(body, list) else [body]
+
             body_chunks = [
-                chunk if res._binary else chunk.encode() for chunk in body_chunks
+                chunk.encode() if callable(getattr(chunk, "encode", None)) else chunk
+                for chunk in body_chunks
             ]
 
             body = ClientHTTPResponse(MockSock)

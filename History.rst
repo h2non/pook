@@ -1,6 +1,13 @@
 History
 =======
 
+v1.5.0 / 2024-06-17
+-------------------
+
+  * Provide fix for inaccurate non-binary response bodies from urllib and deprecate the `binary` body parameter entirely
+    * Refer to https://github.com/h2non/pook/issues/128 for further details
+  * Fix body matcher binary argument not passing through to `BodyMatcher`
+
 v1.4.3 / 2024-02-23
 -------------------
 
