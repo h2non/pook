@@ -4,26 +4,33 @@ History
 v2.0.0 / 2024-06-17
 -------------------
 
-  * **Breaking change**: Remove `Response::body`'s `binary` parameter and enforce a keyword argument for `chunked`
-    * The `binary` parameter is no longer needed since responses are now always byte-encoded in all cases (see below).
-    * A keyword argument is now enforced for `chunked` to ensure unnamed arguments meant for the removed `binary` parameter cannot be confused as `chunked` arguments.
+  * **Breaking change**: Remove ``Response::body``'s ``binary`` parameter and enforce a keyword argument for ``chunked``
+
+    * The ``binary`` parameter is no longer needed since responses are now always byte-encoded in all cases (see below).
+    * A keyword argument is now enforced for ``chunked`` to ensure unnamed arguments meant for the removed ``binary`` parameter cannot be confused as ``chunked`` arguments.
+
   * Only return byte-encoded response bodies, matching the bahviour of all supported client libraries
+
     * This is possible because for all supported client libraries, pook mocks the actual response sent to the
       client library over the wire, which will, in all cases, be bytes. Client libraries that support reading
       response content as a string or other formats will continue to work as expected, because they'll always
       be handling bytes from pook.
-    * This causes no change to application code for users of pook, except for users of the standard library `urllib`,
+    * This causes no change to application code for users of pook, except for users of the standard library ``urllib``,
       for which this also fixed a bug where non-bytes bodies were returned by pook in certain cases. This is impossible
-      in real application code. If you rely on pook to mock `urllib` responses and have code that handles non-bytes response
+      in real application code. If you rely on pook to mock ``urllib`` responses and have code that handles non-bytes response
       bodies, that code can be safely deleted (provided the only reason it was there was pook in the first place).
-  * **Breaking change**: Remove `Mock::body`'s `binary` parameter.
-    * This parameter was already unused due to a bug in the code (it was not passed through to the `BodyMatcher`),
+
+  * **Breaking change**: Remove ``Mock::body``'s ``binary`` parameter.
+
+    * This parameter was already unused due to a bug in the code (it was not passed through to the ``BodyMatcher``),
       so this will not cause any changes to tests that relied on it: it didn't do anything to begin with.
     * The breaking change is simply the removal of the unused parameter, which should be deleted from tests using pook.
     * Pook's code has also been updated to remove all cases where non-bytes objects were being handled. Instead, the body
       of any interecepted request will always be stored as bytes, and only decoded when necessary for individual downstream
       matchers (JSON, XML).
+
   * Correct documentation strings for ``XMLMatcher`` and ``JSONMatcher`` to no longer suggest they can handle regex matchers
+
     * These classes never implemented regex matching
 
 v1.4.3 / 2024-02-23
