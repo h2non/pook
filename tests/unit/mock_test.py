@@ -2,6 +2,7 @@ import pytest
 import json
 import itertools
 from textwrap import dedent
+import re
 
 import pook
 from pook.mock import Mock
@@ -211,6 +212,26 @@ def test_body_not_matches(httpbin, mock, mock_body, request_body):
     assert not matches
     assert len(errors) == 1
     assert errors[0].startswith("BodyMatcher: ")
+
+
+def test_body_matches_string_regex(httpbin, mock):
+    mock.body(re.compile(r"hello, me!"))
+    req = Request(
+        url=httpbin.url,
+        body="This is a big sentence... hello, me! wow, another part",
+    )
+
+    assert mock.match(req) == (True, [])
+
+
+def test_body_matches_bytes_regex(httpbin, mock):
+    mock.body(re.compile(rb"hello, me!"))
+    req = Request(
+        url=httpbin.url,
+        body="This is a big sentence... hello, me! wow, another part",
+    )
+
+    assert mock.match(req) == (True, [])
 
 
 def test_xml_matches(httpbin, mock):

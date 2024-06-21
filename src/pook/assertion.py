@@ -50,6 +50,9 @@ def matches(x, y, regex_expr=False):
     # Parse regex expression, if needed
     x = strip_regex(x) if regex_expr and isregex_expr(x) else x
 
+    if isinstance(getattr(x, "pattern", None), str) and hasattr(y, "decode"):
+        y = y.decode("utf-8", "backslashescape")
+
     # Assert regular expression via unittest matchers
     return test_case().assertRegex(y, x) or True
 
