@@ -41,7 +41,6 @@ class Response(object):
         self._status = 200
         self._mock = None
         self._body = None
-        self._binary = None
         self._headers = HTTPHeaderDict()
 
         # Trigger response method based on input arguments
@@ -131,8 +130,7 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        self.content(name)
-        return self
+        return self.content(name)
 
     def content(self, name):
         """
@@ -158,23 +156,25 @@ class Response(object):
         self._headers["Content-Type"] = TYPES.get(name, name)
         return self
 
-    def body(self, body, binary=False, chunked=False):
+    def body(self, body, *, chunked=False):
         """
         Defines response body data.
 
         Arguments:
             body (str|bytes|list): response body to use.
-            binary (bool): prevent decoding the body as text when True.
             chunked (bool): return a chunked response.
 
         Returns:
             self: ``pook.Response`` current instance.
         """
-        if isinstance(body, bytes) and not binary:
-            body = body.decode("utf-8")
+        if hasattr(body, "encode"):
+            body = body.encode("utf-8", "backslashreplace")
+        elif isinstance(body, list):
+            for i, chunk in enumerate(body):
+                if hasattr(chunk, "encode"):
+                    body[i] = chunk.encode("utf-8", "backslashreplace")
 
         self._body = body
-        self._binary = binary
 
         if chunked:
             self.header("Transfer-Encoding", "chunked")
@@ -193,8 +193,8 @@ class Response(object):
         self._headers["Content-Type"] = "application/json"
         if not isinstance(data, str):
             data = json.dumps(data, indent=4)
-        self._body = data
-        return self
+
+        return self.body(data)
 
     def xml(self, xml):
         """
@@ -208,8 +208,7 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        self.body(xml)
-        return self
+        return self.body(xml)
 
     def file(self, path):
         """
@@ -221,9 +220,8 @@ class Response(object):
         Returns:
             self: ``pook.Response`` current instance.
         """
-        with open(path, "r") as f:
-            self._body = str(f.read())
-        return self
+        with open(path, "rb") as f:
+            return self.body(f.read())
 
     @property
     def mock(self):

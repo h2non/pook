@@ -396,21 +396,23 @@ class Mock(object):
         self.add_matcher(matcher("QueryMatcher", params))
         return self
 
-    def body(self, body, binary=False):
+    def body(self, body):
         """
         Defines the body data to match.
 
-        ``body`` argument can be a ``str``, ``binary`` or a regular expression.
+        ``body`` argument can be a ``str``, ``bytes`` or a regular expression.
 
         Arguments:
-            body (str|binary|regex): body data to match.
-            binary (bool): prevent decoding body as text when True.
+            body (str|bytes|regex): body data to match.
 
         Returns:
             self: current Mock instance.
         """
+        if hasattr(body, "encode"):
+            body = body.encode("utf-8", "backslashreplace")
+
         self._request.body = body
-        self.add_matcher(matcher("BodyMatcher", body, binary=False))
+        self.add_matcher(matcher("BodyMatcher", body))
         return self
 
     def json(self, json):
@@ -468,9 +470,8 @@ class Mock(object):
         Returns:
             self: current Mock instance.
         """
-        with open(path, "r") as f:
-            self.body(str(f.read()))
-        return self
+        with open(path, "rb") as f:
+            return self.body(f.read())
 
     def add_matcher(self, matcher):
         """

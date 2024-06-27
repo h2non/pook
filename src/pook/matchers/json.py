@@ -1,11 +1,26 @@
 import json
 from .base import BaseMatcher
+from ..assertion import equal
 
 
 class JSONMatcher(BaseMatcher):
     """
-    JSONMatcher implements a JSON body matcher supporting strict structure
-    and regular expression based comparisons.
+    Match JSON documents of equivalent value.
+
+    JSON documents are matched on the structured data in the document,
+    rather than on the strict organisation of the document.
+
+    The following two JSON snippets are treated as identical by this matcher:
+
+        {"a": "one", "b": ["two"]}
+
+    ... is considered idential to ...
+
+        {"b": ["two"], "a": "one"}
+
+    In other words, the order does not matter in comparison.
+
+    Use ``BodyMatcher`` to strictly match the exact textual structure.
     """
 
     def __init__(self, data):
@@ -16,15 +31,7 @@ class JSONMatcher(BaseMatcher):
 
     @BaseMatcher.matcher
     def match(self, req):
-        body = req.body
-
-        if isinstance(body, str):
-            try:
-                body = json.loads(body)
-            except Exception:
-                return False
-
         x = json.dumps(self.expectation, sort_keys=True, indent=4)
-        y = json.dumps(body, sort_keys=True, indent=4)
+        y = json.dumps(req.json, sort_keys=True, indent=4)
 
-        return self.compare(x, y)
+        return equal(x, y)

@@ -18,7 +18,7 @@ class Request(object):
         headers (dict): HTTP headers to match.
         query (dict): URL query params to match. Complementely to URL
             defined query params.
-        body (str|regex): request body payload to match.
+        body (bytes|regex): request body payload to match.
         json (str|dict|list): JSON payload body structure to match.
         xml (str): XML payload data structure to match.
 
@@ -28,13 +28,13 @@ class Request(object):
         headers (dict): HTTP headers to match.
         query (dict): URL query params to match. Complementely to URL
             defined query params.
-        body (str|regex): request body payload to match.
+        body (bytes|regex): request body payload to match.
         json (str|dict|list): JSON payload body structure to match.
         xml (str): XML payload data structure to match.
     """
 
     # Store keys
-    keys = ("method", "headers", "body", "url", "query")
+    keys = ("method", "headers", "body", "url", "query", "xml", "json")
 
     def __init__(self, method="GET", **kw):
         self._url = None
@@ -111,32 +111,29 @@ class Request(object):
 
     @body.setter
     def body(self, body):
-        if hasattr(body, "decode"):
-            try:
-                body = body.decode("utf-8", "strict")
-            except Exception:
-                pass
+        if hasattr(body, "encode"):
+            body = body.encode("utf-8", "backslashreplace")
 
         self._body = body
 
     @property
     def json(self):
-        return _json.loads(self._body)
+        return _json.loads(self.body.decode("utf-8"))
 
     @json.setter
     def json(self, data):
         if isinstance(data, str):
-            self._body = data
+            self.body = data
         else:
-            self._body = _json.dumps(data)
+            self.body = _json.dumps(data)
 
     @property
     def xml(self):
-        return self._body
+        return self.body.decode("utf-8")
 
     @xml.setter
     def xml(self, data):
-        self._body = data
+        self.body = data
 
     def copy(self):
         """

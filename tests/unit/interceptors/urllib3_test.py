@@ -2,19 +2,16 @@ import urllib3
 import pook
 import pytest
 
-from pathlib import Path
 
 from tests.unit.interceptors.base import StandardTests
-
-
-binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
+from tests.unit.fixtures import BINARY_FILE
 
 
 class TestStandardUrllib3(StandardTests):
     def make_request(self, method, url):
         http = urllib3.PoolManager()
         response = http.request(method, url)
-        return response.status, response.read().decode("utf-8")
+        return response.status, response.read()
 
 
 @pytest.fixture
@@ -32,20 +29,19 @@ def assert_chunked_response(URL, input_data, expected):
     assert r.status == 204
 
     chunks = list(r.read_chunked())
-    chunks = [c.decode() if isinstance(c, bytes) else c for c in chunks]
     assert chunks == expected
 
 
 def test_chunked_response_list(URL):
-    assert_chunked_response(URL, ["a", "b", "c"], ["a", "b", "c"])
+    assert_chunked_response(URL, ["a", "b", "c"], [b"a", b"b", b"c"])
 
 
 def test_chunked_response_str(URL):
-    assert_chunked_response(URL, "text", ["text"])
+    assert_chunked_response(URL, "text", [b"text"])
 
 
 def test_chunked_response_byte(URL):
-    assert_chunked_response(URL, b"byteman", ["byteman"])
+    assert_chunked_response(URL, b"byteman", [b"byteman"])
 
 
 def test_chunked_response_empty(URL):
@@ -53,7 +49,7 @@ def test_chunked_response_empty(URL):
 
 
 def test_chunked_response_contains_newline(URL):
-    assert_chunked_response(URL, "newline\r\n", ["newline\r\n"])
+    assert_chunked_response(URL, "newline\r\n", [b"newline\r\n"])
 
 
 def test_activate_disable():
@@ -68,22 +64,22 @@ def test_activate_disable():
 
 @pook.on
 def test_binary_body(URL):
-    (pook.get(URL).reply(200).body(binary_file, binary=True))
+    (pook.get(URL).reply(200).body(BINARY_FILE))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)
 
-    assert r.read() == binary_file
+    assert r.read() == BINARY_FILE
 
 
 @pook.on
 def test_binary_body_chunked(URL):
-    (pook.get(URL).reply(200).body(binary_file, binary=True, chunked=True))
+    (pook.get(URL).reply(200).body(BINARY_FILE, chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)
 
-    assert list(r.read_chunked()) == [binary_file]
+    assert list(r.read_chunked()) == [BINARY_FILE]
 
 
 @pytest.mark.pook

@@ -1,11 +1,10 @@
-from pathlib import Path
-
 import pytest
 import aiohttp
 
 import pook
 
 from tests.unit.interceptors.base import StandardTests
+from tests.unit.fixtures import BINARY_FILE
 
 
 pytestmark = [pytest.mark.pook]
@@ -18,10 +17,7 @@ class TestStandardAiohttp(StandardTests):
         async with aiohttp.ClientSession(loop=self.loop) as session:
             req = await session.request(method=method, url=url)
             content = await req.read()
-            return req.status, content.decode("utf-8")
-
-
-binary_file = (Path(__file__).parents[1] / "fixtures" / "nothing.bin").read_bytes()
+            return req.status, content
 
 
 def _pook_url(URL):
@@ -55,7 +51,7 @@ async def test_await_request(URL):
 
 @pytest.mark.asyncio
 async def test_binary_body(URL):
-    pook.get(URL).reply(200).body(binary_file, binary=True)
+    pook.get(URL).reply(200).body(BINARY_FILE)
     async with aiohttp.ClientSession() as session:
         req = await session.get(URL)
-        assert await req.read() == binary_file
+        assert await req.read() == BINARY_FILE

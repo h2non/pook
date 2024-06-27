@@ -17,14 +17,14 @@ class TestStandardAsyncHttpx(StandardTests):
         async with httpx.AsyncClient() as client:
             response = await client.request(method=method, url=url)
             content = await response.aread()
-            return response.status_code, content.decode("utf-8")
+            return response.status_code, content
 
 
 class TestStandardSyncHttpx(StandardTests):
     def make_request(self, method, url):
         response = httpx.request(method=method, url=url)
         content = response.read()
-        return response.status_code, content.decode("utf-8")
+        return response.status_code, content
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def test_sync(URL):
 
 
 async def test_async(URL):
-    pook.get(URL).times(1).reply(200).body(b"async_body", binary=True).mock
+    pook.get(URL).times(1).reply(200).body(b"async_body").mock
 
     async with httpx.AsyncClient() as client:
         response = await client.get(URL)

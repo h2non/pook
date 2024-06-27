@@ -9,12 +9,12 @@ import pook
 class StandardTests:
     is_async: bool = False
 
-    async def amake_request(self, method: str, url: str) -> Tuple[int, Optional[str]]:
+    async def amake_request(self, method: str, url: str) -> Tuple[int, Optional[bytes]]:
         raise NotImplementedError(
             "Sub-classes for async transports must implement `amake_request`"
         )
 
-    def make_request(self, method: str, url: str) -> Tuple[int, Optional[str]]:
+    def make_request(self, method: str, url: str) -> Tuple[int, Optional[bytes]]:
         if self.is_async:
             return self.loop.run_until_complete(self.amake_request(method, url))
 
@@ -37,7 +37,7 @@ class StandardTests:
         status, body = self.make_request("GET", url)
 
         assert status == 200
-        assert body == "hello from pook"
+        assert body == b"hello from pook"
 
         pook.disable()
 
