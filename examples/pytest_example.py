@@ -36,3 +36,9 @@ def test_no_match_exception():
     pook.get("server.com/bar", reply=204)
     with pytest.raises(Exception):
         requests.get("http://server.com/baz")
+
+
+def test_fixture(pook):
+    pook.get("https://example.org/").reply(204)
+    res = requests.get("https://example.org/")
+    assert res.status_code == 204
