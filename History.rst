@@ -1,15 +1,17 @@
 History
 =======
 
-Draft v2.0.0 / Unreleased
+v2.0.0 / 2024-07-01
 -------------------------
 
-  * **Breaking change**: Remove ``Response::body``'s ``binary`` parameter and enforce a keyword argument for ``chunked``
+See https://github.com/h2non/pook/issues/128 for a summary of the breaking changes and how to update your code if you are affected.
+
+  * **Breaking change**: Remove ``Response::body``'s ``binary`` parameter and enforce a keyword argument for ``chunked``.
 
     * The ``binary`` parameter is no longer needed since responses are now always byte-encoded in all cases (see below).
     * A keyword argument is now enforced for ``chunked`` to ensure unnamed arguments meant for the removed ``binary`` parameter cannot be confused as ``chunked`` arguments.
 
-  * Only return byte-encoded response bodies, matching the bahviour of all supported client libraries
+  * Only return byte-encoded response bodies, matching the bahviour of all supported client libraries.
 
     * This is possible because for all supported client libraries, pook mocks the actual response sent to the
       client library over the wire, which will, in all cases, be bytes. Client libraries that support reading
@@ -29,9 +31,9 @@ Draft v2.0.0 / Unreleased
       of any interecepted request will always be stored as bytes, and only decoded when necessary for individual downstream
       matchers (JSON, XML).
 
-  * Correct documentation strings for ``XMLMatcher`` and ``JSONMatcher`` to no longer suggest they can handle regex matchers
+  * Correct documentation strings for ``XMLMatcher`` and ``JSONMatcher`` to no longer suggest they can handle regex matchers.
 
-    * These classes never implemented regex matching
+    * These classes never implemented regex matching.
 
   * Add a pytest fixture to the package.
 
