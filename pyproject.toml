@@ -38,6 +38,9 @@ requires-python = ">=3.8"
 [project.urls]
 Homepage = "https://github.com/h2non/pook"
 
+[project.entry-points.pytest11]
+pook = "pook.pytest_fixture"
+
 [tool.hatch.version]
 path = "src/pook/__init__.py"
 

@@ -33,6 +33,8 @@ Draft v2.0.0 / Unreleased
 
     * These classes never implemented regex matching
 
+  * Add a pytest fixture to the package.
+
 v1.4.3 / 2024-02-23
 -------------------
 
