@@ -1,5 +1,6 @@
 import pytest
 import aiohttp
+import json
 
 import pook
 
@@ -54,4 +55,22 @@ async def test_binary_body(URL):
     pook.get(URL).reply(200).body(BINARY_FILE)
     async with aiohttp.ClientSession() as session:
         req = await session.get(URL)
+        assert await req.read() == BINARY_FILE
+
+
+@pytest.mark.asyncio
+async def test_json_matcher_data_payload(URL):
+    payload={'foo': 'bar'}
+    pook.post(URL).json(payload).reply(200).body(BINARY_FILE)
+    async with aiohttp.ClientSession() as session:
+        req = await session.post(URL, data=json.dumps(payload))
+        assert await req.read() == BINARY_FILE
+
+
+@pytest.mark.asyncio
+async def test_json_matcher_json_payload(URL):
+    payload={'foo': 'bar'}
+    pook.post(URL).json(payload).reply(200).body(BINARY_FILE)
+    async with aiohttp.ClientSession() as session:
+        req = await session.post(URL, json=payload)
         assert await req.read() == BINARY_FILE
