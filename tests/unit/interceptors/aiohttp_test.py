@@ -60,7 +60,7 @@ async def test_binary_body(URL):
 
 @pytest.mark.asyncio
 async def test_json_matcher_data_payload(URL):
-    payload={'foo': 'bar'}
+    payload = {"foo": "bar"}
     pook.post(URL).json(payload).reply(200).body(BINARY_FILE)
     async with aiohttp.ClientSession() as session:
         req = await session.post(URL, data=json.dumps(payload))
@@ -69,7 +69,7 @@ async def test_json_matcher_data_payload(URL):
 
 @pytest.mark.asyncio
 async def test_json_matcher_json_payload(URL):
-    payload={'foo': 'bar'}
+    payload = {"foo": "bar"}
     pook.post(URL).json(payload).reply(200).body(BINARY_FILE)
     async with aiohttp.ClientSession() as session:
         req = await session.post(URL, json=payload)
