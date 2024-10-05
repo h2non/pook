@@ -1,5 +1,3 @@
-import json
-
 from ..request import Request
 from .base import BaseInterceptor
 
@@ -81,8 +79,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
             )
 
         # If a json payload is provided, serialize it for JSONMatcher support
-        if kw.get("json"):
-            req.body = json.dumps(kw["json"])
+        if json_body := kw.get("json"):
+            req.json = json_body
             if "Content-Type" not in req.headers:
                 req.headers["Content-Type"] = "application/json"
 
