@@ -78,6 +78,12 @@ class AIOHTTPInterceptor(BaseInterceptor):
                 str(url) + "?" + urlencode([(x, y) for x, y in kw["params"].items()])
             )
 
+        # If a json payload is provided, serialize it for JSONMatcher support
+        if json_body := kw.get("json"):
+            req.json = json_body
+            if "Content-Type" not in req.headers:
+                req.headers["Content-Type"] = "application/json"
+
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
 
