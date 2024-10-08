@@ -38,12 +38,6 @@ def HTTPResponse(path, *args, **kw):
     return HTTPResponse(*args, **kw)
 
 
-def body_io(string, encoding="utf-8"):
-    if hasattr(string, "encode"):
-        string = string.encode(encoding)
-    return io.BytesIO(string)
-
-
 def is_chunked_response(headers):
     tencoding = dict(headers).get("Transfer-Encoding", "").lower()
     return "chunked" in tencoding.split(",")
@@ -158,7 +152,7 @@ class Urllib3Interceptor(BaseInterceptor):
             body.fp = FakeChunkedResponseBody(body_chunks)
         else:
             # Assume that the body is a bytes-like object
-            body = body_io(body)
+            body = io.BytesIO(res._body)
 
         # Return mocked HTTP response
         return HTTPResponse(
