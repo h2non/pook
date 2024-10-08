@@ -53,17 +53,17 @@ packages = ["src/pook"]
 python = "3.12"
 scripts = { test = 'pytest {args}' }
 extra-dependencies = [
-    "pytest~=7.4",
-    "pytest-asyncio~=0.20.3",
+    "pytest~=8.3",
+    "pytest-asyncio~=0.24",
     "pytest-pook==0.1.0b0",
-    "pytest-httpbin==2.0.0",
+    "pytest-httpbin==2.1.0",
 
     "requests~=2.20",
-    "urllib3~=1.24",
-    "httpx~=0.26.0",
+    "urllib3~=2.2",
+    "httpx~=0.26",
 
-    "aiohttp~=3.8",
-    "async-timeout~=4.0.3",
+    "aiohttp~=3.10",
+    "async-timeout~=4.0",
 
     # mocket relies on httptools which does not support PyPy
     "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
@@ -95,3 +95,4 @@ python = ["3.9", "3.10", "3.11", "3.12", "pypy3.10"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
