@@ -1,6 +1,11 @@
 History
 =======
 
+v2.0.1 / 2024-10-08
+-------------------------
+
+  * Improve aiohttp JSONMatcher support by @KyleJamesWalker in https://github.com/h2non/pook/pull/139
+
 v2.0.0 / 2024-07-01
 -------------------------
 
