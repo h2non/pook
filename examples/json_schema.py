@@ -17,7 +17,7 @@ pook.on()
 (
     pook.post("httpbin.org/post")
     .jsonschema(schema)
-    .reply(204)
+    .reply(201)
     .json({"error": "simulated"})
 )
 

@@ -10,7 +10,7 @@ pook.enable_network()
 
 (
     pook.get("httpbin.org/headers")
-    .reply(204)
+    .reply(201)
     .headers({"server": "pook"})
     .json({"error": "simulated"})
 )
