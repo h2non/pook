@@ -1,14 +1,13 @@
 import json as _json
+from urllib.parse import parse_qs, urlparse, urlunparse
 
-from .regex import isregex
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
 from .matchers.url import protoregex
+from .regex import isregex
 
-from urllib.parse import urlparse, parse_qs, urlunparse
 
-
-class Request(object):
+class Request:
     """
     Request object representing the request mock expectation DSL.
 
@@ -88,7 +87,7 @@ class Request(object):
             self._url = url
         else:
             if not protoregex.match(url):
-                url = "http://{}".format(url)
+                url = f"http://{url}"
             self._url = urlparse(url)
             # keep_blank_values necessary for `param_exists` when a parameter has no value but is present
             self._query = (
@@ -156,19 +155,17 @@ class Request(object):
         """
         entries = []
 
-        entries.append("Method: {}".format(self._method))
-        entries.append(
-            "URL: {}".format(self._url if isregex(self._url) else self.rawurl)
-        )
+        entries.append(f"Method: {self._method}")
+        entries.append(f"URL: {self._url if isregex(self._url) else self.rawurl}")
 
         if self._query:
-            entries.append("Query: {}".format(self._query))
+            entries.append(f"Query: {self._query}")
 
         if self._headers:
-            entries.append("Headers: {}".format(self._headers))
+            entries.append(f"Headers: {self._headers}")
 
         if self._body:
-            entries.append("Body: {}".format(self._body))
+            entries.append(f"Body: {self._body}")
 
         separator = "=" * 50
         return (separator + "\n{}\n" + separator).format("\n".join(entries))

@@ -1,6 +1,6 @@
-from .base import BaseMatcher, ExistsMatcher
 from ..headers import to_string_value
 from ..regex import Pattern
+from .base import BaseMatcher, ExistsMatcher
 
 
 class HeadersMatcher(BaseMatcher):

@@ -1,12 +1,13 @@
 from functools import partial
 from inspect import isfunction
-from .mock import Mock
-from .regex import isregex
-from .mock_engine import MockEngine
+
 from .exceptions import PookNoMatches
+from .mock import Mock
+from .mock_engine import MockEngine
+from .regex import isregex
 
 
-class Engine(object):
+class Engine:
     """
     Engine represents the mock interceptor and matcher engine responsible
     of triggering interceptors and match outgoing HTTP traffic.
@@ -185,8 +186,7 @@ class Engine(object):
 
         if not engine_method:
             raise NotImplementedError(
-                "current mock engine does not implements"
-                ' required "{}" method'.format(method)
+                "current mock engine does not implements" f' required "{method}" method'
             )
 
         return engine_method(self.mock_engine, *args, **kw)
@@ -382,7 +382,7 @@ class Engine(object):
         Returns:
             bool
         """
-        return self.networking and all((fn(request) for fn in self.network_filters))
+        return self.networking and all(fn(request) for fn in self.network_filters)
 
     def match(self, request):
         """
@@ -427,15 +427,13 @@ class Engine(object):
         if not self.should_use_network(request):
             msg = "pook error!\n\n"
 
-            msg += "=> Cannot match any mock for the " "following request:\n{}".format(
-                request
-            )
+            msg += "=> Cannot match any mock for the " f"following request:\n{request}"
 
             # Compose unmatch error details, if debug mode is enabled
             if self.debug:
                 err = "\n\n".join([str(err) for err in match_errors])
                 if err:
-                    msg += "\n\n=> Detailed matching errors:\n{}\n".format(err)
+                    msg += f"\n\n=> Detailed matching errors:\n{err}\n"
 
             # Raise no matches exception
             self.no_matches(msg)

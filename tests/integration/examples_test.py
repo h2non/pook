@@ -1,8 +1,8 @@
-import subprocess
-import pytest
-from pathlib import Path
 import platform
+import subprocess
+from pathlib import Path
 
+import pytest
 
 examples_dir = Path(__file__).parents[2] / "examples"
 
@@ -16,6 +16,6 @@ if platform.python_implementation() == "PyPy":
 
 @pytest.mark.parametrize("example", examples)
 def test_examples(example):
-    result = subprocess.run(["python", "examples/{}".format(example)])
+    result = subprocess.run(["python", f"examples/{example}"], check=False)
 
-    assert 0 == result.returncode, result.stdout
+    assert result.returncode == 0, result.stdout

@@ -1,6 +1,8 @@
-import pook
 import unittest
+
 import requests
+
+import pook
 
 
 class TestUnitTestEngine(unittest.TestCase):

@@ -1,6 +1,6 @@
-import pook
 import requests
 
+import pook
 
 with pook.api.context():
     pook.get(

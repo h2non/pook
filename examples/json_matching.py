@@ -1,6 +1,8 @@
 import json
-import pook
+
 import requests
+
+import pook
 
 # Enable mock engine
 pook.on()
@@ -8,7 +10,7 @@ pook.on()
 (
     pook.post("httpbin.org/post")
     .json({"foo": "bar"})
-    .reply(204)
+    .reply(201)
     .json({"error": "simulated"})
 )
 

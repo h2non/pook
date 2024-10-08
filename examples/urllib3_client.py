@@ -1,6 +1,6 @@
-import pook
 import urllib3
 
+import pook
 
 # Mock HTTP traffic only in the given context
 with pook.use():

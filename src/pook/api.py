@@ -1,17 +1,16 @@
 import functools
 import re
+from asyncio import iscoroutinefunction
 from contextlib import contextmanager
 from inspect import isfunction
 
+from .activate_async import activate_async
 from .engine import Engine
 from .matcher import MatcherEngine
 from .mock import Mock
 from .mock_engine import MockEngine
 from .request import Request
 from .response import Response
-
-from asyncio import iscoroutinefunction
-from .activate_async import activate_async
 
 # Public API symbols to export
 __all__ = (

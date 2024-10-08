@@ -1,8 +1,9 @@
+from urllib.request import Request, urlopen
+
 import pytest
-from urllib.request import urlopen, Request
 
 import pook
-from pook import MockEngine, Engine
+from pook import Engine, MockEngine
 from pook.interceptors import BaseInterceptor
 
 

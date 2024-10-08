@@ -1,10 +1,9 @@
-import urllib3
-import pook
 import pytest
+import urllib3
 
-
-from tests.unit.interceptors.base import StandardTests
+import pook
 from tests.unit.fixtures import BINARY_FILE
+from tests.unit.interceptors.base import StandardTests
 
 
 class TestStandardUrllib3(StandardTests):
@@ -21,12 +20,12 @@ def URL(httpbin):
 
 @pook.on
 def assert_chunked_response(URL, input_data, expected):
-    (pook.get(URL).reply(204).body(input_data, chunked=True))
+    (pook.get(URL).reply(201).body(input_data, chunked=True))
 
     http = urllib3.PoolManager()
     r = http.request("GET", URL)
 
-    assert r.status == 204
+    assert r.status == 201
 
     chunks = list(r.read_chunked())
     assert chunks == expected

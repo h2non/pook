@@ -1,6 +1,7 @@
 import json
-from .base import BaseMatcher
+
 from ..assertion import equal
+from .base import BaseMatcher
 
 
 class JSONMatcher(BaseMatcher):

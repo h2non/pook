@@ -1,9 +1,9 @@
-import pook
 from urllib.error import HTTPError
-from urllib.request import urlopen, Request
+from urllib.request import Request, urlopen
+
 import pytest
 
-
+import pook
 from tests.unit.interceptors.base import StandardTests
 
 

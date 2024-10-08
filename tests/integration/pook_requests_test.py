@@ -1,7 +1,7 @@
-import pook
 import pytest
 import requests
 
+import pook
 
 pytestmark = [pytest.mark.pook]
 

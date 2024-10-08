@@ -1,10 +1,11 @@
 import json
+
+from .constants import TYPES
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
-from .constants import TYPES
 
 
-class Response(object):
+class Response:
     """
     Response is used to declare and compose an HTTP mock responses fields.
 
@@ -246,6 +247,6 @@ class Response(object):
         """
         args = []
         for key in ("headers", "status", "body"):
-            value = getattr(self, "_{}".format(key))
-            args.append("{}={}".format(key, value))
+            value = getattr(self, f"_{key}")
+            args.append(f"{key}={value}")
         return "Response(\n    {}\n)".format(",\n    ".join(args))

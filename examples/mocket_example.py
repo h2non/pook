@@ -1,9 +1,10 @@
 # Be sure you have `mocket` installed:
 # $ pip install mocket
 
-import pook
 import requests
 from mocket.plugins.pook_mock_engine import MocketEngine
+
+import pook
 
 # Use mocket library as underlying mock engine
 pook.set_mock_engine(MocketEngine)

@@ -1,4 +1,5 @@
 import re
+
 from .assertion import test
 
 # Negate is used a reserved token identifier to negate matching

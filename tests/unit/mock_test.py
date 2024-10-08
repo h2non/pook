@@ -1,15 +1,15 @@
-import pytest
-import json
 import itertools
-from textwrap import dedent
+import json
 import re
-
-import pook
-from pook.mock import Mock
-from pook.request import Request
-from pook.exceptions import PookNoMatches
+from textwrap import dedent
 from urllib.request import urlopen
 
+import pytest
+
+import pook
+from pook.exceptions import PookNoMatches
+from pook.mock import Mock
+from pook.request import Request
 from tests.unit.fixtures import BINARY_FILE, BINARY_FILE_PATH
 
 

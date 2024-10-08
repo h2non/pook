@@ -1,6 +1,6 @@
 import http.client
-import pook
 
+import pook
 
 # Enable mock engine
 pook.on()

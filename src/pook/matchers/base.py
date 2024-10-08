@@ -1,6 +1,7 @@
 import functools
+from abc import ABCMeta, abstractmethod
 from copy import deepcopy
-from abc import abstractmethod, ABCMeta
+
 from ..compare import compare
 
 
@@ -42,7 +43,6 @@ class BaseMatcher:
         Arguments:
             request (pook.Request): request object to match.
         """
-        pass
 
     def compare(self, value, expectation, regex_expr=False):
         """
@@ -68,7 +68,7 @@ class BaseMatcher:
         return {self.name: deepcopy(self.expectation)}
 
     def __repr__(self):
-        return "{}({})".format(self.name, self.expectation)
+        return f"{self.name}({self.expectation})"
 
     def __str__(self):
         return self.expectation

@@ -1,14 +1,15 @@
 import io
+from http.client import (
+    HTTPResponse as ClientHTTPResponse,
+)
+from http.client import (
+    responses as http_reasons,
+)
+from unittest import mock
+
 from ..request import Request
 from .base import BaseInterceptor
 from .http import URLLIB3_BYPASS
-
-from unittest import mock
-
-from http.client import (
-    responses as http_reasons,
-    HTTPResponse as ClientHTTPResponse,
-)
 
 PATCHES = (
     "requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen",
@@ -37,18 +38,12 @@ def HTTPResponse(path, *args, **kw):
     return HTTPResponse(*args, **kw)
 
 
-def body_io(string, encoding="utf-8"):
-    if hasattr(string, "encode"):
-        string = string.encode(encoding)
-    return io.BytesIO(string)
-
-
 def is_chunked_response(headers):
     tencoding = dict(headers).get("Transfer-Encoding", "").lower()
     return "chunked" in tencoding.split(",")
 
 
-class MockSock(object):
+class MockSock:
     @classmethod
     def makefile(cls, *args, **kwargs):
         return
@@ -62,7 +57,7 @@ class FakeHeaders(list):
     getheaders = get_all
 
 
-class FakeResponse(object):
+class FakeResponse:
     def __init__(self, method, headers):
         self._method = method  # name expected by urllib3
         self.msg = FakeHeaders(headers)
@@ -75,7 +70,7 @@ class FakeResponse(object):
         return self.closed
 
 
-class FakeChunkedResponseBody(object):
+class FakeChunkedResponseBody:
     def __init__(self, chunks):
         # append a terminating chunk
         chunks.append(b"")
@@ -130,7 +125,7 @@ class Urllib3Interceptor(BaseInterceptor):
         req.body = body
 
         # Compose URL
-        req.url = "{}://{}:{:d}{}".format(pool.scheme, pool.host, pool.port or 80, url)
+        req.url = f"{pool.scheme}://{pool.host}:{pool.port or 80:d}{url}"
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
@@ -157,7 +152,7 @@ class Urllib3Interceptor(BaseInterceptor):
             body.fp = FakeChunkedResponseBody(body_chunks)
         else:
             # Assume that the body is a bytes-like object
-            body = body_io(body)
+            body = io.BytesIO(res._body)
 
         # Return mocked HTTP response
         return HTTPResponse(

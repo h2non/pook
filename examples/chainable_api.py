@@ -1,7 +1,8 @@
 import json
-import pook
+
 import requests
 
+import pook
 
 # Enable mock engine
 pook.on()
@@ -11,7 +12,7 @@ pook.on()
     .json({"foo": "bar"})
     .type("json")
     .header("Client", "requests")
-    .reply(204)
+    .reply(201)
     .headers({"server": "pook"})
     .json({"error": "simulated"})
 )
