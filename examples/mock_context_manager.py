@@ -1,6 +1,6 @@
-import pook
 import requests
 
+import pook
 
 # Define a new mock that will be only active within the context manager
 with pook.get(

@@ -1,19 +1,18 @@
-from ..request import Request
-from .base import BaseInterceptor
-
-from unittest import mock
-
-from urllib.parse import urlunparse, urlencode
-from http.client import responses as http_reasons
-
 import asyncio
+from http.client import responses as http_reasons
+from unittest import mock
+from urllib.parse import urlencode, urlunparse
+
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
 
+from ..request import Request
+from .base import BaseInterceptor
+
 # Try to load yarl URL parser package used by aiohttp
 try:
-    import yarl
     import multidict
+    import yarl
 except Exception:
     yarl, multidict = None, None
 

@@ -1,7 +1,8 @@
 import json
-import pook
+
 import requests
 
+import pook
 
 schema = {
     "type": "object",

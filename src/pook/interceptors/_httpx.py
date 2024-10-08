@@ -1,12 +1,11 @@
-from ..request import Request
-from .base import BaseInterceptor
-
-from http.client import responses as http_reasons
-
-from unittest import mock
 import asyncio
+from http.client import responses as http_reasons
+from unittest import mock
 
 import httpx
+
+from ..request import Request
+from .base import BaseInterceptor
 
 PATCHES = (
     "httpx.Client._transport_for_url",

@@ -1,7 +1,7 @@
 from .interceptors import interceptors
 
 
-class MockEngine(object):
+class MockEngine:
     """
     ``MockEngine`` represents the low-level mocking engine abstraction
     layer between ``pook`` and the underlying mocking mechanism
@@ -79,10 +79,7 @@ class MockEngine(object):
             bool: `True` if the interceptor was disabled, otherwise `False`.
         """
         for index, interceptor in enumerate(self.interceptors):
-            matches = (
-                type(interceptor).__name__ == name
-                or getattr(interceptor, "name") == name
-            )
+            matches = type(interceptor).__name__ == name or interceptor.name == name
             if matches:
                 self.interceptors.pop(index)
                 return True

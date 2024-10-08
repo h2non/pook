@@ -1,12 +1,11 @@
-import pytest
-import aiohttp
 import json
 
+import aiohttp
+import pytest
+
 import pook
-
-from tests.unit.interceptors.base import StandardTests
 from tests.unit.fixtures import BINARY_FILE
-
+from tests.unit.interceptors.base import StandardTests
 
 pytestmark = [pytest.mark.pook]
 

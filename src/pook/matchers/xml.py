@@ -1,7 +1,9 @@
 import json
+
 import xmltodict
-from .base import BaseMatcher
+
 from ..assertion import equal
+from .base import BaseMatcher
 
 
 class XMLMatcher(BaseMatcher):

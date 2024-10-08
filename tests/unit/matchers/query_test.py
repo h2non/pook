@@ -1,5 +1,6 @@
-import pytest
 from urllib.request import urlopen
+
+import pytest
 
 import pook
 from pook.exceptions import PookNoMatches

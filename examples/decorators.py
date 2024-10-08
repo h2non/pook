@@ -1,5 +1,6 @@
-import pook
 import requests
+
+import pook
 
 
 @pook.get("http://httpbin.org/status/500", reply=204)

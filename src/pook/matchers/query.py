@@ -1,6 +1,6 @@
-from .base import BaseMatcher, ExistsMatcher
-
 from urllib.parse import parse_qs
+
+from .base import BaseMatcher, ExistsMatcher
 
 
 class QueryMatcher(BaseMatcher):

@@ -1,6 +1,7 @@
-import pook
 import pytest
 import requests
+
+import pook
 
 
 @pook.on

@@ -1,10 +1,9 @@
-import urllib3
-import pook
 import pytest
+import urllib3
 
-
-from tests.unit.interceptors.base import StandardTests
+import pook
 from tests.unit.fixtures import BINARY_FILE
+from tests.unit.interceptors.base import StandardTests
 
 
 class TestStandardUrllib3(StandardTests):

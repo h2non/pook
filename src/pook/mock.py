@@ -1,13 +1,14 @@
 import functools
-from furl import furl
 from inspect import isfunction, ismethod
 
-from .response import Response
+from furl import furl
+
 from .constants import TYPES
-from .request import Request
-from .matcher import MatcherEngine
 from .helpers import trigger_methods
+from .matcher import MatcherEngine
 from .matchers import init as matcher
+from .request import Request
+from .response import Response
 
 
 def _append_funcs(target, items):
@@ -38,7 +39,7 @@ def _trigger_request(instance, request):
             getattr(instance, key)(getattr(request, key))
 
 
-class Mock(object):
+class Mock:
     """
     Mock is used to declare and compose the HTTP request/response mock
     definition and matching expectations, which provides fluent API DSL.
@@ -769,7 +770,7 @@ class Mock(object):
             return False, errors
 
         if self._times <= 0:
-            return False, [f"Mock matches request but is expired.\n{repr(self)}"]
+            return False, [f"Mock matches request but is expired.\n{self!r}"]
 
         # Register matched request for further inspecion and reference
         self._calls.append(request)
@@ -858,7 +859,7 @@ class Mock(object):
                 value = value[:-1] + "  )"
             else:
                 value = repr(getattr(self, "_" + key))
-            args.append("{}={}".format(key, value))
+            args.append(f"{key}={value}")
 
         args = "(\n  {}\n)".format(",\n  ".join(args))
 

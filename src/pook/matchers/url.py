@@ -1,10 +1,10 @@
 import re
+from urllib.parse import urlparse
+
+from ..regex import isregex
 from .base import BaseMatcher
 from .path import PathMatcher
 from .query import QueryMatcher
-from ..regex import isregex
-
-from urllib.parse import urlparse
 
 # URI protocol test regular expression
 protoregex = re.compile("^http[s]?://", re.IGNORECASE)
@@ -32,7 +32,7 @@ class URLMatcher(BaseMatcher):
         else:
             # Add protocol prefix in the URL
             if not protoregex.match(url):
-                self.url = "http://{}".format(url)
+                self.url = f"http://{url}"
             self.expectation = urlparse(self.url)
 
     def match_path(self, req):
@@ -70,4 +70,4 @@ class URLMatcher(BaseMatcher):
         return self.url
 
     def __repr__(self):
-        return "{}({})".format(self.name, self.url)
+        return f"{self.name}({self.url})"

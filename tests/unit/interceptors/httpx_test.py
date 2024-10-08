@@ -1,11 +1,10 @@
-import pook
+from itertools import zip_longest
+
 import httpx
 import pytest
 
-from itertools import zip_longest
-
+import pook
 from tests.unit.interceptors.base import StandardTests
-
 
 pytestmark = [pytest.mark.pook]
 
@@ -74,7 +73,7 @@ def test_streaming(URL, response_method):
         read_bytes = list(getattr(r, response_method)(chunk_size=1))
 
     assert len(read_bytes) == len(streamed_response)
-    assert bytes().join(read_bytes) == streamed_response
+    assert b"".join(read_bytes) == streamed_response
 
 
 def test_redirect_following(URL):

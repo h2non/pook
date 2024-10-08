@@ -1,5 +1,6 @@
 import re
-from pook.regex import isregex_expr, isregex
+
+from pook.regex import isregex, isregex_expr
 
 
 def test_isregex_expr():

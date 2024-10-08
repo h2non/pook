@@ -71,7 +71,7 @@ extra-dependencies = [
 
 [tool.hatch.envs.lint]
 extra-dependencies = [
-    "pre-commit~=3.6",
+    "pre-commit~=4.0",
 ]
 
 [tool.hatch.envs.lint.scripts]

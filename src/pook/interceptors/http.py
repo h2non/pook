@@ -1,14 +1,15 @@
 import socket
-from ..request import Request
-from .base import BaseInterceptor
-
-from unittest import mock
-
 from http.client import (
-    responses as http_reasons,
     _CS_REQ_SENT,
     HTTPSConnection,
 )
+from http.client import (
+    responses as http_reasons,
+)
+from unittest import mock
+
+from ..request import Request
+from .base import BaseInterceptor
 
 PATCHES = ("http.client.HTTPConnection.request",)
 
@@ -55,7 +56,7 @@ class HTTPClientInterceptor(BaseInterceptor):
             schema = "http"
 
         # Compose URL
-        req.url = "{}://{}:{}{}".format(schema, conn.host, conn.port, url)
+        req.url = f"{schema}://{conn.host}:{conn.port}{url}"
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)

@@ -22,7 +22,7 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 import pook  # noqa
-import sphinx_rtd_theme  # noqa
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 

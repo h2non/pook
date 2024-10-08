@@ -1,8 +1,7 @@
 import re
+from inspect import isfunction, ismethod
 
-from inspect import ismethod, isfunction
 from .exceptions import PookInvalidArgument
-
 
 reply_response_re = re.compile("^(response|reply)_")
 
@@ -13,7 +12,7 @@ def _get_key(key_order):
         try:
             return key_order.index(raw)
         except KeyError:
-            raise PookInvalidArgument("Unsupported argument: {}".format(x))
+            raise PookInvalidArgument(f"Unsupported argument: {x}")
 
     return key
 
@@ -57,7 +56,7 @@ def trigger_methods(instance, args, key_order=None):
         iscallable = ismethod(member) and not isfunction(member)
 
         if not iscallable and not isattr:
-            raise PookInvalidArgument("Unsupported argument: {}".format(name))
+            raise PookInvalidArgument(f"Unsupported argument: {name}")
 
         # Set attribute or trigger method
         if iscallable:

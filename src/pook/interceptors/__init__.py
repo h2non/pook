@@ -1,6 +1,6 @@
-from .urllib3 import Urllib3Interceptor
-from .http import HTTPClientInterceptor
 from .base import BaseInterceptor
+from .http import HTTPClientInterceptor
+from .urllib3 import Urllib3Interceptor
 
 # Explicit symbols to export
 __all__ = (

@@ -1,13 +1,13 @@
 from .base import BaseMatcher
-from .url import URLMatcher
 from .body import BodyMatcher
-from .query import QueryMatcher, QueryParameterExistsMatcher
-from .method import MethodMatcher
-from .headers import HeadersMatcher, HeaderExistsMatcher
-from .path import PathMatcher
-from .xml import XMLMatcher
+from .headers import HeaderExistsMatcher, HeadersMatcher
 from .json import JSONMatcher
 from .json_schema import JSONSchemaMatcher
+from .method import MethodMatcher
+from .path import PathMatcher
+from .query import QueryMatcher, QueryParameterExistsMatcher
+from .url import URLMatcher
+from .xml import XMLMatcher
 
 # Explicit symbols to export
 __all__ = (
@@ -90,5 +90,5 @@ def init(name, *args, **kwargs):
     """
     matcher = get(name)
     if not matcher:
-        raise ValueError("Cannot find matcher: {}".format(name))
+        raise ValueError(f"Cannot find matcher: {name}")
     return matcher(*args, **kwargs)
