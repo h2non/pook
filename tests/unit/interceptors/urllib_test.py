@@ -8,10 +8,11 @@ from tests.unit.interceptors.base import StandardTests
 
 
 class TestUrllib(StandardTests):
-    def make_request(self, method, url):
+    def make_request(self, method, url, content=None):
         request = Request(
             url=url,
             method=method,
+            data=content,
         )
         try:
             response = urlopen(request)

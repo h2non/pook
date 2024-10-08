@@ -12,16 +12,16 @@ pytestmark = [pytest.mark.pook]
 class TestStandardAsyncHttpx(StandardTests):
     is_async = True
 
-    async def amake_request(self, method, url):
+    async def amake_request(self, method, url, content=None):
         async with httpx.AsyncClient() as client:
-            response = await client.request(method=method, url=url)
+            response = await client.request(method=method, url=url, content=content)
             content = await response.aread()
             return response.status_code, content
 
 
 class TestStandardSyncHttpx(StandardTests):
-    def make_request(self, method, url):
-        response = httpx.request(method=method, url=url)
+    def make_request(self, method, url, content=None):
+        response = httpx.request(method=method, url=url, content=content)
         content = response.read()
         return response.status_code, content
 
