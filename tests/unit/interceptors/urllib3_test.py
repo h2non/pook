@@ -7,9 +7,9 @@ from tests.unit.interceptors.base import StandardTests
 
 
 class TestStandardUrllib3(StandardTests):
-    def make_request(self, method, url):
+    def make_request(self, method, url, content=None):
         http = urllib3.PoolManager()
-        response = http.request(method, url)
+        response = http.request(method, url, content)
         return response.status, response.read()
 
 

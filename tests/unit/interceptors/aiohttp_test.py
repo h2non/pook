@@ -1,5 +1,3 @@
-import json
-
 import aiohttp
 import pytest
 
@@ -13,11 +11,11 @@ pytestmark = [pytest.mark.pook]
 class TestStandardAiohttp(StandardTests):
     is_async = True
 
-    async def amake_request(self, method, url):
+    async def amake_request(self, method, url, content=None):
         async with aiohttp.ClientSession(loop=self.loop) as session:
-            req = await session.request(method=method, url=url)
-            content = await req.read()
-            return req.status, content
+            req = await session.request(method=method, url=url, data=content)
+            response_content = await req.read()
+            return req.status, response_content
 
 
 def _pook_url(URL):
@@ -54,15 +52,6 @@ async def test_binary_body(URL):
     pook.get(URL).reply(200).body(BINARY_FILE)
     async with aiohttp.ClientSession() as session:
         req = await session.get(URL)
-        assert await req.read() == BINARY_FILE
-
-
-@pytest.mark.asyncio
-async def test_json_matcher_data_payload(URL):
-    payload = {"foo": "bar"}
-    pook.post(URL).json(payload).reply(200).body(BINARY_FILE)
-    async with aiohttp.ClientSession() as session:
-        req = await session.post(URL, data=json.dumps(payload))
         assert await req.read() == BINARY_FILE
 
 

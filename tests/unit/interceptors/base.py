@@ -1,5 +1,6 @@
 import asyncio
-from typing import Optional, Tuple
+import json
+from typing import Optional, Tuple, Union
 
 import pytest
 
@@ -8,15 +9,22 @@ import pook
 
 class StandardTests:
     is_async: bool = False
+    loop: asyncio.AbstractEventLoop
 
-    async def amake_request(self, method: str, url: str) -> Tuple[int, Optional[bytes]]:
+    async def amake_request(
+        self, method: str, url: str, content: Union[bytes, None] = None
+    ) -> Tuple[int, Optional[bytes]]:
         raise NotImplementedError(
             "Sub-classes for async transports must implement `amake_request`"
         )
 
-    def make_request(self, method: str, url: str) -> Tuple[int, Optional[bytes]]:
+    def make_request(
+        self, method: str, url: str, content: Union[bytes, None] = None
+    ) -> Tuple[int, Optional[bytes]]:
         if self.is_async:
-            return self.loop.run_until_complete(self.amake_request(method, url))
+            return self.loop.run_until_complete(
+                self.amake_request(method, url, content)
+            )
 
         raise NotImplementedError("Sub-classes must implement `make_request`")
 
@@ -56,3 +64,41 @@ class StandardTests:
         status, body = self.make_request("POST", upstream_url)
 
         assert status == 500
+
+    @pytest.mark.pook
+    def test_json_request(self, httpbin):
+        url = f"{httpbin.url}/status/404"
+        json_request = {"hello": "json-request"}
+        pook.get(url).json(json_request).reply(200).body("hello from pook")
+
+        status, body = self.make_request("GET", url, json.dumps(json_request).encode())
+
+        assert status == 200
+        assert body == b"hello from pook"
+
+    @pytest.mark.pook
+    def test_json_response(self, httpbin):
+        url = f"{httpbin.url}/status/404"
+        json_response = {"hello": "json-request"}
+        pook.get(url).reply(200).json(json_response)
+
+        status, body = self.make_request("GET", url)
+
+        assert status == 200
+        assert body
+        assert json.loads(body) == json_response
+
+    @pytest.mark.pook
+    def test_json_request_and_response(self, httpbin):
+        url = f"{httpbin.url}/status/404"
+        json_request = {"id": "123abc"}
+        json_response = {"title": "123abc title"}
+        pook.get(url).json(json_request).reply(200).json(json_response)
+
+        status, body = self.make_request(
+            "GET", url, content=json.dumps(json_request).encode()
+        )
+
+        assert status == 200
+        assert body
+        assert json.loads(body) == json_response
