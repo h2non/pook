@@ -32,7 +32,7 @@ jobs:
         run: pipx install hatch
 
       - name: Lint
-        run: hatch run lint:run
+        run: hatch run lint
 
   build:
     name: build

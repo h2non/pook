@@ -26,3 +26,11 @@ repos:
       - id: ruff
         args: [--fix]
       - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: types
+        name: types
+        entry: hatch run types
+        language: system
+        pass_filenames: false
