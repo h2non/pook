@@ -261,14 +261,14 @@ Install the pre-commit hook:
 
 .. code:: bash
 
-    hatch run lint:install
+    hatch run lint-install
 
 
 Lint the code:
 
 .. code:: bash
 
-    hatch run lint:run
+    hatch run lint
 
 
 Run tests on all supported Python versions and implementations (this requires your host operating system to have each implementation available):

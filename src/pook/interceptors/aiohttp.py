@@ -6,15 +6,12 @@ from urllib.parse import urlencode, urlunparse
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
 
-from ..request import Request
-from .base import BaseInterceptor
+from pook.request import Request  # type: ignore
+from pook.interceptors.base import BaseInterceptor
 
 # Try to load yarl URL parser package used by aiohttp
-try:
-    import multidict
-    import yarl
-except Exception:
-    yarl, multidict = None, None
+import multidict
+import yarl
 
 PATCHES = ("aiohttp.client.ClientSession._request",)
 

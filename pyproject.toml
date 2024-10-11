@@ -51,8 +51,10 @@ packages = ["src/pook"]
 
 [tool.hatch.envs.default]
 python = "3.12"
-scripts = { test = 'pytest {args}' }
 extra-dependencies = [
+    "pre-commit~=4.0",
+    "mypy>=1.11.2",
+
     "pytest~=8.3",
     "pytest-asyncio~=0.24",
     "pytest-pook==0.1.0b0",
@@ -69,14 +71,12 @@ extra-dependencies = [
     "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
 ]
 
-[tool.hatch.envs.lint]
-extra-dependencies = [
-    "pre-commit~=4.0",
-]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args}"
+types = "mypy --install-types --non-interactive src/pook/interceptors {args}"
 
-[tool.hatch.envs.lint.scripts]
-install = 'pre-commit install'
-run = 'pre-commit run --all-files'
+lint-install = "pre-commit install"
+lint = "pre-commit run --all-files"
 
 [tool.hatch.envs.docs]
 extra-dependencies = [
@@ -85,9 +85,9 @@ extra-dependencies = [
 ]
 
 [tool.hatch.envs.docs.scripts]
-apidocs = 'sphinx-apidoc -f --follow-links -H "API documentation" -o docs/source src/pook'
-htmldocs = 'rm -rf docs/_build && sphinx-build -b html -d docs/_build/doctrees ./docs docs/_build/html'
-build = 'hatch run apidocs; hatch run htmldocs'
+apidocs = "sphinx-apidoc -f --follow-links -H 'API documentation' -o docs/source src/pook"
+htmldocs = "rm -rf docs/_build && sphinx-build -b html -d docs/_build/doctrees ./docs docs/_build/html"
+build = "hatch run apidocs; hatch run htmldocs"
 
 [tool.hatch.envs.test]
 [[tool.hatch.envs.test.matrix]]
