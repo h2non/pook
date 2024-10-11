@@ -7,9 +7,9 @@ from http.client import (
 )
 from unittest import mock
 
-from ..request import Request
-from .base import BaseInterceptor
-from .http import URLLIB3_BYPASS
+from pook.request import Request  # type: ignore
+from pook.interceptors.base import BaseInterceptor
+from pook.interceptors.http import URLLIB3_BYPASS
 
 PATCHES = (
     "requests.packages.urllib3.connectionpool.HTTPConnectionPool.urlopen",
@@ -28,7 +28,7 @@ def HTTPResponse(path, *args, **kw):
     # Infer package
     package = path.split(".").pop(0)
     # Get import path
-    import_path = RESPONSE_PATH.get(package)
+    import_path = RESPONSE_PATH[package]
 
     # Dynamically load package
     module = __import__(import_path, fromlist=(RESPONSE_CLASS,))
@@ -148,8 +148,8 @@ class Urllib3Interceptor(BaseInterceptor):
         if is_chunked_response(headers):
             body_chunks = body if isinstance(body, list) else [body]
 
-            body = ClientHTTPResponse(MockSock)
-            body.fp = FakeChunkedResponseBody(body_chunks)
+            body = ClientHTTPResponse(MockSock)  # type: ignore
+            body.fp = FakeChunkedResponseBody(body_chunks)  # type:ignore
         else:
             # Assume that the body is a bytes-like object
             body = io.BytesIO(res._body)

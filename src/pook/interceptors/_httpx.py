@@ -1,16 +1,25 @@
 import asyncio
 from http.client import responses as http_reasons
 from unittest import mock
+import typing as t
 
 import httpx
 
-from ..request import Request
-from .base import BaseInterceptor
+from pook.request import Request  # type: ignore
+from pook.response import Response  # type: ignore
+from pook.interceptors.base import BaseInterceptor
+
 
 PATCHES = (
     "httpx.Client._transport_for_url",
     "httpx.AsyncClient._transport_for_url",
 )
+
+
+HttpxClient = t.Union[httpx.Client, httpx.AsyncClient]
+TransportForUrl = t.Callable[
+    [HttpxClient, httpx.URL], t.Union[httpx.BaseTransport, httpx.AsyncBaseTransport]
+]
 
 
 class HttpxInterceptor(BaseInterceptor):
@@ -31,7 +40,7 @@ class HttpxInterceptor(BaseInterceptor):
 
         try:
             patcher = mock.patch(path, handler)
-            _original_transport_for_url = patcher.get_original()[0]
+            _original_transport_for_url = patcher.get_original()[0]  # type: ignore[var-annotated]
             patcher.start()
         except Exception:
             pass
@@ -45,20 +54,32 @@ class HttpxInterceptor(BaseInterceptor):
         [patch.stop() for patch in self.patchers]
 
 
-class MockedTransport(httpx.BaseTransport):
-    def __init__(self, interceptor, client, _original_transport_for_url):
+T = t.TypeVar("T", httpx.BaseTransport, httpx.AsyncBaseTransport)
+
+
+class MockedTransport(httpx.BaseTransport, t.Generic[T]):
+    _original_transport_for_url: t.Callable[[HttpxClient, httpx.URL], T]
+
+    def __init__(
+        self,
+        interceptor: HttpxInterceptor,
+        client: HttpxClient,
+        _original_transport_for_url: t.Callable[[HttpxClient, httpx.URL], T],
+    ):
         self._interceptor = interceptor
         self._client = client
         self._original_transport_for_url = _original_transport_for_url
 
-    def _get_pook_request(self, httpx_request):
+    def _get_pook_request(self, httpx_request: httpx.Request) -> Request:
         req = Request(httpx_request.method)
         req.url = str(httpx_request.url)
         req.headers = httpx_request.headers
 
         return req
 
-    def _get_httpx_response(self, httpx_request, mock_response):
+    def _get_httpx_response(
+        self, httpx_request: httpx.Request, mock_response: Response
+    ) -> httpx.Response:
         res = httpx.Response(
             status_code=mock_response._status,
             headers=mock_response._headers,
@@ -66,7 +87,7 @@ class MockedTransport(httpx.BaseTransport):
             extensions={
                 # TODO: Add HTTP2 response support
                 "http_version": b"HTTP/1.1",
-                "reason_phrase": http_reasons.get(mock_response._status).encode(
+                "reason_phrase": http_reasons.get(mock_response._status, "").encode(
                     "ascii"
                 ),
                 "network_stream": None,
@@ -83,7 +104,7 @@ class MockedTransport(httpx.BaseTransport):
         return res
 
 
-class AsyncTransport(MockedTransport):
+class AsyncTransport(MockedTransport[httpx.AsyncBaseTransport]):
     async def _get_pook_request(self, httpx_request):
         req = super()._get_pook_request(httpx_request)
         req.body = await httpx_request.aread()
@@ -104,7 +125,7 @@ class AsyncTransport(MockedTransport):
         return self._get_httpx_response(request, mock._response)
 
 
-class SyncTransport(MockedTransport):
+class SyncTransport(MockedTransport[httpx.BaseTransport]):
     def _get_pook_request(self, httpx_request):
         req = super()._get_pook_request(httpx_request)
         req.body = httpx_request.read()

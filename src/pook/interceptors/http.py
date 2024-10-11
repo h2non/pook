@@ -1,15 +1,14 @@
 import socket
-from http.client import (
-    _CS_REQ_SENT,
-    HTTPSConnection,
-)
+from http.client import _CS_REQ_SENT  # type: ignore[attr-defined]
+from http.client import HTTPSConnection
+
 from http.client import (
     responses as http_reasons,
 )
 from unittest import mock
 
-from ..request import Request
-from .base import BaseInterceptor
+from pook.request import Request  # type: ignore
+from pook.interceptors.base import BaseInterceptor
 
 PATCHES = ("http.client.HTTPConnection.request",)
 
@@ -88,8 +87,8 @@ class HTTPClientInterceptor(BaseInterceptor):
 
         conn.getresponse = getresponse
 
-        conn.__response = mockres
-        conn.__state = _CS_REQ_SENT
+        conn.__response = mockres  # type: ignore[attr-defined]
+        conn.__state = _CS_REQ_SENT  # type: ignore[attr-defined]
 
         # Path reader
         def read():

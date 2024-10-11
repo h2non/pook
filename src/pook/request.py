@@ -77,10 +77,6 @@ class Request:
     def url(self):
         return self._url
 
-    @property
-    def rawurl(self):
-        return self._url if isregex(self._url) else urlunparse(self._url)
-
     @url.setter
     def url(self, url):
         if isregex(url):
@@ -95,6 +91,10 @@ class Request:
                 if self._url.query
                 else self._query
             )
+
+    @property
+    def rawurl(self):
+        return self._url if isregex(self._url) else urlunparse(self._url)
 
     @property
     def query(self):
