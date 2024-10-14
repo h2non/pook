@@ -137,7 +137,7 @@ def activate(fn=None):
         try:
             fn(*args, **kw)
         finally:
-            _engine.disable()
+            off()
 
     return wrapper
 
