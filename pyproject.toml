@@ -72,11 +72,16 @@ extra-dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
+ci = [
+    "lint-install",
+    "lint",
+    "test",
+]
 test = "pytest {args}"
-types = "mypy --install-types --non-interactive src/pook/interceptors {args}"
 
 lint-install = "pre-commit install"
 lint = "pre-commit run --all-files"
+types = "mypy --install-types --non-interactive src/pook/interceptors {args}"
 
 [tool.hatch.envs.docs]
 extra-dependencies = [

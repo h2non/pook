@@ -240,57 +240,10 @@ Example using Hy language (Lisp dialect for Python):
     (defmain [&args] (run))
 
 
-Development
------------
+Contributing
+------------
 
-Clone the repository:
-
-.. code:: bash
-
-    git clone git@github.com:h2non/pook.git
-
-
-Use [`hatch`](https://hatch.pypa.io/) to configure the environment by running the test suite:
-
-.. code:: bash
-
-    hatch run test
-
-
-Install the pre-commit hook:
-
-.. code:: bash
-
-    hatch run lint-install
-
-
-Lint the code:
-
-.. code:: bash
-
-    hatch run lint
-
-
-Run tests on all supported Python versions and implementations (this requires your host operating system to have each implementation available):
-
-.. code:: bash
-
-    hatch run test:test
-
-
-To run tests only for a specific version, affix the version designation to the environment name (the left side of the `:`):
-
-.. code:: bash
-
-    hatch run test.pypy3.10:test
-
-
-Generate documentation:
-
-.. code:: bash
-
-    hatch run docs:build
-
+See `contributing <./CONTRIBUTING.md>`_ for how to contribute to Pook.
 
 License
 -------
