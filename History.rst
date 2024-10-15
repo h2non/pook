@@ -1,6 +1,14 @@
 History
 =======
 
+v2.1.1 / 2024-10-15
+-------------------------
+
+  * Flush mocks when `pook.activate` used as a wrapper by @shift0965 in https://github.com/h2non/pook/pull/145.
+
+    * This prevents mocks from leaking between test cases and should fix some potentially confusing edge case bugs.
+
+
 v2.1.0 / 2024-10-08
 -------------------------
 
