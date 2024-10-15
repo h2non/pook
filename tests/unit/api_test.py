@@ -51,7 +51,6 @@ def test_mock_contructors(engine):
 
 
 def test_activate_as_decorator(engine):
-
     @api.activate
     def test_activate():
         api.get("foo.com")
@@ -64,7 +63,6 @@ def test_activate_as_decorator(engine):
 
 
 async def test_activate_as_decorator_for_async(engine):
-
     @api.activate
     async def test_activate():
         await asyncio.sleep(0)
