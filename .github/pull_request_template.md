@@ -1,7 +1,7 @@
 ## Description
 <!--- Describe your changes in detail -->
 <!--- What problem does this change solve? -->
-<!--- If this PR relates to an issue, include Refs #XXX or Fixes #XXX -->
+<!--- If this PR relates to an issue, include Fixes #XXX -->
 
 ## PR Checklist
 

@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -50,7 +51,7 @@ packages = ["src/pook"]
 packages = ["src/pook"]
 
 [tool.hatch.envs.default]
-python = "3.12"
+python = "3.13"
 extra-dependencies = [
     "pre-commit~=4.0",
     "mypy>=1.11.2",
@@ -96,7 +97,7 @@ build = "hatch run apidocs; hatch run htmldocs"
 
 [tool.hatch.envs.test]
 [[tool.hatch.envs.test.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "pypy3.10"]
+python = ["3.9", "3.10", "3.11", "3.12", "3.13", "pypy3.10"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
