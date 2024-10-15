@@ -1,3 +1,4 @@
+import asyncio
 import pytest
 
 from pook import api
@@ -47,3 +48,30 @@ def test_mock_contructors(engine):
 
     assert len(engine.mocks) == 0
     assert engine.active is False
+
+
+def test_activate_as_decorator(engine):
+
+    @api.activate
+    def test_activate():
+        api.get("foo.com")
+        assert engine.active is True
+        assert engine.isdone() is False
+
+    test_activate()
+    assert engine.active is False
+    assert engine.isdone() is True
+
+
+def test_activate_as_decorator_for_async(engine):
+
+    @api.activate
+    async def test_activate():
+        await asyncio.sleep(0)
+        api.get("foo.com")
+        assert engine.active is True
+        assert engine.isdone() is False
+
+    await test_activate()
+    assert engine.active is False
+    assert engine.isdone() is True
