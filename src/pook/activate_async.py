@@ -24,5 +24,6 @@ def activate_async(fn, _engine):
                 fn(*args, **kw)
         finally:
             _engine.disable()
+            _engine.reset()
 
     return wrapper

@@ -138,6 +138,7 @@ def activate(fn=None):
             fn(*args, **kw)
         finally:
             _engine.disable()
+            _engine.reset()
 
     return wrapper
 
