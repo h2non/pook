@@ -96,7 +96,7 @@ build = "hatch run apidocs; hatch run htmldocs"
 
 [tool.hatch.envs.test]
 [[tool.hatch.envs.test.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "pypy3.10"]
+python = ["3.9", "3.10", "3.11", "3.12", "3.13", "pypy3.10"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
