@@ -63,7 +63,7 @@ def test_activate_as_decorator(engine):
     assert engine.isdone() is True
 
 
-def test_activate_as_decorator_for_async(engine):
+async def test_activate_as_decorator_for_async(engine):
 
     @api.activate
     async def test_activate():
