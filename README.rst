@@ -61,7 +61,7 @@ Using ``pip`` package manager (requires pip 1.8+):
 
     pip install --upgrade pook
 
-Or install the latest sources from Github:
+Or install the latest sources from GitHub:
 
 .. code:: bash
 

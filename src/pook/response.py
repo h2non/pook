@@ -19,9 +19,6 @@ class Response:
         xml (str): HTTP response XML body.
         type (str): HTTP response content MIME type.
         file (str): file path to HTTP body response.
-
-    Attributes:
-        mock (pook.Mock): reference to mock instance.
     """
 
     _KEY_ORDER = (
@@ -227,15 +224,12 @@ class Response:
     @property
     def mock(self):
         """
-        Getter accessor for `mock` attribute.
+        Reference to mock instance.
         """
         return self._mock
 
     @mock.setter
     def mock(self, mock):
-        """
-        Setter for ``mock`` attribute.
-        """
         self._mock = mock
 
     def __repr__(self):

@@ -20,20 +20,13 @@ class Request:
         body (bytes|regex): request body payload to match.
         json (str|dict|list): JSON payload body structure to match.
         xml (str): XML payload data structure to match.
-
-    Attributes:
-        method (str): HTTP method to match. Defaults to ``GET``.
-        url (str): URL request to intercept and match.
-        headers (dict): HTTP headers to match.
-        query (dict): URL query params to match. Complementely to URL
-            defined query params.
-        body (bytes|regex): request body payload to match.
-        json (str|dict|list): JSON payload body structure to match.
-        xml (str): XML payload data structure to match.
     """
 
     # Store keys
     keys = ("method", "headers", "body", "url", "query", "xml", "json")
+    """
+    :meta private:
+    """
 
     def __init__(self, method="GET", **kw):
         self._url = None
@@ -47,6 +40,7 @@ class Request:
 
     @property
     def method(self):
+        """HTTP method to match. Defaults to ``GET``."""
         return self._method
 
     @method.setter
@@ -55,6 +49,7 @@ class Request:
 
     @property
     def headers(self):
+        """HTTP headers to match."""
         return self._headers
 
     @headers.setter
@@ -75,6 +70,7 @@ class Request:
 
     @property
     def url(self):
+        """URL request to intercept and match."""
         return self._url
 
     @url.setter
@@ -98,6 +94,7 @@ class Request:
 
     @property
     def query(self):
+        """URL query params to match. Complementary to URL defined query params."""
         return self._query
 
     @query.setter
@@ -106,6 +103,7 @@ class Request:
 
     @property
     def body(self):
+        """request body payload to match."""
         return self._body
 
     @body.setter
@@ -117,6 +115,7 @@ class Request:
 
     @property
     def json(self):
+        """JSON payload body structure to match."""
         return _json.loads(self.body.decode("utf-8"))
 
     @json.setter
@@ -128,6 +127,7 @@ class Request:
 
     @property
     def xml(self):
+        """XML payload data structure to match."""
         return self.body.decode("utf-8")
 
     @xml.setter
