@@ -1,6 +1,12 @@
 History
 =======
 
+vX.Y.Z / 20xx-xx-xx
+-------------------------
+
+  * Return the correct type of ``headers`` object for standard library urllib by @sarayourfriend in https://github.com/h2non/pook/pull/154.
+  * Support ``Sequence[tuple[str, str]]`` header input with aiohttp by @sarayourfriend in https://github.com/h2non/pook/pull/154.
+
 v2.1.1 / 2024-10-15
 -------------------------
 

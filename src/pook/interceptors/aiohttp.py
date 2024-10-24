@@ -2,6 +2,7 @@ import asyncio
 from http.client import responses as http_reasons
 from unittest import mock
 from urllib.parse import urlencode, urlunparse
+from collections.abc import Mapping
 
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
@@ -60,7 +61,24 @@ class AIOHTTPInterceptor(BaseInterceptor):
     ):
         # Create request contract based on incoming params
         req = Request(method)
-        req.headers = headers or {}
+
+        # aiohttp's interface allows various mappings, as well as an iterable of key/value tuples
+        # ``pook.request`` only allows a dict, so we need to map the iterable to the matchable interface
+        if headers:
+            if isinstance(headers, Mapping):
+                req.headers = headers
+            else:
+                req_headers = {}
+                # If it isn't a mapping, then its an Iterable[Tuple[Union[str, istr], str]]
+                for req_header, req_header_value in headers:
+                    normalised_header = req_header.lower()
+                    if normalised_header in req_headers:
+                        req_headers[normalised_header] += f", {req_header_value}"
+                    else:
+                        req_headers[normalised_header] = req_header_value
+
+                req.headers = req_headers
+
         req.body = data
 
         # Expose extra variadic arguments

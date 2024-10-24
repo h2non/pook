@@ -11,11 +11,13 @@ pytestmark = [pytest.mark.pook]
 class TestStandardAiohttp(StandardTests):
     is_async = True
 
-    async def amake_request(self, method, url, content=None):
+    async def amake_request(self, method, url, content=None, headers=None):
         async with aiohttp.ClientSession(loop=self.loop) as session:
-            req = await session.request(method=method, url=url, data=content)
-            response_content = await req.read()
-            return req.status, response_content
+            response = await session.request(
+                method=method, url=url, data=content, headers=headers
+            )
+            response_content = await response.read()
+            return response.status, response_content, response.headers
 
 
 def _pook_url(URL):
