@@ -5,5 +5,5 @@
 
 ## PR Checklist
 
-- [ ] I've added tests any code changes
+- [ ] I've added tests for any code changes
 - [ ] I've documented any new features
