@@ -1,5 +1,5 @@
 import socket
-from http.client import _CS_REQ_SENT  # type: ignore[attr-defined]
+from http.client import _CS_REQ_SENT, HTTPMessage  # type: ignore[attr-defined]
 from http.client import HTTPSConnection
 
 from http.client import (
@@ -69,18 +69,16 @@ class HTTPClientInterceptor(BaseInterceptor):
         # Shortcut to mock response
         res = mock._response
 
-        # Aggregate headers as list of tuples for interface compatibility
-        headers = []
-        for key in res._headers:
-            headers.append((key, res._headers[key]))
-
         mockres = HTTPResponse(SocketMock(), method=method, url=url)
         mockres.version = (1, 1)
         mockres.status = res._status
         # urllib requires `code` to be set, rather than `status`
         mockres.code = res._status
         mockres.reason = http_reasons.get(res._status)
-        mockres.headers = res._headers.to_dict()
+        mockres.headers = HTTPMessage()
+
+        for hkey, hval in res._headers.itermerged():
+            mockres.headers.add_header(hkey, hval)
 
         def getresponse():
             return mockres

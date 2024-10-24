@@ -7,10 +7,18 @@ from tests.unit.interceptors.base import StandardTests
 
 
 class TestStandardUrllib3(StandardTests):
-    def make_request(self, method, url, content=None):
+    def make_request(self, method, url, content=None, headers=None):
+        req_headers = {}
+        if headers:
+            for header, value in headers:
+                if header in req_headers:
+                    req_headers[header] += f", {value}"
+                else:
+                    req_headers[header] = value
+
         http = urllib3.PoolManager()
-        response = http.request(method, url, content)
-        return response.status, response.read()
+        response = http.request(method, url, content, headers=req_headers)
+        return response.status, response.read(), response.headers
 
 
 @pytest.fixture
