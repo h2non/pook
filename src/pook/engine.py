@@ -382,7 +382,7 @@ class Engine:
         Returns:
             bool
         """
-        return self.networking and all(fn(request) for fn in self.network_filters)
+        return self.networking and any(fn(request) for fn in self.network_filters)
 
     def match(self, request):
         """
