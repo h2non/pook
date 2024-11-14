@@ -6,6 +6,7 @@ from typing import Mapping, Optional, Tuple
 import pytest
 
 import pook
+from pook.exceptions import PookNoMatches
 
 
 class StandardTests:
@@ -85,6 +86,46 @@ class StandardTests:
         status, *_ = self.make_request("POST", url_500)
 
         assert status == 500
+
+    @pytest.mark.pook
+    @pytest.mark.parametrize(
+        "allowed_hosts",
+        [
+            ["mocked.nonexistent"],
+            ["mocked.nonexistent", "definitely.nonexistent"],
+            ["mocked.nonexistent", "definitely.nonexistent", "also.nonexistent"],
+        ],
+    )
+    def test_network_mode_multiple_hosts(self, allowed_hosts):
+        """Enabling network mode with multiple hosts allows requests to pass for any of the hosts."""
+
+        pook.enable_network(*allowed_hosts)
+
+        disallowed_host = "disallowed.nonexistent"
+
+        # Ensure disallowed hosts are properly mocked.
+        mocked_disallowed_host_url = f"http://{disallowed_host}/mocked/path"
+        pook.get(mocked_disallowed_host_url).reply(200).body("hello from pook")
+        status, *_ = self.make_request("GET", mocked_disallowed_host_url)
+        assert status == 200
+
+        # Ensure unmocked non-allowed hosts can't be reached.
+        with pytest.raises(PookNoMatches):
+            self.make_request("GET", f"http://{disallowed_host}/some/unmocked/path")
+
+        # Ensure we can still mock paths on the allowed hosts.
+        mocked_allowed_host_url = "http://mocked.nonexistent/mocked/path"
+        pook.get(mocked_allowed_host_url).reply(200).body("hello from pook")
+        status, *_ = self.make_request("GET", mocked_allowed_host_url)
+        assert status == 200
+
+        # Ensure unmocked paths on allowed hosts are not blocked.
+        # If we don't get PookNoMatches, the filter works.
+        for allowed_host in allowed_hosts:
+            try:
+                self.make_request("GET", f"http://{allowed_host}/some/unmocked/path")
+            except Exception as err:
+                assert not isinstance(err, PookNoMatches)
 
     @pytest.mark.pook
     def test_json_request(self, url_404):
