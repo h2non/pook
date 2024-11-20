@@ -60,6 +60,10 @@ class StandardTests:
     def url_500(self, httpbin):
         return f"{httpbin.url}/status/500"
 
+    @pytest.fixture
+    def url_401(self, httpbin):
+        return httpbin + "/status/401"
+
     @pytest.mark.pook
     def test_activate_deactivate(self, url_404):
         """Deactivating pook allows requests to go through."""
@@ -87,45 +91,68 @@ class StandardTests:
 
         assert status == 500
 
-    @pytest.mark.pook
-    @pytest.mark.parametrize(
-        "allowed_hosts",
-        [
-            ["mocked.nonexistent"],
-            ["mocked.nonexistent", "definitely.nonexistent"],
-            ["mocked.nonexistent", "definitely.nonexistent", "also.nonexistent"],
-        ],
-    )
-    def test_network_mode_multiple_hosts(self, allowed_hosts):
-        """Enabling network mode with multiple hosts allows requests to pass for any of the hosts."""
+        mocked_status, mocked_body, *_ = self.make_request("GET", url_404)
 
-        pook.enable_network(*allowed_hosts)
+        assert mocked_status == 200
+        assert mocked_body == b"hello from pook"
 
-        disallowed_host = "disallowed.nonexistent"
+    @pytest.mark.pook(allow_pending_mocks=True)
+    def test_network_mode_hostname(self, url_401):
+        example_com = "http://example.com"
+        pook.get(example_com).header("x-pook", "1").reply(200).body("hello from pook")
+        # httpbin runs on loopback
+        pook.enable_network("127.0.0.1")
 
-        # Ensure disallowed hosts are properly mocked.
-        mocked_disallowed_host_url = f"http://{disallowed_host}/mocked/path"
-        pook.get(mocked_disallowed_host_url).reply(200).body("hello from pook")
-        status, *_ = self.make_request("GET", mocked_disallowed_host_url)
-        assert status == 200
+        httpbin_status, *_ = self.make_request("GET", url_401)
 
-        # Ensure unmocked non-allowed hosts can't be reached.
+        # network is enabled for httpbin hostname so it goes through
+        assert httpbin_status == 401
+
         with pytest.raises(PookNoMatches):
-            self.make_request("GET", f"http://{disallowed_host}/some/unmocked/path")
+            # Make the request without query params to avoid matching the mock
+            # which should raise a no match exception, as network mode is not enabled
+            # for example.com hostname
+            self.make_request("GET", example_com)
 
-        # Ensure we can still mock paths on the allowed hosts.
-        mocked_allowed_host_url = "http://mocked.nonexistent/mocked/path"
-        pook.get(mocked_allowed_host_url).reply(200).body("hello from pook")
-        status, *_ = self.make_request("GET", mocked_allowed_host_url)
-        assert status == 200
+        # this matches the mock on the header, so gets 200 with the hello from pook body
+        example_status, body, *_ = self.make_request(
+            "GET", example_com, headers=[("x-pook", "1")]
+        )
 
-        # Ensure unmocked paths on allowed hosts are not blocked.
-        # If we don't get PookNoMatches, the filter works.
-        for allowed_host in allowed_hosts:
-            try:
-                self.make_request("GET", f"http://{allowed_host}/some/unmocked/path")
-            except Exception as err:
-                assert not isinstance(err, PookNoMatches)
+        assert example_status == 200
+        assert body == b"hello from pook"
+
+    @pytest.mark.pook(allow_pending_mocks=True)
+    def test_multiple_network_filters(self, url_401):
+        """When multiple network filters are added, only one is required to match for the
+        request to be allowed through the network."""
+
+        def has_x_header(request: pook.Request):
+            return request.headers.get("x-pook") == "x"
+
+        def has_y_header(request: pook.Request):
+            return request.headers.get("x-pook") == "y"
+
+        pook.enable_network()
+
+        pook.use_network_filter(has_x_header, has_y_header)
+
+        pook.get(url_401).header("x-pook", "z").reply(200).body("hello from pook")
+
+        # Network filter matches, so request is allowed despite not matching a mock
+        x_status, *_ = self.make_request("GET", url_401, headers=[("x-pook", "x")])
+        assert x_status == 401
+
+        # Network filter matches, so request is allowed despite not matching a mock
+        y_status, *_ = self.make_request("GET", url_401, headers=[("x-pook", "y")])
+        assert y_status == 401
+
+        # Mock matches, so the response is mocked
+        z_status, z_body, *_ = self.make_request(
+            "GET", url_401, headers=[("x-pook", "z")]
+        )
+        assert z_status == 200
+        assert z_body == b"hello from pook"
 
     @pytest.mark.pook
     def test_json_request(self, url_404):
