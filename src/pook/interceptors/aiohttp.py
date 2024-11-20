@@ -1,9 +1,11 @@
 import asyncio
 from http.client import responses as http_reasons
+from typing import Callable, Optional
 from unittest import mock
 from urllib.parse import urlencode, urlunparse
 from collections.abc import Mapping
 
+import aiohttp
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
 
@@ -29,13 +31,8 @@ class SimpleContent(EmptyStreamReader):
         return self.content
 
 
-def HTTPResponse(*args, **kw):
-    # Dynamically load package
-    module = __import__(RESPONSE_PATH, fromlist=(RESPONSE_CLASS,))
-    ClientResponse = getattr(module, RESPONSE_CLASS)
-
-    # Return response instance
-    return ClientResponse(
+def HTTPResponse(session: aiohttp.ClientSession, *args, **kw):
+    return session._response_class(
         *args,
         request_info=mock.Mock(),
         writer=None,
@@ -53,22 +50,17 @@ class AIOHTTPInterceptor(BaseInterceptor):
     aiohttp HTTP client traffic interceptor.
     """
 
-    def _url(self, url):
+    def _url(self, url) -> Optional[yarl.URL]:
         return yarl.URL(url) if yarl else None
 
-    async def _on_request(
-        self, _request, session, method, url, data=None, headers=None, **kw
-    ):
-        # Create request contract based on incoming params
-        req = Request(method)
-
+    def set_headers(self, req, headers) -> None:
         # aiohttp's interface allows various mappings, as well as an iterable of key/value tuples
         # ``pook.request`` only allows a dict, so we need to map the iterable to the matchable interface
         if headers:
             if isinstance(headers, Mapping):
                 req.headers = headers
             else:
-                req_headers = {}
+                req_headers: dict[str, str] = {}
                 # If it isn't a mapping, then its an Iterable[Tuple[Union[str, istr], str]]
                 for req_header, req_header_value in headers:
                     normalised_header = req_header.lower()
@@ -79,17 +71,37 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
                 req.headers = req_headers
 
+    async def _on_request(
+        self,
+        _request: Callable,
+        session: aiohttp.ClientSession,
+        method: str,
+        url: str,
+        data=None,
+        headers=None,
+        **kw,
+    ) -> aiohttp.ClientResponse:
+        # Create request contract based on incoming params
+        req = Request(method)
+
+        self.set_headers(req, headers)
+        self.set_headers(req, session.headers)
+
         req.body = data
 
         # Expose extra variadic arguments
         req.extra = kw
 
+        full_url = session._build_url(url)
+
         # Compose URL
         if not kw.get("params"):
-            req.url = str(url)
+            req.url = str(full_url)
         else:
             req.url = (
-                str(url) + "?" + urlencode([(x, y) for x, y in kw["params"].items()])
+                str(full_url)
+                + "?"
+                + urlencode([(x, y) for x, y in kw["params"].items()])
             )
 
         # If a json payload is provided, serialize it for JSONMatcher support
@@ -122,13 +134,12 @@ class AIOHTTPInterceptor(BaseInterceptor):
             headers.append((key, res._headers[key]))
 
         # Create mock equivalent HTTP response
-        _res = HTTPResponse(req.method, self._url(urlunparse(req.url)))
+        _res = HTTPResponse(session, req.method, self._url(urlunparse(req.url)))
 
         # response status
-        _res.version = (1, 1)
+        _res.version = aiohttp.HttpVersion(1, 1)
         _res.status = res._status
         _res.reason = http_reasons.get(res._status)
-        _res._should_close = False
 
         # Add response headers
         _res._raw_headers = tuple(headers)
@@ -144,7 +155,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # Return response based on mock definition
         return _res
 
-    def _patch(self, path):
+    def _patch(self, path: str) -> None:
         # If not able to import aiohttp dependencies, skip
         if not yarl or not multidict:
             return None
@@ -170,16 +181,18 @@ class AIOHTTPInterceptor(BaseInterceptor):
         else:
             self.patchers.append(patcher)
 
-    def activate(self):
+    def activate(self) -> None:
         """
         Activates the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        [self._patch(path) for path in PATCHES]
+        for path in PATCHES:
+            self._patch(path)
 
-    def disable(self):
+    def disable(self) -> None:
         """
         Disables the traffic interceptor.
         This method must be implemented by any interceptor.
         """
-        [patch.stop() for patch in self.patchers]
+        for patch in self.patchers:
+            patch.stop()

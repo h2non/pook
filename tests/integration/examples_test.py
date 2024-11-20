@@ -1,6 +1,7 @@
 import platform
 import subprocess
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -16,6 +17,6 @@ if platform.python_implementation() == "PyPy":
 
 @pytest.mark.parametrize("example", examples)
 def test_examples(example):
-    result = subprocess.run(["python", f"examples/{example}"], check=False)
+    result = subprocess.run([sys.executable, f"examples/{example}"], check=False)
 
     assert result.returncode == 0, result.stdout

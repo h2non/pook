@@ -1,11 +1,14 @@
 History
 =======
 
-vX.Y.Z / 20xx-xx-xx
+v2.1.2 / 2024-11-21
 -------------------------
 
   * Return the correct type of ``headers`` object for standard library urllib by @sarayourfriend in https://github.com/h2non/pook/pull/154.
   * Support ``Sequence[tuple[str, str]]`` header input with aiohttp by @sarayourfriend in https://github.com/h2non/pook/pull/154.
+  * Fix network filters when multiple filters are active by @rsmeral in https://github.com/h2non/pook/pull/155.
+  * Fix aiohttp matching not working with session base URL or headers by @sarayourfriend in https://github.com/h2non/pook/pull/157.
+  * Add support for Python 3.13 by @sarayourfriend in https://github.com/h2non/pook/pull/149.
 
 v2.1.1 / 2024-10-15
 -------------------------
