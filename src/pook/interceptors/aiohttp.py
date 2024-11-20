@@ -4,6 +4,7 @@ from unittest import mock
 from urllib.parse import urlencode, urlunparse
 from collections.abc import Mapping
 
+import aiohttp
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
 
@@ -56,12 +57,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
     def _url(self, url):
         return yarl.URL(url) if yarl else None
 
-    async def _on_request(
-        self, _request, session, method, url, data=None, headers=None, **kw
-    ):
-        # Create request contract based on incoming params
-        req = Request(method)
-
+    def set_headers(self, req, headers):
         # aiohttp's interface allows various mappings, as well as an iterable of key/value tuples
         # ``pook.request`` only allows a dict, so we need to map the iterable to the matchable interface
         if headers:
@@ -79,17 +75,37 @@ class AIOHTTPInterceptor(BaseInterceptor):
 
                 req.headers = req_headers
 
+    async def _on_request(
+        self,
+        _request,
+        session: aiohttp.ClientSession,
+        method,
+        url,
+        data=None,
+        headers=None,
+        **kw,
+    ):
+        # Create request contract based on incoming params
+        req = Request(method)
+
+        self.set_headers(req, headers)
+        self.set_headers(req, session.headers)
+
         req.body = data
 
         # Expose extra variadic arguments
         req.extra = kw
 
+        full_url = session._build_url(url)
+
         # Compose URL
         if not kw.get("params"):
-            req.url = str(url)
+            req.url = str(full_url)
         else:
             req.url = (
-                str(url) + "?" + urlencode([(x, y) for x, y in kw["params"].items()])
+                str(full_url)
+                + "?"
+                + urlencode([(x, y) for x, y in kw["params"].items()])
             )
 
         # If a json payload is provided, serialize it for JSONMatcher support
