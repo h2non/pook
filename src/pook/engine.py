@@ -382,7 +382,16 @@ class Engine:
         Returns:
             bool
         """
-        return self.networking and all(fn(request) for fn in self.network_filters)
+        if not self.networking:
+            return False
+
+        if not self.network_filters:
+            # networking is enabled, and there are no filters, so
+            # all unmatching requests should be allowed
+            return True
+
+        # Otherwise, only allow if at least one of the network filters matches
+        return any(fn(request) for fn in self.network_filters)
 
     def match(self, request):
         """

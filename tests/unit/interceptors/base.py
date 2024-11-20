@@ -6,6 +6,7 @@ from typing import Mapping, Optional, Tuple
 import pytest
 
 import pook
+from pook.exceptions import PookNoMatches
 
 
 class StandardTests:
@@ -59,6 +60,10 @@ class StandardTests:
     def url_500(self, httpbin):
         return f"{httpbin.url}/status/500"
 
+    @pytest.fixture
+    def url_401(self, httpbin):
+        return httpbin + "/status/401"
+
     @pytest.mark.pook
     def test_activate_deactivate(self, url_404):
         """Deactivating pook allows requests to go through."""
@@ -85,6 +90,69 @@ class StandardTests:
         status, *_ = self.make_request("POST", url_500)
 
         assert status == 500
+
+        mocked_status, mocked_body, *_ = self.make_request("GET", url_404)
+
+        assert mocked_status == 200
+        assert mocked_body == b"hello from pook"
+
+    @pytest.mark.pook(allow_pending_mocks=True)
+    def test_network_mode_hostname(self, url_401):
+        example_com = "http://example.com"
+        pook.get(example_com).header("x-pook", "1").reply(200).body("hello from pook")
+        # httpbin runs on loopback
+        pook.enable_network("127.0.0.1")
+
+        httpbin_status, *_ = self.make_request("GET", url_401)
+
+        # network is enabled for httpbin hostname so it goes through
+        assert httpbin_status == 401
+
+        with pytest.raises(PookNoMatches):
+            # Make the request without query params to avoid matching the mock
+            # which should raise a no match exception, as network mode is not enabled
+            # for example.com hostname
+            self.make_request("GET", example_com)
+
+        # this matches the mock on the header, so gets 200 with the hello from pook body
+        example_status, body, *_ = self.make_request(
+            "GET", example_com, headers=[("x-pook", "1")]
+        )
+
+        assert example_status == 200
+        assert body == b"hello from pook"
+
+    @pytest.mark.pook(allow_pending_mocks=True)
+    def test_multiple_network_filters(self, url_401):
+        """When multiple network filters are added, only one is required to match for the
+        request to be allowed through the network."""
+
+        def has_x_header(request: pook.Request):
+            return request.headers.get("x-pook") == "x"
+
+        def has_y_header(request: pook.Request):
+            return request.headers.get("x-pook") == "y"
+
+        pook.enable_network()
+
+        pook.use_network_filter(has_x_header, has_y_header)
+
+        pook.get(url_401).header("x-pook", "z").reply(200).body("hello from pook")
+
+        # Network filter matches, so request is allowed despite not matching a mock
+        x_status, *_ = self.make_request("GET", url_401, headers=[("x-pook", "x")])
+        assert x_status == 401
+
+        # Network filter matches, so request is allowed despite not matching a mock
+        y_status, *_ = self.make_request("GET", url_401, headers=[("x-pook", "y")])
+        assert y_status == 401
+
+        # Mock matches, so the response is mocked
+        z_status, z_body, *_ = self.make_request(
+            "GET", url_401, headers=[("x-pook", "z")]
+        )
+        assert z_status == 200
+        assert z_body == b"hello from pook"
 
     @pytest.mark.pook
     def test_json_request(self, url_404):
