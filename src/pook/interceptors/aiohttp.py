@@ -58,18 +58,15 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # ``pook.request`` only allows a dict, so we need to map the iterable to the matchable interface
         if headers:
             if isinstance(headers, Mapping):
-                req.headers = headers
+                req.headers.update(**headers)
             else:
-                req_headers: dict[str, str] = {}
                 # If it isn't a mapping, then its an Iterable[Tuple[Union[str, istr], str]]
                 for req_header, req_header_value in headers:
                     normalised_header = req_header.lower()
-                    if normalised_header in req_headers:
-                        req_headers[normalised_header] += f", {req_header_value}"
+                    if normalised_header in req.headers:
+                        req.headers[normalised_header] += f", {req_header_value}"
                     else:
-                        req_headers[normalised_header] = req_header_value
-
-                req.headers = req_headers
+                        req.headers[normalised_header] = req_header_value
 
     async def _on_request(
         self,
