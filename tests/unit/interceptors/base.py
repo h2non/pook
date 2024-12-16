@@ -208,7 +208,7 @@ class StandardTests:
         assert body == b"hello from pook"
 
     @pytest.mark.pook
-    def test_mocked_resposne_headers(self, url_404):
+    def test_mocked_response_headers(self, url_404):
         """Mocked response headers are appropriately returned."""
         pook.get(url_404).reply(200).header("x-hello", "from pook")
 
@@ -238,3 +238,11 @@ class StandardTests:
 
         assert status == 200
         assert headers["x-hello"] == "from pook, another time"
+
+    @pytest.mark.pook(allow_pending_mocks=True)
+    def test_unmatched_headers_none_sent(self, url_404):
+        """Header matching will run, but not match, on requests that send no headers."""
+        pook.get(url_404).header("x-hello", "from pook").reply(200)
+
+        with pytest.raises(PookNoMatches):
+            self.make_request("GET", url_404)
