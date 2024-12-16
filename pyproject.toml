@@ -10,6 +10,7 @@ readme = "README.rst"
 license = "MIT"
 authors = [
     { name = "Tomas Aparicio", email = "tomas@aparicio.me" },
+    { name = "Sara Marcondes", email = "git@sarayourfriend.pictures" },
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",

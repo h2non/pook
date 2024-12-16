@@ -1,6 +1,11 @@
 History
 =======
 
+v2.1.3 / 2024-12-16
+-------------------------
+
+  * Ensure aiohttp headers can be matched from both the session and request in the same matcher
+
 v2.1.2 / 2024-11-21
 -------------------------
 
