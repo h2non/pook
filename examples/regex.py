@@ -7,7 +7,7 @@ pook.on()
 
 # Mock definition based
 (
-    pook.get(pook.regex("h[t]{2}pbin.*"))
+    pook.get(pook.regex("h[t]{2}p*"))
     .path(pook.regex("/foo/[a-z]+/baz"))
     .header("Client", pook.regex("requests|pook"))
     .times(2)

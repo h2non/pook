@@ -56,10 +56,10 @@ def test_mock_url(mock):
         ),
     ),
 )
-def test_mock_constructor(param_kwargs, query_string):
+def test_mock_constructor(param_kwargs, query_string, url_404):
     # Should not raise
     mock = Mock(
-        url="https://httpbin.org/404",
+        url=url_404,
         reply_status=200,
         response_json={"hello": "from pook"},
         **param_kwargs,
@@ -67,63 +67,57 @@ def test_mock_constructor(param_kwargs, query_string):
 
     with pook.use():
         pook.engine().add_mock(mock)
-        res = urlopen(f"https://httpbin.org/404{query_string}")
+        res = urlopen(f"{url_404}{query_string}")
         assert res.status == 200
         assert json.loads(res.read()) == {"hello": "from pook"}
 
 
 @pytest.mark.parametrize(
-    "url, params, req, expected",
+    "params, req_params, expected",
     [
-        ("http://google.es", {}, Request(url="http://google.es"), (True, [])),
+        ({}, "", (True, [])),
         (
-            "http://google.es",
             {},
-            Request(url="http://google.es?foo=bar"),
+            "?foo=bar",
             (True, []),
         ),
         (
-            "http://google.es",
             {},
-            Request(url="http://google.es?foo=bar&baz=qux"),
+            "?foo=bar&baz=qux",
             (True, []),
         ),
         (
-            "http://google.es",
             {},
-            Request(url="http://google.es?baz=qux"),
+            "?baz=qux",
             (True, []),
         ),
         (
-            "http://google.es",
             {"foo": "bar"},
-            Request(url="http://google.es"),
+            "",
             (False, []),
         ),
         (
-            "http://google.es",
             {"foo": "bar"},
-            Request(url="http://google.es?foo=bar"),
+            "?foo=bar",
             (True, []),
         ),
         (
-            "http://google.es",
             {"foo": "bar"},
-            Request(url="http://google.es?foo=bar&baz=qux"),
+            "?foo=bar&baz=qux",
             (True, []),
         ),
         (
-            "http://google.es",
             {"foo": "bar"},
-            Request(url="http://google.es?baz=qux"),
+            "?baz=qux",
             (False, []),
         ),
     ],
 )
-def test_mock_params(url, params, req, expected, mock):
-    mock.url(url)
+def test_mock_params(url_404, params, req_params, expected, mock):
+    mock.url(url_404)
     if params:
         mock.params(params)
+    req = Request(url=f"{url_404}{req_params}")
     assert mock.matchers.match(req) == expected
 
 
@@ -131,12 +125,11 @@ def test_new_response(mock):
     assert mock.reply() != mock.reply(new_response=True, json={})
 
 
-def test_times(mock):
-    url = "https://example.com"
-    mock.url(url)
+def test_times(mock, url_404):
+    mock.url(url_404)
     mock.times(2)
 
-    req = Request(url=url)
+    req = Request(url=url_404)
 
     assert mock.match(req) == (True, [])
     assert mock.match(req) == (True, [])
@@ -148,36 +141,35 @@ def test_times(mock):
 
 
 @pytest.mark.pook
-def test_times_integrated(httpbin):
-    url = f"{httpbin.url}/status/404"
-    pook.get(url).times(2).reply(200).body("hello from pook")
+def test_times_integrated(url_404):
+    pook.get(url_404).times(2).reply(200).body("hello from pook")
 
-    res = urlopen(url)
+    res = urlopen(url_404)
     assert res.read() == b"hello from pook"
 
-    res = urlopen(url)
+    res = urlopen(url_404)
     assert res.read() == b"hello from pook"
 
     with pytest.raises(PookNoMatches, match="Mock matches request but is expired."):
-        urlopen(url)
+        urlopen(url_404)
 
 
-def test_file_matches(httpbin, mock):
+def test_file_matches(local_responder, mock):
     mock.file(BINARY_FILE_PATH)
 
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         body=BINARY_FILE,
     )
 
     assert mock.match(req) == (True, [])
 
 
-def test_file_not_matches(httpbin, mock):
+def test_file_not_matches(local_responder, mock):
     mock.file(BINARY_FILE_PATH)
 
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         body=b"not the binary file you're looking for!",
     )
 
@@ -192,9 +184,9 @@ def test_file_not_matches(httpbin, mock):
     # Both sides will always match, regardless of str/bytes
     list(itertools.product((b"hello", "hello"), (b"hello", "hello"))),
 )
-def test_body_matches(httpbin, mock, mock_body, request_body):
+def test_body_matches(local_responder, mock, mock_body, request_body):
     mock.body(mock_body)
-    req = Request(url=httpbin.url, body=request_body)
+    req = Request(url=local_responder.url, body=request_body)
 
     assert mock.match(req) == (True, [])
 
@@ -204,9 +196,9 @@ def test_body_matches(httpbin, mock, mock_body, request_body):
     # Neither left nor right side will ever match due to differing contents
     list(itertools.product((b"bytes", "str"), (b"hello bytes", "hello str"))),
 )
-def test_body_not_matches(httpbin, mock, mock_body, request_body):
+def test_body_not_matches(local_responder, mock, mock_body, request_body):
     mock.body(mock_body)
-    req = Request(url=httpbin.url, body=request_body)
+    req = Request(url=local_responder.url, body=request_body)
 
     matches, errors = mock.match(req)
     assert not matches
@@ -214,27 +206,27 @@ def test_body_not_matches(httpbin, mock, mock_body, request_body):
     assert errors[0].startswith("BodyMatcher: ")
 
 
-def test_body_matches_string_regex(httpbin, mock):
+def test_body_matches_string_regex(local_responder, mock):
     mock.body(re.compile(r"hello, me!"))
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         body="This is a big sentence... hello, me! wow, another part",
     )
 
     assert mock.match(req) == (True, [])
 
 
-def test_body_matches_bytes_regex(httpbin, mock):
+def test_body_matches_bytes_regex(local_responder, mock):
     mock.body(re.compile(rb"hello, me!"))
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         body="This is a big sentence... hello, me! wow, another part",
     )
 
     assert mock.match(req) == (True, [])
 
 
-def test_xml_matches(httpbin, mock):
+def test_xml_matches(local_responder, mock):
     xml = dedent(
         """
         <?xml version="1.0"?>
@@ -247,14 +239,14 @@ def test_xml_matches(httpbin, mock):
     mock.xml(xml)
 
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         xml=xml,
     )
 
     assert mock.match(req) == (True, [])
 
 
-def test_xml_not_matches(httpbin, mock):
+def test_xml_not_matches(local_responder, mock):
     xml = dedent(
         """
         <?xml version="1.0"?>
@@ -267,7 +259,7 @@ def test_xml_not_matches(httpbin, mock):
     mock.xml(xml)
 
     req = Request(
-        url=httpbin.url,
+        url=local_responder.url,
         xml=xml.replace("A pook test for XML!", "Not this one!"),
     )
 
