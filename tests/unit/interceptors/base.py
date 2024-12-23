@@ -47,23 +47,6 @@ class StandardTests:
         else:
             yield
 
-    @pytest.fixture
-    def url_404(self, httpbin):
-        """404 httpbin URL.
-
-        Useful in tests if pook is configured to reply 200, and the status is checked.
-        If pook does not match the request (and if that was the intended behaviour)
-        then the 404 status code makes that obvious!"""
-        return f"{httpbin.url}/status/404"
-
-    @pytest.fixture
-    def url_500(self, httpbin):
-        return f"{httpbin.url}/status/500"
-
-    @pytest.fixture
-    def url_401(self, httpbin):
-        return httpbin + "/status/401"
-
     @pytest.mark.pook
     def test_activate_deactivate(self, url_404):
         """Deactivating pook allows requests to go through."""

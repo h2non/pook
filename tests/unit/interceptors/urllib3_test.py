@@ -36,17 +36,12 @@ class TestStandardRequests(StandardTests):
         return response.status_code, response.content, response.headers
 
 
-@pytest.fixture
-def URL(httpbin):
-    return f"{httpbin.url}/foo"
-
-
 @pook.on
-def assert_chunked_response(URL, input_data, expected):
-    (pook.get(URL).reply(201).body(input_data, chunked=True))
+def assert_chunked_response(url_404, input_data, expected):
+    (pook.get(url_404).reply(201).body(input_data, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request("GET", URL)
+    r = http.request("GET", url_404)
 
     assert r.status == 201
 
@@ -54,24 +49,24 @@ def assert_chunked_response(URL, input_data, expected):
     assert chunks == expected
 
 
-def test_chunked_response_list(URL):
-    assert_chunked_response(URL, ["a", "b", "c"], [b"a", b"b", b"c"])
+def test_chunked_response_list(url_404):
+    assert_chunked_response(url_404, ["a", "b", "c"], [b"a", b"b", b"c"])
 
 
-def test_chunked_response_str(URL):
-    assert_chunked_response(URL, "text", [b"text"])
+def test_chunked_response_str(url_404):
+    assert_chunked_response(url_404, "text", [b"text"])
 
 
-def test_chunked_response_byte(URL):
-    assert_chunked_response(URL, b"byteman", [b"byteman"])
+def test_chunked_response_byte(url_404):
+    assert_chunked_response(url_404, b"byteman", [b"byteman"])
 
 
-def test_chunked_response_empty(URL):
-    assert_chunked_response(URL, "", [])
+def test_chunked_response_empty(url_404):
+    assert_chunked_response(url_404, "", [])
 
 
-def test_chunked_response_contains_newline(URL):
-    assert_chunked_response(URL, "newline\r\n", [b"newline\r\n"])
+def test_chunked_response_contains_newline(url_404):
+    assert_chunked_response(url_404, "newline\r\n", [b"newline\r\n"])
 
 
 def test_activate_disable():
@@ -85,29 +80,29 @@ def test_activate_disable():
 
 
 @pook.on
-def test_binary_body(URL):
-    (pook.get(URL).reply(200).body(BINARY_FILE))
+def test_binary_body(url_404):
+    (pook.get(url_404).reply(200).body(BINARY_FILE))
 
     http = urllib3.PoolManager()
-    r = http.request("GET", URL)
+    r = http.request("GET", url_404)
 
     assert r.read() == BINARY_FILE
 
 
 @pook.on
-def test_binary_body_chunked(URL):
-    (pook.get(URL).reply(200).body(BINARY_FILE, chunked=True))
+def test_binary_body_chunked(url_404):
+    (pook.get(url_404).reply(200).body(BINARY_FILE, chunked=True))
 
     http = urllib3.PoolManager()
-    r = http.request("GET", URL)
+    r = http.request("GET", url_404)
 
     assert list(r.read_chunked()) == [BINARY_FILE]
 
 
 @pytest.mark.pook
-def test_post_with_headers(URL):
-    mock = pook.post(URL).header("k", "v").reply(200).mock
+def test_post_with_headers(url_404):
+    mock = pook.post(url_404).header("k", "v").reply(200).mock
     http = urllib3.PoolManager(headers={"k": "v"})
-    resp = http.request("POST", URL)
+    resp = http.request("POST", url_404)
     assert resp.status == 200
     assert len(mock.matches) == 1

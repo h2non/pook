@@ -60,7 +60,8 @@ dependencies = [
     "pytest~=8.3",
     "pytest-asyncio~=0.24",
     "pytest-pook==0.1.0b0",
-    "pytest-httpbin==2.1.0",
+
+    "falcon~=4.0",
 
     "requests~=2.20",
     "urllib3~=2.2",
