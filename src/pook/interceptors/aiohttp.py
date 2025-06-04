@@ -95,11 +95,11 @@ class AIOHTTPInterceptor(BaseInterceptor):
         if not kw.get("params"):
             req.url = str(full_url)
         else:
-            req.url = (
-                str(full_url)
-                + "?"
-                + urlencode([(x, y) for x, y in kw["params"].items()])
-            )
+            # Transform params as a list of tuple
+            params = kw["params"]
+            if isinstance(params, dict):
+                params = [(x, y) for x, y in kw["params"].items()]
+            req.url = str(full_url) + "?" + urlencode(params)
 
         # If a json payload is provided, serialize it for JSONMatcher support
         if json_body := kw.get("json"):
