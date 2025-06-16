@@ -139,7 +139,9 @@ class AIOHTTPInterceptor(BaseInterceptor):
         _res.reason = http_reasons.get(res._status)
 
         # Add response headers
-        _res._raw_headers = tuple(headers)
+        _res._raw_headers = tuple(
+            [(bytes(k, "utf-8"), bytes(v, "utf-8")) for k, v in headers]
+        )
         _res._headers = multidict.CIMultiDictProxy(multidict.CIMultiDict(headers))
 
         if res._body:
