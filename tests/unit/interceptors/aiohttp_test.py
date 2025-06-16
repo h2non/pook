@@ -109,3 +109,27 @@ async def test_client_headers_both_session_and_request(local_responder):
         )
         assert res.status == 200
         assert await res.read() == b"hello from pook"
+
+
+@pytest.mark.asyncio
+async def test_client_params_dict(local_responder):
+    """ "Params using dict"""
+    pook.get(local_responder + "/status/404").reply(200)
+    async with aiohttp.ClientSession(base_url=local_responder.url) as session:
+        res = await session.get("/status/404", params={"key": "value"})
+        assert res.status == 200
+        assert res.url.query.get("key") == "value"
+        assert res.url.query.getall("key") == ["value"]
+
+
+@pytest.mark.asyncio
+async def test_client_params_tuple_of_tuple(local_responder):
+    """ "Params using tuple of tuple for multiple parameter key usage"""
+    pook.get(local_responder + "/status/404").reply(200)
+    async with aiohttp.ClientSession(base_url=local_responder.url) as session:
+        res = await session.get(
+            "/status/404", params=(("key", "value"), ("key", "another-value"))
+        )
+        assert res.status == 200
+        assert res.url.query.get("key") == "value"
+        assert res.url.query.getall("key") == ["value", "another-value"]
