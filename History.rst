@@ -1,6 +1,23 @@
 History
 =======
 
+v2.1.4 / 2025-07-05
+-------------------------
+
+What's Changed
+^^^^^^^^^^^^^^
+
+  * Replace pytest-httpbin with minimal Falcon version by @sarayourfriend in https://github.com/h2non/pook/pull/160
+  * Fix type of aiohttp raw headers by @rsmeral in https://github.com/h2non/pook/pull/161
+  * Fix aiohttp tuple parameters handling by @toxinu in https://github.com/h2non/pook/pull/162
+
+New Contributors
+^^^^^^^^^^^^^^^^
+
+  * @toxinu made their first contribution in https://github.com/h2non/pook/pull/162
+
+**Full Changelog**: https://github.com/h2non/pook/compare/v2.1.3...v2.1.4
+
 v2.1.3 / 2024-12-16
 -------------------------
 
