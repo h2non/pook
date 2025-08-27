@@ -103,6 +103,25 @@ Basic mocking:
         assert resp.json() == {"error": "not found"}
         assert mock.calls == 1
 
+Support dynamic response generation
+
+.. code:: python
+
+    import pook
+    import requests
+
+    @pook.on
+    def test_dynamic():
+        def resp_build(req, resp):
+            return {'test': 1234, 'url': req.url}
+
+        mock = pook.get('http://example.com/test', reply=200, response_json=resp_build)
+
+        resp = requests.get('http://example.com/test')
+        assert resp.status_code == 200
+        assert resp.json() == {'test': 1234, 'url': 'http://example.com/test'}
+        assert mock.calls == 1
+
 Using the chainable API DSL:
 
 .. code:: python

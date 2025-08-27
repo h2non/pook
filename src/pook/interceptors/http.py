@@ -88,9 +88,12 @@ class HTTPClientInterceptor(BaseInterceptor):
         conn.__response = mockres  # type: ignore[attr-defined]
         conn.__state = _CS_REQ_SENT  # type: ignore[attr-defined]
 
+
+        body = res.fetch_body(req)
+
         # Path reader
         def read():
-            return res._body or b""
+            return body or b""
 
         mockres.read = read
 

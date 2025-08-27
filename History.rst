@@ -1,6 +1,17 @@
 History
 =======
 
+vX.Y.Z / 20xx-xx-xx
+-------------------------
+What's Changed
+^^^^^^^^^^^^^^
+
+  * Add in support for passing a function to response_json, response_body, response_xml
+
+New Contributors
+^^^^^^^^^^^^^^^^
+  * @urkle made their first contribution in https://github.com/h2non/pook/pull/165
+
 v2.1.4 / 2025-07-05
 -------------------------
 

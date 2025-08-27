@@ -1,8 +1,25 @@
 import json
+from inspect import isfunction
 
 from .constants import TYPES
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
+
+class WrapJSON:
+    def __init__(self, data):
+        self.data = data
+        # Marker for easier detection in fetch_body
+        self.can_fetch_body = True
+
+    def __call__(self, request, response):
+        data = self.data(request, response)
+        return self.encode_json(data)
+
+    @staticmethod
+    def encode_json(data):
+        if not isinstance(data, str) and not isinstance(data, bytes):
+            data = json.dumps(data, indent=4)
+        return data
 
 
 class Response:
@@ -14,9 +31,9 @@ class Response:
     Arguments:
         status (int): HTTP response status code. Defaults to ``200``.
         headers (dict): HTTP response headers.
-        body (str|bytes): HTTP response body.
-        json (str|dict|list): HTTP response JSON body.
-        xml (str): HTTP response XML body.
+        body (str|bytes|function): HTTP response body.
+        json (str|bytes|dict|list|function): HTTP response JSON body.
+        xml (str|function): HTTP response XML body.
         type (str): HTTP response content MIME type.
         file (str): file path to HTTP body response.
     """
@@ -165,7 +182,9 @@ class Response:
         Returns:
             self: ``pook.Response`` current instance.
         """
-        if hasattr(body, "encode"):
+        if isfunction(body):
+            pass
+        elif hasattr(body, "encode"):
             body = body.encode("utf-8", "backslashreplace")
         elif isinstance(body, list):
             for i, chunk in enumerate(body):
@@ -178,6 +197,11 @@ class Response:
             self.header("Transfer-Encoding", "chunked")
         return self
 
+    def fetch_body(self, request):
+        if isfunction(self._body) or hasattr(self._body, 'can_fetch_body'):
+            self._body = self._body(request, self)
+        return self._body
+
     def json(self, data):
         """
         Defines the mock response JSON body.
@@ -189,8 +213,10 @@ class Response:
             self: ``pook.Response`` current instance.
         """
         self._headers["Content-Type"] = "application/json"
-        if not isinstance(data, str):
-            data = json.dumps(data, indent=4)
+        if isfunction(data):
+            data = WrapJSON(data)
+        else:
+            data = WrapJSON.encode_json(data)
 
         return self.body(data)
 

@@ -71,6 +71,37 @@ def test_mock_constructor(param_kwargs, query_string, url_404):
         assert res.status == 200
         assert json.loads(res.read()) == {"hello": "from pook"}
 
+def test_dynamic_mock_response_body():
+    def resp_builder(req, resp):
+        return b"hello from pook"
+
+    mock = Mock(
+        url='https://example.com/fetch',
+        reply_status=200,
+        response_body=resp_builder,
+    )
+
+    with pook.use():
+        pook.engine().add_mock(mock)
+        res = urlopen('https://example.com/fetch')
+        assert res.status == 200
+        assert res.read() == b"hello from pook"
+
+def test_dynamic_mock_response_json():
+    def resp_builder(req, resp):
+        return {"hello": "from pook"}
+
+    mock = Mock(
+        url='https://example.com/fetch',
+        reply_status=200,
+        response_json=resp_builder,
+    )
+
+    with pook.use():
+        pook.engine().add_mock(mock)
+        res = urlopen('https://example.com/fetch')
+        assert res.status == 200
+        assert json.loads(res.read()) == {"hello": "from pook"}
 
 @pytest.mark.parametrize(
     "params, req_params, expected",

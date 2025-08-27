@@ -78,12 +78,12 @@ class MockedTransport(httpx.BaseTransport, t.Generic[T]):
         return req
 
     def _get_httpx_response(
-        self, httpx_request: httpx.Request, mock_response: Response
+        self, httpx_request: httpx.Request, mock_response: Response, pook_request: Request
     ) -> httpx.Response:
         res = httpx.Response(
             status_code=mock_response._status,
             headers=mock_response._headers,
-            content=mock_response._body,
+            content=mock_response.fetch_body(pook_request),
             extensions={
                 # TODO: Add HTTP2 response support
                 "http_version": b"HTTP/1.1",
@@ -140,4 +140,4 @@ class SyncTransport(MockedTransport[httpx.BaseTransport]):
             transport = self._original_transport_for_url(self._client, request.url)
             return transport.handle_request(request)
 
-        return self._get_httpx_response(request, mock._response)
+        return self._get_httpx_response(request, mock._response, pook_request)

@@ -138,7 +138,7 @@ class Urllib3Interceptor(BaseInterceptor):
 
         # Shortcut to mock response and response body
         res = mock._response
-        body = res._body
+        body = res.fetch_body(req)
 
         # Aggregate headers as list of tuples for interface compatibility
         headers = []
@@ -152,7 +152,7 @@ class Urllib3Interceptor(BaseInterceptor):
             body.fp = FakeChunkedResponseBody(body_chunks)  # type:ignore
         else:
             # Assume that the body is a bytes-like object
-            body = io.BytesIO(res._body)
+            body = io.BytesIO(body)
 
         # Return mocked HTTP response
         return HTTPResponse(
