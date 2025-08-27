@@ -198,7 +198,7 @@ class Response:
         """
         Defines the mock response XML body.
 
-        For not it only supports ``str`` as input type.
+        For now it only supports ``str`` as input type.
 
         Arguments:
             xml (str): XML body data to use.
