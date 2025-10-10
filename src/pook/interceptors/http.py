@@ -89,7 +89,7 @@ class HTTPClientInterceptor(BaseInterceptor):
         conn.__state = _CS_REQ_SENT  # type: ignore[attr-defined]
 
 
-        body = res.fetch_body(req)
+        body = res.get_body(req)
 
         # Path reader
         def read():

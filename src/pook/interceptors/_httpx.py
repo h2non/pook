@@ -83,7 +83,7 @@ class MockedTransport(httpx.BaseTransport, t.Generic[T]):
         res = httpx.Response(
             status_code=mock_response._status,
             headers=mock_response._headers,
-            content=mock_response.fetch_body(pook_request),
+            content=mock_response.get_body(pook_request),
             extensions={
                 # TODO: Add HTTP2 response support
                 "http_version": b"HTTP/1.1",

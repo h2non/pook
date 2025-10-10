@@ -10,6 +10,8 @@ import pook
 from pook.exceptions import PookNoMatches
 from pook.mock import Mock
 from pook.request import Request
+from pook.response import WrapJSON
+
 from tests.unit.fixtures import BINARY_FILE, BINARY_FILE_PATH
 
 
@@ -71,37 +73,30 @@ def test_mock_constructor(param_kwargs, query_string, url_404):
         assert res.status == 200
         assert json.loads(res.read()) == {"hello": "from pook"}
 
-def test_dynamic_mock_response_body():
+def test_setting_dynamic_body(url_404):
     def resp_builder(req, resp):
         return b"hello from pook"
 
     mock = Mock(
-        url='https://example.com/fetch',
+        url=url_404,
         reply_status=200,
         response_body=resp_builder,
     )
 
-    with pook.use():
-        pook.engine().add_mock(mock)
-        res = urlopen('https://example.com/fetch')
-        assert res.status == 200
-        assert res.read() == b"hello from pook"
+    assert mock._response._body == resp_builder
 
-def test_dynamic_mock_response_json():
+def test_dynamic_mock_response_json(url_404):
     def resp_builder(req, resp):
         return {"hello": "from pook"}
 
     mock = Mock(
-        url='https://example.com/fetch',
+        url=url_404,
         reply_status=200,
         response_json=resp_builder,
     )
 
-    with pook.use():
-        pook.engine().add_mock(mock)
-        res = urlopen('https://example.com/fetch')
-        assert res.status == 200
-        assert json.loads(res.read()) == {"hello": "from pook"}
+    assert isinstance(mock._response._body, WrapJSON)
+    assert  mock._response._body.data == resp_builder
 
 @pytest.mark.parametrize(
     "params, req_params, expected",

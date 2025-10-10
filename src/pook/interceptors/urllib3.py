@@ -138,7 +138,7 @@ class Urllib3Interceptor(BaseInterceptor):
 
         # Shortcut to mock response and response body
         res = mock._response
-        body = res.fetch_body(req)
+        body = res.get_body(req)
 
         # Aggregate headers as list of tuples for interface compatibility
         headers = []
