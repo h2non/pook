@@ -178,6 +178,70 @@ class StandardTests:
         assert json.loads(body) == json_response
 
     @pytest.mark.pook
+    def test_dynamic_text_response_body(self, url_404):
+        """Dynamic mock response body as raw data."""
+
+        def resp_builder(req, resp):
+            return b"hello from pook"
+
+        pook.get(url_404).reply(200).body(resp_builder)
+
+        status, body, *_ = self.make_request("GET", url_404)
+        assert status == 200
+        assert body == b"hello from pook"
+
+    @pytest.mark.pook
+    def test_dynamic_json_response_body(self, url_404):
+        """Dynamic mock response body with JSON."""
+
+        def resp_builder(req, resp):
+            return {"hello": "from pook"}
+
+        pook.get(url_404).reply(200).json(resp_builder)
+
+        status, body, headers = self.make_request("GET", url_404)
+        assert status == 200
+        assert json.loads(body) == {"hello": "from pook"}
+        assert headers["Content-Type"] == "application/json"
+
+    @pytest.mark.pook
+    def test_dynamic_xml_response_body(self, url_404):
+        """Dynamic mock response body with XML."""
+
+        def resp_builder(req, resp):
+            return "<test>hello from pook</test>"
+
+        pook.get(url_404).reply(200).xml(resp_builder)
+
+        status, body, headers = self.make_request("GET", url_404)
+        assert status == 200
+        assert body == b"<test>hello from pook</test>"
+        # TODO what is the purpose of the XML() response method if it does nothing special over body()
+        # assert headers["Content-Type"] == "application/xml"
+
+    @pytest.mark.pook
+    def test_multiple_dynamic_response_body(self, url_404):
+        """Dynamic mock body with multiple requests."""
+
+        class RespBuilder:
+            def __init__(self):
+                self.counter = 0
+
+            def __call__(self, req, resp):
+                self.counter = self.counter + 1
+                return {"hello": "from pook", "value": self.counter}
+
+        pook.get(url_404).persist().reply(200).json(RespBuilder())
+
+        # Make 3 requests to test the dynamic response
+        for i in range(1, 4):
+            status, body, headers = self.make_request("GET", url_404)
+            print(status, body)
+            assert status == 200
+            assert json.loads(body) == {"hello": "from pook", "value": i}
+            assert headers["Content-Type"] == "application/json"
+
+    @pytest.mark.pook
     def test_header_sent(self, url_404):
         """Sent headers can be matched."""
         headers = [("x-hello", "from pook")]

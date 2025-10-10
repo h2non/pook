@@ -1,8 +1,44 @@
 import json
+from inspect import isfunction
 
 from .constants import TYPES
 from .headers import HTTPHeaderDict
 from .helpers import trigger_methods
+
+def encode_body(body):
+    """
+    Shared code to handle encoding a response body into a byte object OR an array of byte objects.
+    """
+    if hasattr(body, "encode"):
+        body = body.encode("utf-8", "backslashreplace")
+    elif isinstance(body, list):
+        for i, chunk in enumerate(body):
+            if hasattr(chunk, "encode"):
+                body[i] = chunk.encode("utf-8", "backslashreplace")
+
+    return body
+
+def encode_json(data):
+    """
+    Shared method to encode "JSON" data into a string.
+    Note, this does not handle encoding a string into a JSON string (e.g. 'MyString'=>'"MyString"'), but does handle dict/list/numbers.
+    """
+    if not isinstance(data, str) and not isinstance(data, bytes):
+        data = json.dumps(data, indent=4)
+    return data
+
+
+class WrapJSON:
+    """
+    A Wrapper callable class that handles a function returning JSON data to be encoded.
+    This performs the same logic as the json() function would with a fixed value
+    """
+    def __init__(self, data):
+        self.data = data
+
+    def __call__(self, request, response):
+        data = self.data(request, response)
+        return encode_json(data)
 
 
 class Response:
@@ -14,9 +50,9 @@ class Response:
     Arguments:
         status (int): HTTP response status code. Defaults to ``200``.
         headers (dict): HTTP response headers.
-        body (str|bytes): HTTP response body.
-        json (str|dict|list): HTTP response JSON body.
-        xml (str): HTTP response XML body.
+        body (str|bytes|function): HTTP response body.
+        json (str|bytes|dict|list|function): HTTP response JSON body.
+        xml (str|function): HTTP response XML body.
         type (str): HTTP response content MIME type.
         file (str): file path to HTTP body response.
     """
@@ -159,38 +195,38 @@ class Response:
         Defines response body data.
 
         Arguments:
-            body (str|bytes|list): response body to use.
+            body (str|bytes|list|callable): response body to use.
             chunked (bool): return a chunked response.
 
         Returns:
             self: ``pook.Response`` current instance.
         """
-        if hasattr(body, "encode"):
-            body = body.encode("utf-8", "backslashreplace")
-        elif isinstance(body, list):
-            for i, chunk in enumerate(body):
-                if hasattr(chunk, "encode"):
-                    body[i] = chunk.encode("utf-8", "backslashreplace")
-
-        self._body = body
+        self._body = encode_body(body)
 
         if chunked:
             self.header("Transfer-Encoding", "chunked")
         return self
+
+    def get_body(self, request):
+        if callable(self._body):
+            return encode_body(self._body(request, self))
+        return self._body
 
     def json(self, data):
         """
         Defines the mock response JSON body.
 
         Arguments:
-            data (dict|list|str): JSON body data.
+            data (dict|list|str|callable): JSON body data.
 
         Returns:
             self: ``pook.Response`` current instance.
         """
         self._headers["Content-Type"] = "application/json"
-        if not isinstance(data, str):
-            data = json.dumps(data, indent=4)
+        if callable(data):
+            data = WrapJSON(data)
+        else:
+            data = encode_json(data)
 
         return self.body(data)
 
@@ -198,10 +234,10 @@ class Response:
         """
         Defines the mock response XML body.
 
-        For not it only supports ``str`` as input type.
+        For now it only supports ``str`` as input type.
 
         Arguments:
-            xml (str): XML body data to use.
+            xml (str|callable): XML body data to use.
 
         Returns:
             self: ``pook.Response`` current instance.

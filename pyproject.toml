@@ -74,6 +74,27 @@ dependencies = [
     "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
 ]
 
+[dependency-groups]
+dev = [
+     "pre-commit~=4.0",
+    "mypy>=1.11.2",
+
+    "pytest~=8.3",
+    "pytest-asyncio~=0.24",
+    "pytest-pook==0.1.0b0",
+
+    "falcon~=4.0",
+
+    "requests~=2.20",
+    "urllib3~=2.2",
+    "httpx~=0.26",
+
+    "aiohttp~=3.10",
+    "async-timeout~=4.0",
+
+    "mocket[pook]~=3.12.2; platform_python_implementation != 'PyPy'",
+]
+
 [tool.hatch.envs.default.scripts]
 ci = [
     "lint-install",
