@@ -9,6 +9,7 @@ import aiohttp
 from aiohttp.helpers import TimerNoop
 from aiohttp.streams import EmptyStreamReader
 
+from pook.headers import HTTPHeaderDict
 from pook.request import Request  # type: ignore
 from pook.interceptors.base import BaseInterceptor
 
@@ -58,7 +59,8 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # ``pook.request`` only allows a dict, so we need to map the iterable to the matchable interface
         if headers:
             if isinstance(headers, Mapping):
-                req.headers.update(**headers)
+                for key, val in headers.items():
+                    req.headers.add(key, val)
             else:
                 # If it isn't a mapping, then its an Iterable[Tuple[Union[str, istr], str]]
                 for req_header, req_header_value in headers:
@@ -81,22 +83,20 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # Create request contract based on incoming params
         req = Request(method)
 
-        self.set_headers(req, headers)
-        self.set_headers(req, session.headers)
-
-        req.body = data
+        req.body = data # XXX take from real request?
 
         # Expose extra variadic arguments
         req.extra = kw
 
         full_url = session._build_url(url)
+        original_params = kw.get("params")
 
         # Compose URL
-        if not kw.get("params"):
+        if not original_params:
             req.url = str(full_url)
         else:
             # Transform params as a list of tuple
-            params = kw["params"]
+            params = original_params
             if isinstance(params, dict):
                 params = [(x, y) for x, y in kw["params"].items()]
             req.url = str(full_url) + "?" + urlencode(params)
@@ -106,6 +106,48 @@ class AIOHTTPInterceptor(BaseInterceptor):
             req.json = json_body
             if "Content-Type" not in req.headers:
                 req.headers["Content-Type"] = "application/json"
+
+        # Lifted from the ClientSession._request method we're mocking:
+        auth = kw.get('auth')
+        if (
+            auth is None
+            and session._default_auth
+            and (
+            not session._base_url or session._base_url_origin == full_url.origin()
+        )
+        ):
+            auth = session._default_auth
+
+        # Lifted from the ClientSession._request method we're mocking:
+        headers = session._prepare_headers(headers)
+
+        aiohttp_req = session._request_class(
+            method,
+            full_url,
+            params=original_params,
+            headers=headers,
+            skip_auto_headers=None,  # XXX
+            data=data,
+            cookies=None, # XXX
+            auth=auth,
+            version=session._version,
+            compress=kw.get('compress'),
+            chunked=kw.get('chunked'),
+            expect100=kw.get('expect100', False),
+            loop=session._loop,
+            response_class=session._response_class,
+            proxy=None,  # XXX
+            proxy_auth=kw.get('proxy_auth'),
+            timer=None,  # XXX,
+            session=session,
+            ssl=None,  # XXX,
+            server_hostname=kw.get('server_hostname'),
+            proxy_headers=None,  # XXX
+            traces=None,  # XXX
+            trust_env=session.trust_env,
+        )
+
+        self.set_headers(req, aiohttp_req.headers)
 
         # Match the request against the registered mocks in pook
         mock = self.engine.match(req)
