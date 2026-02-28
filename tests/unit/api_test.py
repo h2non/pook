@@ -6,7 +6,11 @@ from pook import api
 
 @pytest.fixture
 def engine():
-    return api.engine()
+    api.disable()
+    api.off()
+    yield api.engine()
+    api.off()
+    api.disable()
 
 
 def test_engine(engine):
