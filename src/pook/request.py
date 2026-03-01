@@ -54,8 +54,6 @@ class Request:
 
     @headers.setter
     def headers(self, headers):
-        if not hasattr(headers, "__setitem__"):
-            raise TypeError("headers must be a dictionary")
         self._headers.extend(headers)
 
     @property
