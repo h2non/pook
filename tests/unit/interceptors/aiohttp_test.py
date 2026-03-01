@@ -98,6 +98,22 @@ async def test_client_headers_merged(local_responder):
 
 
 @pytest.mark.asyncio
+async def test_client_auth_merged(local_responder):
+    """Auth headers set on the client should be matched"""
+    pook.get(local_responder + "/status/404").header(
+        "Authorization", "Basic dXNlcjpwYXNzd29yZA=="
+    ).reply(200).body("hello from pook")
+    async with aiohttp.ClientSession(
+        auth=aiohttp.BasicAuth("user", "password")
+    ) as session:
+        res = await session.get(
+            local_responder + "/status/404", headers={"x-pook-secondary": "xyz"}
+        )
+        assert res.status == 200
+        assert await res.read() == b"hello from pook"
+
+
+@pytest.mark.asyncio
 async def test_client_headers_both_session_and_request(local_responder):
     """Headers should be matchable from both the session and request in the same matcher"""
     pook.get(local_responder + "/status/404").header("x-pook-session", "hello").header(
