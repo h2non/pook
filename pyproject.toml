@@ -19,13 +19,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -34,7 +34,7 @@ dependencies = [
     "jsonschema>=2.5.1",
     "xmltodict>=0.11.0",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.urls]
 Homepage = "https://github.com/h2non/pook"
@@ -52,7 +52,7 @@ packages = ["src/pook"]
 packages = ["src/pook"]
 
 [tool.hatch.envs.default]
-python = "3.13"
+python = "3.14"
 dependencies = [
     "pre-commit~=4.0",
     "mypy>=1.11.2",
@@ -99,7 +99,7 @@ build = "sphinx-build -b html docs docs/_build/html {args}"
 
 [tool.hatch.envs.test]
 [[tool.hatch.envs.test.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13", "pypy3.10"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14", "pypy3.11"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

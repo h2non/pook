@@ -39,7 +39,7 @@ Note that each interpreter requires a new virtual environment, and hatch will au
 To run tests only for a specific version, affix the version designation to the environment name (the left side of the `:`):
 
 ```bash
-hatch run test.pypy3.10:test
+hatch run test.pypy3.11:test
 ```
 
 ## Documentation
