@@ -91,12 +91,12 @@ jobs:
       fail-fast: false
       matrix:
         py:
-          - 'pypy3.10'
+          - 'pypy3.11'
+          - '3.14'
           - '3.13'
           - '3.12'
           - '3.11'
           - '3.10'
-          - '3.9'
 
     steps:
       - name: Checkout repository

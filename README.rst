@@ -31,7 +31,8 @@ Features
 -  Supports third-party mocking engines, such as `mocket`_.
 -  Fits good for painless test doubles.
 -  Does not support WebSocket traffic mocking.
--  Works with +3.9 (including PyPy).
+-  Works with cpython +3.10.
+-  Supports only the current version of pypy.
 -  Dependency-less: just 3 small dependencies for JSONSchema, XML tree comparison, and URL parsing.
 
 

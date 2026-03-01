@@ -27,5 +27,5 @@ with pook.use(network=True):
         async with aiohttp.ClientSession(loop=loop) as session:
             await fetch(session, "http://httpbin.org/ip", bytearray("foo bar", "utf-8"))
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(main(loop))

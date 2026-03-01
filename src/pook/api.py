@@ -1,6 +1,6 @@
 import functools
 import re
-from asyncio import iscoroutinefunction
+from inspect import iscoroutinefunction
 from contextlib import contextmanager
 from inspect import isfunction
 
