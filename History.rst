@@ -1,6 +1,23 @@
 History
 =======
 
+v2.1.5 / 2026-03-01
+-------------------------
+
+What's Changed
+^^^^^^^^^^^^^^
+
+  * Fixing Flakiness in `api_test.py` by @pem70 in https://github.com/h2non/pook/pull/169
+  * Drop cpython 3.9 and pypy 3.10 by @sarayourfriend in https://github.com/h2non/pook/pull/171
+  * Use aiohttp middleware for mocking by @sarayourfriend in https://github.com/h2non/pook/pull/170
+
+New Contributors
+^^^^^^^^^^^^^^^^
+
+  * @pem70 made their first contribution in https://github.com/h2non/pook/pull/169
+
+**Full Changelog**: https://github.com/h2non/pook/compare/v2.1.4...v2.1.5
+
 v2.1.4 / 2025-07-05
 -------------------------
 
