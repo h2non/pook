@@ -37,6 +37,7 @@ def test_urllib_ssl():
     res = urlopen("https://example.com")
 
     assert res.read() == b"Hello from pook"
+    assert res.length == 15
 
 
 @pytest.mark.pook
@@ -45,3 +46,13 @@ def test_urllib_clear():
     res = urlopen("http://example.com")
 
     assert res.read() == b"Hello from pook"
+    assert res.length == 15
+
+
+@pytest.mark.pook
+def test_length_without_body_response_is_zero():
+    pook.get("http://example.com").reply(200)
+    res = urlopen("http://example.com")
+
+    assert res.read() == b''
+    assert res.length == 0
