@@ -50,7 +50,7 @@ def test_urllib_clear():
 
 
 @pytest.mark.pook
-def test_length_without_body_response_is_zero():
+def test_without_body_response_length_is_zero():
     pook.get("http://example.com").reply(200)
     res = urlopen("http://example.com")
 
