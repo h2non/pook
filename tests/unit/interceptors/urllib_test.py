@@ -37,6 +37,7 @@ def test_urllib_ssl():
     res = urlopen("https://example.com")
 
     assert res.read() == b"Hello from pook"
+    assert res.version == 11
 
 
 @pytest.mark.pook
@@ -45,3 +46,4 @@ def test_urllib_clear():
     res = urlopen("http://example.com")
 
     assert res.read() == b"Hello from pook"
+    assert res.version == 11
