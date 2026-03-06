@@ -55,6 +55,6 @@ def test_without_body_response_length_is_zero():
     pook.get("http://example.com").reply(200)
     res = urlopen("http://example.com")
 
-    assert res.read() == b''
+    assert res.read() == b""
     assert res.length == 0
     assert res.version == 11
