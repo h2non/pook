@@ -70,7 +70,7 @@ class HTTPClientInterceptor(BaseInterceptor):
         res = mock._response
 
         mockres = HTTPResponse(SocketMock(), method=method, url=url)
-        mockres.version = (1, 1)
+        mockres.version = 11
         mockres.status = res._status
         # urllib requires `code` to be set, rather than `status`
         mockres.code = res._status

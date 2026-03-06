@@ -38,6 +38,7 @@ def test_urllib_ssl():
 
     assert res.read() == b"Hello from pook"
     assert res.length == 15
+    assert res.version == 11
 
 
 @pytest.mark.pook
@@ -56,3 +57,4 @@ def test_without_body_response_length_is_zero():
 
     assert res.read() == b''
     assert res.length == 0
+    assert res.version == 11
