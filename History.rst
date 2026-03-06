@@ -1,6 +1,22 @@
 History
 =======
 
+v2.1.6 / 2026-03-07
+-------------------------
+
+What's Changed
+^^^^^^^^^^^^^^
+
+  * interceptors/http: fix version format by @xrmx in https://github.com/h2non/pook/pull/173
+  * interceptors/http: set length on response by @xrmx in https://github.com/h2non/pook/pull/174
+
+New Contributors
+^^^^^^^^^^^^^^^^
+
+  * @xrmx made their first contribution in https://github.com/h2non/pook/pull/173
+
+**Full Changelog**: https://github.com/h2non/pook/compare/v2.1.5...v2.1.6
+
 v2.1.5 / 2026-03-01
 -------------------------
 
