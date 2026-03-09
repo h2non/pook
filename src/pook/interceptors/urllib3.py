@@ -163,6 +163,8 @@ class Urllib3Interceptor(BaseInterceptor):
             preload_content=False,
             reason=http_reasons.get(res._status),
             original_response=FakeResponse(method, headers),
+            version=11,
+            version_string="HTTP/1.1",
         )
 
     def _patch(self, path):

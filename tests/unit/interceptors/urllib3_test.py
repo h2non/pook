@@ -106,3 +106,13 @@ def test_post_with_headers(url_404):
     resp = http.request("POST", url_404)
     assert resp.status == 200
     assert len(mock.matches) == 1
+
+
+@pytest.mark.pook
+def test_sets_version(url_404):
+    pook.get(url_404).reply(200)
+    http = urllib3.PoolManager()
+    resp = http.request("GET", url_404)
+    assert resp.status == 200
+    assert resp.version == 11
+    assert resp.version_string == "HTTP/1.1"
