@@ -26,7 +26,7 @@ class AIOHTTPInterceptor(BaseInterceptor):
         req = Request(
             method=request.method,
             headers=request.headers.items(),
-            body=request.body,
+            body=request.body.decode(),
             url=str(request.url),
         )
 
