@@ -1,3 +1,4 @@
+import asyncio
 from http.client import responses as http_reasons
 from typing import Optional
 from unittest import mock
@@ -37,6 +38,9 @@ class AIOHTTPInterceptor(BaseInterceptor):
         # be reached (an exception will be raised before).
         if not mock:
             return await handler(request)
+
+        if mock._delay:
+            await asyncio.sleep(mock._delay / 1000)
 
         # Shortcut to mock response
         res = mock._response
