@@ -1,5 +1,5 @@
 from http.client import responses as http_reasons
-from typing import Optional
+from typing import Optional, Callable
 from unittest import mock
 from urllib.parse import urlunparse
 
@@ -21,7 +21,7 @@ RESPONSE_PATH = "aiohttp.client_reqrep"
 class AIOHTTPInterceptor(BaseInterceptor):
     # Implements aiohttp.ClientMiddlewareType
     async def __call__(
-        self, request: aiohttp.ClientRequest, handler: aiohttp.ClientHandlerType
+        self, request: aiohttp.ClientRequest, handler: Callable
     ) -> aiohttp.ClientResponse:
         req = Request(
             method=request.method,
