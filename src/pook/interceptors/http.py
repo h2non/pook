@@ -1,6 +1,6 @@
 import io
 import socket
-from http.client import _CS_REQ_SENT, parse_headers # type: ignore[attr-defined]
+from http.client import _CS_REQ_SENT, parse_headers  # type: ignore[attr-defined]
 from http.client import HTTPSConnection
 
 from http.client import (
@@ -77,7 +77,9 @@ class HTTPClientInterceptor(BaseInterceptor):
         mockres.code = res._status
         mockres.reason = http_reasons.get(res._status)
         content_length = len(res._body or b"")
-        headers_fp = io.BytesIO(f"Content-Length: {content_length}\r\n".encode("iso-8859-1"))
+        headers_fp = io.BytesIO(
+            f"Content-Length: {content_length}\r\n".encode("iso-8859-1")
+        )
         mockres.headers = parse_headers(headers_fp)
         mockres.length = content_length
 
