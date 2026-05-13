@@ -20,3 +20,11 @@ def test_param_exists_empty_allowed(url_404):
 
     res = urlopen(f"{url_404}?x")
     assert res.status == 200
+
+
+@pytest.mark.pook
+def test_params_numeric_value(url_404):
+    pook.get(url_404).params({"x": 1}).reply(200)
+
+    res = urlopen(f"{url_404}?x=1")
+    assert res.status == 200
