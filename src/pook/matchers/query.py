@@ -3,6 +3,13 @@ from urllib.parse import parse_qs
 from .base import BaseMatcher, ExistsMatcher
 
 
+def _to_query_value(value):
+    # Query string values are always strings; coerce numeric expectations
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return str(value)
+    return value
+
+
 class QueryMatcher(BaseMatcher):
     """
     QueryMatcher implements an URL query params matcher.
@@ -17,8 +24,11 @@ class QueryMatcher(BaseMatcher):
             # Normalize param value
             param = [param] if not isinstance(param, list) else param
 
-            # Compare query params
-            [[self.compare(value, expect) for expect in match] for value in param]
+            # Compare query params, coercing numeric expectations to str
+            [
+                [self.compare(_to_query_value(value), expect) for expect in match]
+                for value in param
+            ]
 
             return True
 
