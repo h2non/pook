@@ -168,24 +168,23 @@ class Urllib3Interceptor(BaseInterceptor):
         )
 
     def _patch(self, path):
-        def handler(conn, method, url, body=None, headers=None, **kw):
-            # Flag that the current request as urllib3 intercepted
-            headers = headers or {}
-            headers[URLLIB3_BYPASS] = "1"
-
-            # Call request interceptor
-            return self._on_request(
-                urlopen, path, conn, method, url, body=body, headers=headers, **kw
-            )
-
         try:
+            # Resolve the original function before patching
+            original_func = self.resolve_path(path)
+
+            def handler(conn, method, url, body=None, headers=None, **kw):
+                # Flag that the current request as urllib3 intercepted
+                headers = headers or {}
+                headers[URLLIB3_BYPASS] = "1"
+
+                # Call request interceptor
+                return self._on_request(
+                    original_func, path, conn, method, url, body=body, headers=headers, **kw
+                )
+
             # Create a new patcher for Urllib3 urlopen function
             # used as entry point for all the HTTP communications
             patcher = mock.patch(path, handler)
-            # Retrieve original patched function that we might need for real
-            # networking
-            urlopen = patcher.get_original()[0]
-            # Start patching function calls
             patcher.start()
         except Exception:
             # Exceptions may accur due to missing package

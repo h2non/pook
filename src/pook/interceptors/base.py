@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import importlib
 
 
 class BaseInterceptor:
@@ -8,6 +9,29 @@ class BaseInterceptor:
     """
 
     __metaclass__ = ABCMeta
+
+    def resolve_path(self, path: str):
+        """
+        Resolves a dot-separated path to the actual object.
+        Example: 'httpx.Client._transport_for_url' -> the function object.
+        """
+        parts = path.split('.')
+        for i in range(len(parts) - 1, 0, -1):
+            module_path = '.'.join(parts[:i])
+            try:
+                module = importlib.import_module(module_path)
+                obj = module
+                for part in parts[i:]:
+                    obj = getattr(obj, part)
+                return obj
+            except (ImportError, AttributeError):
+                continue
+
+        # Fallback for single-part paths
+        try:
+            return importlib.import_module(path)
+        except ImportError:
+            raise ImportError(f"Could not resolve path: {path}")
 
     def __init__(self, engine):
         self.patchers = []

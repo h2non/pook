@@ -98,28 +98,27 @@ class HTTPClientInterceptor(BaseInterceptor):
         return mockres
 
     def _patch(self, path):
-        def handler(conn, method, url, body=None, headers=None, **kw):
-            # Detect if httplib was called by urllib3 interceptor
-            # This is a bit ugly, I know. Ideas are welcome!
-            if headers and URLLIB3_BYPASS in headers:
-                # Remove bypass header used as flag
-                headers.pop(URLLIB3_BYPASS)
-                # Call original patched function
-                return request(conn, method, url, body=body, headers=headers, **kw)
-
-            # Otherwise call the request interceptor
-            return self._on_request(
-                request, conn, method, url, body=body, headers=headers, **kw
-            )
-
         try:
+            # Resolve the original function before patching
+            original_func = self.resolve_path(path)
+
+            def handler(conn, method, url, body=None, headers=None, **kw):
+                # Detect if httplib was called by urllib3 interceptor
+                # This is a bit ugly, I know. Ideas are welcome!
+                if headers and URLLIB3_BYPASS in headers:
+                    # Remove bypass header used as flag
+                    headers.pop(URLLIB3_BYPASS)
+                    # Call original patched function
+                    return original_func(conn, method, url, body=body, headers=headers, **kw)
+
+                # Otherwise call the request interceptor
+                return self._on_request(
+                    original_func, conn, method, url, body=body, headers=headers, **kw
+                )
+
             # Create a new patcher for Urllib3 urlopen function
             # used as entry point for all the HTTP communications
             patcher = mock.patch(path, handler)
-            # Retrieve original patched function that we might need for real
-            # networking
-            request = patcher.get_original()[0]
-            # Start patching function calls
             patcher.start()
         except Exception:
             # Exceptions may accur due to missing package
