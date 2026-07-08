@@ -35,12 +35,14 @@ class HttpxInterceptor(BaseInterceptor):
         else:
             transport_cls = SyncTransport
 
-        def handler(client, *_):
-            return transport_cls(self, client, _original_transport_for_url)
-
         try:
+            # Resolve the original function before patching
+            original_func = self.resolve_path(path)
+
+            def handler(client, *_):
+                return transport_cls(self, client, original_func)
+
             patcher = mock.patch(path, handler)
-            _original_transport_for_url = patcher.get_original()[0]  # type: ignore[var-annotated]
             patcher.start()
         except Exception:
             pass

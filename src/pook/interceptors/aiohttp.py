@@ -84,10 +84,14 @@ class AIOHTTPInterceptor(BaseInterceptor):
             return super_request(session, *args, **kwargs)
 
         try:
+            # Resolve the original function before patching
+            path = "aiohttp.client.ClientSession._request"
+            original_request = self.resolve_path(path)
+
             # Patch ClientSession init to append this interceptor as an aiohttp
             # middleware to all session's middlewares
-            patcher = mock.patch("aiohttp.client.ClientSession._request", _request)
-            super_request = patcher.get_original()[0]
+            patcher = mock.patch(path, _request)
+            super_request = original_request
             # Start patching function calls
             patcher.start()
         except Exception:
@@ -116,6 +120,11 @@ class SimpleContent(EmptyStreamReader):
 
 
 def HTTPResponse(session: aiohttp.ClientSession, *args, **kw):
+    import inspect
+    sig = inspect.signature(session._response_class.__init__)
+    if "stream_writer" in sig.parameters:
+        kw.setdefault("stream_writer", mock.Mock())
+
     return session._response_class(
         *args,
         request_info=mock.Mock(),
