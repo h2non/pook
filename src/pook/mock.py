@@ -385,6 +385,10 @@ class Mock:
         """
         Defines a set of URL query params to match.
 
+        List values match repeated parameters in the same order and number.
+        A scalar value must match every received value for that parameter.
+        Other query parameter names are ignored.
+
         Arguments:
             params (dict): set of params to match.
 
