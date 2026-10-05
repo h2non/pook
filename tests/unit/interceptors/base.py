@@ -138,6 +138,19 @@ class StandardTests:
         assert z_body == b"hello from pook"
 
     @pytest.mark.pook
+    @pytest.mark.parametrize("use_params", [False, True])
+    def test_repeated_query_params(self, url_404, use_params):
+        if use_params:
+            pook.get(url_404).params({"x": ["a", "b"]}).reply(200)
+        else:
+            pook.get(f"{url_404}?x=a&x=b").reply(200)
+
+        status, *_ = self.make_request("GET", f"{url_404}?x=a&x=b")
+
+        assert status == 200
+        assert pook.isdone()
+
+    @pytest.mark.pook
     def test_json_request(self, url_404):
         """JSON request bodies are correctly matched."""
         json_request = {"hello": "json-request"}

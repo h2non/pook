@@ -1,5 +1,6 @@
 from urllib.parse import parse_qs
 
+from ..assertion import equal
 from .base import BaseMatcher, ExistsMatcher
 
 
@@ -14,11 +15,13 @@ class QueryMatcher(BaseMatcher):
             if match is None:
                 return False
 
-            # Normalize param value
-            param = [param] if not isinstance(param, list) else param
-
-            # Compare query params
-            [[self.compare(value, expect) for expect in match] for value in param]
+            if isinstance(param, list):
+                equal(len(param), len(match))
+                for value, expect in zip(param, match):
+                    self.compare(value, expect)
+            else:
+                for expect in match:
+                    self.compare(param, expect)
 
             return True
 
