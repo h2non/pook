@@ -30,14 +30,14 @@ class QueryMatcher(BaseMatcher):
 
         # Parse and assert type
         if isinstance(query, str):
-            query = parse_qs(self.expectation)
+            query = parse_qs(self.expectation, keep_blank_values=True)
 
         # Validate query params
         if not isinstance(query, dict):
             raise ValueError("query params must be a str or dict")
 
         # Parse request URL query
-        req_query = parse_qs(req.url.query)
+        req_query = parse_qs(req.url.query, keep_blank_values=True)
 
         # Match query params
         return self.match_query(query, req_query)

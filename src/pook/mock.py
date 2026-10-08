@@ -385,6 +385,10 @@ class Mock:
         """
         Defines a set of URL query params to match.
 
+        Empty values require the parameter to be present. For example,
+        ``params({"cursor": ""})`` matches ``?cursor`` or ``?cursor=``,
+        but does not match a request without ``cursor``.
+
         Arguments:
             params (dict): set of params to match.
 
