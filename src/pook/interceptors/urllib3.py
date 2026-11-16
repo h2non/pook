@@ -94,7 +94,7 @@ class FakeChunkedResponseBody:
 
         return chunk
 
-    def readline(self):
+    def readline(self, *args, **kwargs):
         return self.read_chunk(whole=True)
 
     def read(self, amt=-1):
